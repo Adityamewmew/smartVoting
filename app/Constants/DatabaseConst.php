@@ -16,6 +16,16 @@ class DatabaseConst
         return self::DB_CORE().'.sidebar_menus';
     }
 
+    public static function ELECTIONS(): string
+    {
+        return self::DB_CORE().'.elections';
+    }
+
+    public static function CANDIDATES(): string
+    {
+        return self::DB_CORE().'.candidates';
+    }
+
     public static function SIDEBAR_MENU_ACCESS(): string
     {
         return self::DB_CORE().'.sidebar_menu_accesses';

@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\CandidateController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\ElectionController;
 use App\Http\Controllers\Admin\SidebarMenuController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
@@ -34,6 +36,25 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::post('/update/{id}', [UserController::class, 'doUpdate'])->name('doUpdate');
         Route::delete('/delete/{id}', [UserController::class, 'delete'])->name('delete');
         Route::post('/reset-password/{id}', [UserController::class, 'resetPassword'])->name('resetPassword');
+    });
+
+    Route::middleware('access_type:1,2')->prefix('elections')->name('elections.')->group(function () {
+        Route::get('/', [ElectionController::class, 'index'])->name('index');
+        Route::get('/add', [ElectionController::class, 'add'])->name('add');
+        Route::post('/create', [ElectionController::class, 'doCreate'])->name('create');
+        Route::get('/update/{id}', [ElectionController::class, 'update'])->name('update');
+        Route::post('/update/{id}', [ElectionController::class, 'doUpdate'])->name('doUpdate');
+        Route::delete('/delete/{id}', [ElectionController::class, 'delete'])->name('delete');
+    });
+
+    Route::middleware('access_type:1,2')->prefix('candidates')->name('candidates.')->group(function () {
+        Route::get('/', [CandidateController::class, 'index'])->name('index');
+        Route::get('/add', [CandidateController::class, 'add'])->name('add');
+        Route::post('/create', [CandidateController::class, 'doCreate'])->name('create');
+        Route::get('/detail/{id}', [CandidateController::class, 'detail'])->name('detail');
+        Route::get('/update/{id}', [CandidateController::class, 'update'])->name('update');
+        Route::post('/update/{id}', [CandidateController::class, 'doUpdate'])->name('doUpdate');
+        Route::delete('/delete/{id}', [CandidateController::class, 'delete'])->name('delete');
     });
 
     Route::middleware('access_type:1')->prefix('sidebar-menu')->name('sidebar_menu.')->group(function () {

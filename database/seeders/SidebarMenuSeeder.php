@@ -28,7 +28,9 @@ class SidebarMenuSeeder extends Seeder
         ]);
 
         $superadmin = UserConst::SUPERADMIN;
+        $operator = UserConst::OPERATOR;
         $superadminOnly = [$superadmin];
+        $allRoles = [$superadmin, $operator];
 
         // =====================================================================
         // GROUP: utama
@@ -43,7 +45,7 @@ class SidebarMenuSeeder extends Seeder
             'created_at' => $now,
             'updated_at' => $now,
         ]);
-        $this->assignAccess($dashboardId, $superadminOnly, $now);
+        $this->assignAccess($dashboardId, $allRoles, $now);
 
         $penggunaId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
             'label' => 'Pengguna Aplikasi',
@@ -55,7 +57,7 @@ class SidebarMenuSeeder extends Seeder
             'created_at' => $now,
             'updated_at' => $now,
         ]);
-        $this->assignAccess($penggunaId, $superadminOnly, $now);
+        $this->assignAccess($penggunaId, $allRoles, $now);
 
         $sidebarMgmtId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
             'label' => 'Manajemen Sidebar',
@@ -68,6 +70,37 @@ class SidebarMenuSeeder extends Seeder
             'updated_at' => $now,
         ]);
         $this->assignAccess($sidebarMgmtId, $superadminOnly, $now);
+
+        // =====================================================================
+        // GROUP: pemilihan
+        // =====================================================================
+        DB::table(DatabaseConst::SIDEBAR_MENU_GROUP())->insert([
+            ['key' => 'pemilihan', 'label' => 'Pemilihan', 'color' => 'green', 'sort_order' => 20, 'created_at' => $now, 'updated_at' => $now],
+        ]);
+
+        $electionsId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
+            'label' => 'Elections',
+            'route_name' => 'admin.elections.index',
+            'icon' => '_admin._layout.icons.sidebar.data_master',
+            'group' => 'pemilihan',
+            'sort_order' => 10,
+            'is_active' => 1,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+        $this->assignAccess($electionsId, $allRoles, $now);
+
+        $candidatesId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
+            'label' => 'Candidates',
+            'route_name' => 'admin.candidates.index',
+            'icon' => '_admin._layout.icons.sidebar.user',
+            'group' => 'pemilihan',
+            'sort_order' => 20,
+            'is_active' => 1,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+        $this->assignAccess($candidatesId, $allRoles, $now);
 
     }
 

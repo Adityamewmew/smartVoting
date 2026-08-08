@@ -1,9 +1,11 @@
 import {
     bigint,
+    datetime,
     index,
     int,
     longtext,
     mediumtext,
+    mysqlEnum,
     mysqlTable,
     smallint,
     text,
@@ -158,3 +160,35 @@ export const sidebarMenusTable = mysqlTable('sidebar_menus', {
     index('sidebar_menus_parent_id_index').on(t.parent_id),
     index('sidebar_menus_group_sort_order_index').on(t.group, t.sort_order),
 ]);
+
+export const electionStatusEnum = mysqlEnum('status', ['draft', 'scheduled', 'active', 'closed']);
+
+export const electionsTable = mysqlTable('elections', {
+    id: bigint({ mode: 'number', unsigned: true }).primaryKey().autoincrement(),
+    name: varchar({ length: 255 }).notNull(),
+    description: text(),
+    start_time: datetime().notNull(),
+    end_time: datetime().notNull(),
+    status: electionStatusEnum.default('draft').notNull(),
+    created_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
+    updated_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
+    deleted_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
+    created_at: timestamp().defaultNow(),
+    updated_at: timestamp().onUpdateNow(),
+    deleted_at: timestamp(),
+});
+
+export const candidatesTable = mysqlTable('candidates', {
+    id: bigint({ mode: 'number', unsigned: true }).primaryKey().autoincrement(),
+    election_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => electionsTable.id).notNull(),
+    name: varchar({ length: 255 }).notNull(),
+    description: text(),
+    photo_url: varchar({ length: 255 }),
+    order_number: int().notNull(),
+    created_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
+    updated_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
+    deleted_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
+    created_at: timestamp().defaultNow(),
+    updated_at: timestamp().onUpdateNow(),
+    deleted_at: timestamp(),
+});
