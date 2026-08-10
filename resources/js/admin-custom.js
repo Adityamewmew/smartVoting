@@ -235,6 +235,15 @@ $(document).ready(function () {
                 allowInput: true
             });
 
+            window.flatpickr(".datetimepicker", {
+                enableTime: true,
+                dateFormat: "Y-m-d H:i",
+                altInput: true,
+                altFormat: "j F Y H:i",
+                time_24hr: true,
+                allowInput: true
+            });
+
             initDateRangePickers();
         }
     }

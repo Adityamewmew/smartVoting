@@ -36,6 +36,16 @@ class DatabaseConst
         return self::DB_CORE().'.sidebar_menu_groups';
     }
 
+    public static function VOTING_SESSIONS(): string
+    {
+        return self::DB_CORE().'.voting_sessions';
+    }
+
+    public static function VOTES(): string
+    {
+        return self::DB_CORE().'.votes';
+    }
+
     public static function DB_CORE(): string
     {
         return config('database.connections.mysql.database', 'default');

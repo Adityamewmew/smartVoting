@@ -14,7 +14,7 @@ class CandidateController extends Controller
 {
     protected array $page = [
         'route' => 'candidates',
-        'title' => 'Kandidat',
+        'title' => 'Kandidat Paslon',
     ];
 
     protected string $baseRedirect;
@@ -23,30 +23,47 @@ class CandidateController extends Controller
         protected CandidateUsecase $usecase,
         protected ElectionUsecase $electionUsecase
     ) {
-        $this->baseRedirect = 'admin/'.$this->page['route'];
+        $this->baseRedirect = 'admin.'.$this->page['route'].'.index';
     }
 
     public function index(Request $request): View
     {
-        $data = $this->usecase->getAll([
-            'keywords' => $request->get('keywords'),
-        ]);
-        $data = $data['data']['list'] ?? [];
+        $elections = $this->electionUsecase->getAll(['no_pagination' => true]);
+        $elections = $elections['data']['list'] ?? [];
+
+        // If no election_id is provided, try to select the first active or scheduled election, or just the first one
+        $electionId = $request->get('election_id');
+        if (! $electionId && count($elections) > 0) {
+            $electionId = $elections[0]->id;
+        }
+
+        $data = [];
+        if ($electionId) {
+            $response = $this->usecase->getAll([
+                'keywords' => $request->get('keywords'),
+                'election_id' => $electionId,
+            ]);
+            $data = $response['data']['list'] ?? [];
+        }
 
         return view('_admin.candidates.index', [
             'data' => $data,
             'page' => $this->page,
             'keywords' => $request->get('keywords'),
+            'elections' => $elections,
+            'selectedElectionId' => $electionId,
         ]);
     }
 
-    public function add(): View
+    public function add(Request $request): View
     {
-        $elections = $this->electionUsecase->getActiveElections()['data']['list'] ?? [];
+        $elections = $this->electionUsecase->getAll(['no_pagination' => true]);
+        $elections = $elections['data']['list'] ?? [];
 
         return view('_admin.candidates.add', [
             'page' => $this->page,
             'elections' => $elections,
+            'selectedElectionId' => $request->get('election_id'),
         ]);
     }
 
@@ -55,7 +72,7 @@ class CandidateController extends Controller
         $process = $this->usecase->create(data: $request);
 
         if ($process['success']) {
-            return redirect()->route('admin.candidates.index')
+            return redirect()->route($this->baseRedirect, ['election_id' => $request->input('election_id')])
                 ->with('success', ResponseConst::SUCCESS_MESSAGE_CREATED);
         }
 
@@ -68,11 +85,12 @@ class CandidateController extends Controller
         $data = $this->usecase->getByID($id);
 
         if (empty($data['data'])) {
-            return redirect()->route('admin.candidates.index')
+            return redirect()->route($this->baseRedirect)
                 ->with('error', ResponseConst::DEFAULT_ERROR_MESSAGE);
         }
 
-        $elections = $this->electionUsecase->getActiveElections()['data']['list'] ?? [];
+        $elections = $this->electionUsecase->getAll(['no_pagination' => true]);
+        $elections = $elections['data']['list'] ?? [];
 
         return view('_admin.candidates.update', [
             'data' => (object) $data['data'],
@@ -86,7 +104,7 @@ class CandidateController extends Controller
         $process = $this->usecase->update(data: $request, id: $id);
 
         if ($process['success']) {
-            return redirect()->route('admin.candidates.index')
+            return redirect()->route($this->baseRedirect, ['election_id' => $request->input('election_id')])
                 ->with('success', ResponseConst::SUCCESS_MESSAGE_UPDATED);
         }
 
@@ -94,27 +112,15 @@ class CandidateController extends Controller
             ->with('error', $process['message'] ?? ResponseConst::DEFAULT_ERROR_MESSAGE);
     }
 
-    public function detail(int $id): View|RedirectResponse
-    {
-        $data = $this->usecase->getByID($id);
-
-        if (empty($data['data'])) {
-            return redirect()->route('admin.candidates.index')
-                ->with('error', ResponseConst::DEFAULT_ERROR_MESSAGE);
-        }
-
-        return view('_admin.candidates.detail', [
-            'data' => (object) $data['data'],
-            'page' => $this->page,
-        ]);
-    }
-
     public function delete(int $id): RedirectResponse
     {
+        $candidate = $this->usecase->getByID($id);
+        $electionId = $candidate['data']['election_id'] ?? null;
+
         $process = $this->usecase->delete(id: $id);
 
         if ($process['success']) {
-            return redirect()->route('admin.candidates.index')
+            return redirect()->route($this->baseRedirect, ['election_id' => $electionId])
                 ->with('success', ResponseConst::SUCCESS_MESSAGE_DELETED);
         }
 

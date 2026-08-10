@@ -6,11 +6,19 @@ use App\Http\Controllers\Admin\ElectionController;
 use App\Http\Controllers\Admin\SidebarMenuController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Operator\KioskManagerController;
+use App\Http\Controllers\KioskController;
 use Illuminate\Support\Benchmark;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect()->route('admin.dashboard');
+    if (auth()->check()) {
+        if (auth()->user()->access_type == 2) {
+            return redirect()->route('operator.kiosk.index');
+        }
+        return redirect()->route('admin.dashboard');
+    }
+    return redirect()->route('login');
 });
 
 Route::get('test', function () {
@@ -26,6 +34,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // Admin Users Routes
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/data', [AdminDashboardController::class, 'data'])->name('dashboard.data');
+    Route::get('/dashboard/print/{electionId}', [AdminDashboardController::class, 'print'])->name('dashboard.print');
 
     Route::middleware('access_type:1')->prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
@@ -51,10 +61,9 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [CandidateController::class, 'index'])->name('index');
         Route::get('/add', [CandidateController::class, 'add'])->name('add');
         Route::post('/create', [CandidateController::class, 'doCreate'])->name('create');
-        Route::get('/detail/{id}', [CandidateController::class, 'detail'])->name('detail');
         Route::get('/update/{id}', [CandidateController::class, 'update'])->name('update');
         Route::post('/update/{id}', [CandidateController::class, 'doUpdate'])->name('doUpdate');
-        Route::delete('/delete/{id}', [CandidateController::class, 'delete'])->name('delete');
+        Route::get('/delete/{id}', [CandidateController::class, 'delete'])->name('delete');
     });
 
     Route::middleware('access_type:1')->prefix('sidebar-menu')->name('sidebar_menu.')->group(function () {
@@ -76,4 +85,21 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::post('/change-password', [UserController::class, 'doChangePassword'])->name('do_change_password');
     });
 
+});
+
+// Operator Routes
+Route::middleware(['auth', 'access_type:2'])->prefix('operator')->name('operator.')->group(function () {
+    Route::prefix('kiosk')->name('kiosk.')->group(function () {
+        Route::get('/', [KioskManagerController::class, 'index'])->name('index');
+        Route::post('/generate/{electionId}', [KioskManagerController::class, 'generate'])->name('generate');
+    });
+});
+
+// Public Kiosk Routes
+Route::prefix('bilik')->name('kiosk.')->group(function () {
+    Route::get('/start/{electionId}', [KioskController::class, 'start'])->name('start');
+    Route::post('/start/{electionId}', [KioskController::class, 'generate'])->name('generate');
+    Route::get('/{token}/vote', [KioskController::class, 'vote'])->name('vote');
+    Route::post('/{token}/submit', [KioskController::class, 'submit'])->name('submit');
+    Route::post('/{token}/expire', [KioskController::class, 'expire'])->name('expire');
 });

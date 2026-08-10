@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Usecase\Admin\SidebarMenuUsecase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -33,15 +32,12 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
 
-            $usecase = app(SidebarMenuUsecase::class);
-            $accessType = Auth::user()->access_type;
-            $groups = $usecase->getGroupKeys();
-            $sidebarMenus = [];
-
-            foreach ($groups as $group) {
-                $result = $usecase->getMenusForSidebar($accessType, $group);
-                $sidebarMenus[$group] = $result['data'] ?? [];
-            }
+            $usecase = app(\App\Usecase\Admin\SidebarMenuUsecase::class);
+            
+            $sidebarMenus = [
+                'utama' => $usecase->getMenusForSidebar((int) Auth::user()->access_type, 'utama')['data'] ?? [],
+                'pemilihan' => $usecase->getMenusForSidebar((int) Auth::user()->access_type, 'pemilihan')['data'] ?? [],
+            ];
 
             $view->with('sidebarMenus', $sidebarMenus);
         });

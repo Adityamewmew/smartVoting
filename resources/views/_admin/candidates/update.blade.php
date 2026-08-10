@@ -3,138 +3,97 @@
 @section('title', 'Ubah Kandidat')
 
 @section('content')
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div
-            class="bg-white overflow-hidden shadow-lg rounded-2xl dark:bg-neutral-800 border-2 border-gray-100 dark:border-neutral-700">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-neutral-700 flex items-center">
-                <a href="{{ route('admin.candidates.index') }}"
-                    class="py-3 px-3 inline-flex items-center gap-x-2 text-xl rounded-xl border border-gray-200 bg-white text-gray-800 shadow-md hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700 cursor-pointer">
-                    <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="90" height="90"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="m12 19-7-7 7-7" />
-                        <path d="M19 12H5" />
-                    </svg>
-                </a>
-                <div class="ms-3">
-                    <h2 class="text-xl font-semibold text-gray-800 dark:text-neutral-200">
-                        Ubah Kandidat
-                    </h2>
-                </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="bg-white overflow-hidden shadow-lg rounded-2xl dark:bg-neutral-800 border-2 border-neutral-100 dark:border-neutral-700">
+            <div class="p-6 border-b border-neutral-100 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800">
+                <h2 class="text-lg font-bold text-neutral-800 dark:text-neutral-200">
+                    Form Ubah Kandidat
+                </h2>
             </div>
+            
+            <div class="p-6">
+                <form action="{{ route('admin.candidates.do_update', $data->id) }}" method="POST" enctype="multipart/form-data" navigate-form>
+                    @csrf
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <label for="election_id" class="block text-sm font-medium mb-2 dark:text-white">Event Pemilihan <span class="text-red-500">*</span></label>
+                            <select id="election_id" name="election_id" class="w-full mt-1 border-neutral-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-300 transition-colors shadow-sm" required>
+                                <option value="">-- Pilih Event --</option>
+                                @foreach($elections as $election)
+                                    <option value="{{ $election->id }}" {{ (old('election_id') ?? $data->election_id) == $election->id ? 'selected' : '' }}>
+                                        {{ $election->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('election_id')
+                                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
 
-            <form id="update-form" class="p-6" action="{{ route('admin.candidates.doUpdate', $data->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div class="space-y-4">
-                    {{-- Pemilihan --}}
-                    <div>
-                        <label for="election_id" class="block text-sm font-medium mb-2 dark:text-white">Pemilihan <span class="text-red-500">*</span></label>
-                        <select id="election_id" name="election_id"
-                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 @error('election_id') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror"
-                            required>
-                            <option value="">-- Pilih Pemilihan --</option>
-                            @foreach ($elections as $e)
-                                <option value="{{ $e->id }}" {{ (old('election_id') ?? $data->election_id) == $e->id ? 'selected' : '' }}>
-                                    {{ $e->title }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('election_id')
-                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                        @enderror
+                        <div>
+                            <label for="order_number" class="block text-sm font-medium mb-2 dark:text-white">Nomor Urut <span class="text-red-500">*</span></label>
+                            <input type="number" id="order_number" name="order_number" min="1" value="{{ old('order_number') ?? $data->order_number }}" required placeholder="Contoh: 1" class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
+                            @error('order_number')
+                                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="chairman_name" class="block text-sm font-medium mb-2 dark:text-white">Nama Ketua <span class="text-red-500">*</span></label>
+                            <input type="text" id="chairman_name" name="chairman_name" value="{{ old('chairman_name') ?? $data->chairman_name }}" required placeholder="Masukkan nama ketua..." class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
+                            @error('chairman_name')
+                                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="vice_chairman_name" class="block text-sm font-medium mb-2 dark:text-white">Nama Wakil Ketua <span class="text-red-500">*</span></label>
+                            <input type="text" id="vice_chairman_name" name="vice_chairman_name" value="{{ old('vice_chairman_name') ?? $data->vice_chairman_name }}" required placeholder="Masukkan nama wakil ketua..." class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
+                            @error('vice_chairman_name')
+                                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="vision" class="block text-sm font-medium mb-2 dark:text-white">Visi</label>
+                            <textarea id="vision" name="vision" rows="4" class="w-full mt-1 border-neutral-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-300 transition-colors shadow-sm" placeholder="Masukkan visi paslon...">{{ old('vision') ?? $data->vision }}</textarea>
+                            @error('vision')
+                                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="mission" class="block text-sm font-medium mb-2 dark:text-white">Misi</label>
+                            <textarea id="mission" name="mission" rows="4" class="w-full mt-1 border-neutral-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-300 transition-colors shadow-sm" placeholder="Masukkan misi paslon...">{{ old('mission') ?? $data->mission }}</textarea>
+                            @error('mission')
+                                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="photo" class="block text-sm font-medium mb-2 dark:text-white">Ganti Foto Paslon (Opsional)</label>
+                            <input type="file" id="photo" name="photo" accept="image/png, image/jpeg, image/jpg" class="w-full mt-1 border border-neutral-200 focus:border-blue-500 focus:ring-blue-500 rounded-lg dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-300 transition-colors shadow-sm p-2 bg-white dark:bg-neutral-900" />
+                            <p class="text-xs text-neutral-500 mt-1">Maksimal 2MB, format JPG/PNG. Biarkan kosong jika tidak ingin mengubah foto.</p>
+                            @error('photo')
+                                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
+                            
+                            @if($data->photo_path)
+                                <div class="mt-4 p-4 border border-neutral-200 dark:border-neutral-700 rounded-lg bg-neutral-50 dark:bg-neutral-900">
+                                    <p class="text-sm font-semibold mb-2">Foto Saat Ini:</p>
+                                    <img src="{{ Storage::url($data->photo_path) }}" alt="Foto Paslon" class="w-32 h-auto rounded shadow-sm border border-neutral-200 dark:border-neutral-700">
+                                </div>
+                            @endif
+                        </div>
                     </div>
 
-                    {{-- Nomor Urut --}}
-                    <div>
-                        <label for="nomor_urut" class="block text-sm font-medium mb-2 dark:text-white">Nomor Urut <span class="text-red-500">*</span></label>
-                        <input type="number" id="nomor_urut" name="nomor_urut" value="{{ old('nomor_urut') ?? $data->nomor_urut }}"
-                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 placeholder-neutral-300 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 @error('nomor_urut') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror"
-                            placeholder="Contoh: 1" required>
-                        @error('nomor_urut')
-                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                        @enderror
+                    <div class="mt-8 flex justify-end gap-3">
+                        <x-admin.button href="{{ route('admin.candidates.index', ['election_id' => $data->election_id]) }}" color="outline-secondary">Batal</x-admin.button>
+                        <x-admin.button type="submit" color="primary">Simpan Perubahan</x-admin.button>
                     </div>
-
-                    {{-- Nama Ketua --}}
-                    <div>
-                        <label for="nama_ketua" class="block text-sm font-medium mb-2 dark:text-white">Nama Ketua <span class="text-red-500">*</span></label>
-                        <input type="text" id="nama_ketua" name="nama_ketua" value="{{ old('nama_ketua') ?? $data->nama_ketua }}"
-                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 placeholder-neutral-300 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 @error('nama_ketua') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror"
-                            placeholder="Nama Ketua" required>
-                        @error('nama_ketua')
-                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- Nama Wakil --}}
-                    <div>
-                        <label for="nama_wakil" class="block text-sm font-medium mb-2 dark:text-white">Nama Wakil <span class="text-red-500">*</span></label>
-                        <input type="text" id="nama_wakil" name="nama_wakil" value="{{ old('nama_wakil') ?? $data->nama_wakil }}"
-                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 placeholder-neutral-300 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 @error('nama_wakil') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror"
-                            placeholder="Nama Wakil" required>
-                        @error('nama_wakil')
-                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- Visi --}}
-                    <div>
-                        <label for="visi" class="block text-sm font-medium mb-2 dark:text-white">Visi <span class="text-red-500">*</span></label>
-                        <textarea id="visi" name="visi" rows="3"
-                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 placeholder-neutral-300 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 @error('visi') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror"
-                            placeholder="Visi kandidat" required>{{ old('visi') ?? $data->visi }}</textarea>
-                        @error('visi')
-                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- Misi --}}
-                    <div>
-                        <label for="misi" class="block text-sm font-medium mb-2 dark:text-white">Misi <span class="text-red-500">*</span></label>
-                        <textarea id="misi" name="misi" rows="4"
-                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 placeholder-neutral-300 dark:placeholder-neutral-500 dark:focus:ring-neutral-600 @error('misi') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror"
-                            placeholder="Misi kandidat" required>{{ old('misi') ?? $data->misi }}</textarea>
-                        @error('misi')
-                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- Foto --}}
-                    <div>
-                        <label for="foto" class="block text-sm font-medium mb-2 dark:text-white">Foto Kandidat</label>
-                        @if ($data->foto_path)
-                            <div class="mb-2">
-                                <img src="{{ asset('storage/' . $data->foto_path) }}" alt="Foto Kandidat" class="w-32 h-32 object-cover rounded border border-gray-200 dark:border-neutral-700">
-                            </div>
-                        @endif
-                        <input type="file" id="foto" name="foto" accept="image/*"
-                            class="block w-full border border-gray-200 shadow-sm rounded-lg text-sm focus:z-10 focus:border-blue-500 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400
-                            file:bg-gray-50 file:border-0 file:me-4 file:py-3 file:px-4 dark:file:bg-neutral-700 dark:file:text-neutral-400 @error('foto') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror">
-                        <p class="mt-1 text-sm text-gray-500 dark:text-neutral-500">Max 2MB. Format: jpeg, png, jpg, gif. Kosongkan jika tidak ingin mengubah foto.</p>
-                        @error('foto')
-                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
-
-                {{-- Footer --}}
-                <div class="mt-6 flex justify-start gap-x-2">
-                    <a href="{{ route('admin.candidates.index') }}"
-                        class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800">
-                        Batal
-                    </a>
-                    <button type="submit"
-                        class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none cursor-pointer">
-                        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="M5 12h14" />
-                            <path d="M12 5v14" />
-                        </svg>
-                        Simpan Perubahan
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
 @endsection

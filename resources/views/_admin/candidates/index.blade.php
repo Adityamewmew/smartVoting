@@ -1,26 +1,43 @@
 @extends('_admin._layout.app')
 
-@section('title', $page['title'])
+@section('title', 'Data ' . $page['title'])
 
 @section('content')
-    <x-admin.page-header :title="'Data ' . $page['title']" subtitle="Daftar Kandidat">
-        <x-admin.button href="{{ route('admin.candidates.add') }}" class="font-bold">
+    <x-admin.page-header :title="'Data ' . $page['title']" subtitle="Daftar Kandidat Paslon">
+        <x-admin.button href="{{ route('admin.candidates.add', ['election_id' => $selectedElectionId]) }}" class="font-bold">
             @include('_admin._layout.icons.add')
-            Tambah Data
+            Tambah Kandidat
         </x-admin.button>
     </x-admin.page-header>
+
     <div class="mb-6">
         <form action="{{ route('admin.candidates.index') }}" method="GET" navigate-form
             class="flex flex-col sm:flex-row items-center gap-3">
+            
+            <!-- Select Event -->
             <div class="w-full sm:w-64">
-                <x-admin.input name="keywords" :value="$keywords ?? ''" placeholder="Nama Ketua atau Wakil" size="sm" />
+                <select name="election_id" class="w-full py-2.5 sm:py-2 px-4 sm:text-sm block border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 placeholder-gray-400" onchange="this.form.submit()">
+                    <option value="">-- Semua Event Pemilihan --</option>
+                    @foreach($elections as $election)
+                        <option value="{{ $election->id }}" {{ $selectedElectionId == $election->id ? 'selected' : '' }}>
+                            {{ $election->name }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
+
+            <!-- Search Keyword -->
+            <div class="w-full sm:w-64">
+                <x-admin.input name="keywords" :value="$keywords ?? ''" placeholder="Cari kandidat..." size="sm" />
+            </div>
+
+            <!-- Buttons -->
             <div class="flex items-center gap-2">
                 <x-admin.button type="submit" size="sm" color="primary">
                     @include('_admin._layout.icons.search')
                     Cari
                 </x-admin.button>
-                @if (!empty($keywords))
+                @if (!empty($keywords) || !empty($selectedElectionId))
                     <x-admin.button href="{{ route('admin.candidates.index') }}" size="sm" color="outline-secondary">
                         @include('_admin._layout.icons.reset')
                         Reset
@@ -35,8 +52,9 @@
             <x-admin.table.thead>
                 <tr>
                     <x-admin.table.th>No. Urut</x-admin.table.th>
-                    <x-admin.table.th>Pemilihan</x-admin.table.th>
-                    <x-admin.table.th>Nama Kandidat</x-admin.table.th>
+                    <x-admin.table.th>Foto</x-admin.table.th>
+                    <x-admin.table.th>Nama Paslon</x-admin.table.th>
+                    <x-admin.table.th>Visi & Misi</x-admin.table.th>
                     <x-admin.table.th align="end"></x-admin.table.th>
                 </tr>
             </x-admin.table.thead>
@@ -44,27 +62,32 @@
                 @forelse($data as $d)
                     <x-admin.table.tr>
                         <x-admin.table.td>
-                            <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
-                                {{ $d->nomor_urut }}
-                            </span>
+                            <span class="block text-2xl font-black text-gray-800 dark:text-neutral-200">{{ $d->order_number }}</span>
                         </x-admin.table.td>
                         <x-admin.table.td>
-                            <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
-                                {{ $d->election_title }}
-                            </span>
+                            @if($d->photo_path)
+                                <img src="{{ Storage::url($d->photo_path) }}" alt="Foto Paslon" class="w-16 h-16 object-cover rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-700">
+                            @else
+                                <div class="w-16 h-16 bg-neutral-100 dark:bg-neutral-800 rounded-xl flex items-center justify-center border border-neutral-200 dark:border-neutral-700">
+                                    <span class="text-neutral-400 text-[10px] uppercase font-bold tracking-wider">No Image</span>
+                                </div>
+                            @endif
                         </x-admin.table.td>
                         <x-admin.table.td>
-                            <div class="grow">
-                                <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">{{ $d->nama_ketua }}</span>
-                                <span class="block text-sm text-gray-500 dark:text-neutral-500">&amp; {{ $d->nama_wakil }}</span>
+                            <span class="block text-sm font-bold text-gray-800 dark:text-neutral-200">K: {{ $d->chairman_name }}</span>
+                            <span class="block text-sm text-gray-600 dark:text-neutral-400 font-medium">W: {{ $d->vice_chairman_name }}</span>
+                        </x-admin.table.td>
+                        <x-admin.table.td>
+                            <div class="max-w-xs text-xs text-gray-500 dark:text-neutral-400">
+                                @if($d->vision)
+                                    <p class="truncate"><span class="font-semibold text-gray-700 dark:text-neutral-300">Visi:</span> {{ $d->vision }}</p>
+                                @endif
+                                @if($d->mission)
+                                    <p class="truncate"><span class="font-semibold text-gray-700 dark:text-neutral-300">Misi:</span> {{ $d->mission }}</p>
+                                @endif
                             </div>
                         </x-admin.table.td>
                         <x-admin.table.td innerClass="px-6 py-1.5 flex items-center justify-end gap-x-1">
-                            <a navigate
-                                class="inline-flex items-center justify-center size-8 text-sm font-semibold rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
-                                href="{{ route('admin.candidates.detail', $d->id) }}" title="View">
-                                @include('_admin._layout.icons.view_detail')
-                            </a>
                             <a navigate
                                 class="inline-flex items-center justify-center size-8 text-sm font-semibold rounded-lg border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:border-blue-300 focus:outline-none focus:bg-blue-100 disabled:opacity-50 disabled:pointer-events-none dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-500 dark:hover:bg-blue-800/30 dark:hover:border-blue-700"
                                 href="{{ route('admin.candidates.update', $d->id) }}" title="Edit">
@@ -73,21 +96,22 @@
                             <button type="button"
                                 class="inline-flex items-center justify-center size-8 text-sm font-semibold rounded-lg border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 hover:border-red-300 focus:outline-none focus:bg-red-100 disabled:opacity-50 disabled:pointer-events-none dark:border-red-800 dark:bg-red-900/20 dark:text-red-500 dark:hover:bg-red-800/30 dark:hover:border-red-700 cursor-pointer"
                                 title="Delete" data-hs-overlay="#delete-modal"
-                                onclick="setDeleteData('{{ $d->id }}', 'Kandidat Nomor {{ $d->nomor_urut }}')">
+                                onclick="setDeleteData('{{ $d->id }}', 'Kandidat Nomor Urut {{ $d->order_number }}')">
                                 @include('_admin._layout.icons.trash')
                             </button>
                         </x-admin.table.td>
                     </x-admin.table.tr>
                 @empty
                     <tr>
-                        <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500 dark:text-neutral-500">
-                            <x-admin.empty-state />
+                        <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-neutral-500">
+                            <x-admin.empty-state title="Belum ada Kandidat" message="Silakan tambahkan kandidat untuk event pemilihan ini." />
                         </td>
                     </tr>
                 @endforelse
             </x-admin.table.tbody>
         </x-admin.table>
-        @if (count($data) > 0 && $data->hasPages())
+        
+        @if ($data instanceof \Illuminate\Pagination\LengthAwarePaginator && count($data) > 0 && $data->hasPages())
             <div class="px-6 py-4 border-t border-gray-200 dark:border-neutral-700">
                 <div class="flex justify-end">
                     {{ $data->links() }}
@@ -97,7 +121,7 @@
     </x-admin.table.wrapper>
 
     <!-- Delete Confirmation Modal -->
-    <div id="delete-modal" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto"
+    <div id="delete-modal" class="hs-overlay hidden size-full fixed top-0 start-0 z-80 overflow-x-hidden overflow-y-auto"
         role="dialog" tabindex="-1" aria-labelledby="delete-modal-label">
         <div
             class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
@@ -121,10 +145,10 @@
                     <!-- End Icon -->
 
                     <h3 id="delete-modal-label" class="mb-2 text-xl font-bold text-gray-800 dark:text-neutral-200">
-                        Hapus Kandidat
+                        Hapus Kandidat Paslon
                     </h3>
                     <p class="text-gray-500 dark:text-neutral-500">
-                        Apakah Anda yakin ingin menghapus <span id="delete-candidate-name"
+                        Apakah Anda yakin ingin menghapus <span id="delete-item-name"
                             class="font-semibold text-gray-800 dark:text-neutral-200"></span>?
                         <br>Tindakan ini tidak dapat dibatalkan.
                     </p>
@@ -135,14 +159,10 @@
                             data-hs-overlay="#delete-modal">
                             Batal
                         </button>
-                        <form id="delete-form" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">
-                                Ya, Hapus
-                            </button>
-                        </form>
+                        <a id="delete-btn" href="#"
+                            class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">
+                            Ya, Hapus
+                        </a>
                     </div>
                 </div>
             </div>
@@ -151,9 +171,8 @@
 
     <script>
         function setDeleteData(id, name) {
-            document.getElementById('delete-candidate-name').textContent = name;
-            var baseUrl = "{{ url('admin/candidates/delete') }}";
-            document.getElementById('delete-form').action = baseUrl + "/" + id;
+            document.getElementById('delete-item-name').textContent = name;
+            document.getElementById('delete-btn').href = '{{ url('admin/candidates/delete') }}/' + id;
         }
     </script>
 @endsection

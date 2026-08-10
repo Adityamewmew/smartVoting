@@ -121,6 +121,40 @@
             </div>
         </section>
 
+        {{-- LIVE POLLING --}}
+        @if(isset($activeElections) && $activeElections->isNotEmpty())
+        <section class="mb-10">
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
+                        Laporan Hasil Suara (Live)
+                    </h2>
+                </div>
+            </div>
+
+            @foreach($activeElections as $election)
+            <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6 shadow-sm mb-6 flex flex-col md:flex-row gap-8 items-center hover:shadow-lg transition-shadow relative">
+                <!-- Print Button -->
+                <a href="{{ route('admin.dashboard.print', $election->id) }}" target="_blank" class="absolute top-4 right-4 inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium bg-white text-gray-700 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 transition z-10">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+                    Cetak Laporan
+                </a>
+
+                <!-- Total Votes -->
+                <div class="w-full md:w-1/3 flex flex-col items-center justify-center p-8 bg-blue-50 dark:bg-blue-500/10 rounded-2xl border border-blue-100 dark:border-blue-500/20">
+                    <span class="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-2">Total Suara Masuk</span>
+                    <span class="text-6xl font-black text-blue-700 dark:text-blue-500 tabular-nums" id="total-votes-{{ $election->id }}">0</span>
+                    <span class="text-md font-semibold text-gray-500 dark:text-gray-400 mt-2 text-center">{{ $election->name }}</span>
+                </div>
+                <!-- Chart -->
+                <div class="w-full md:w-2/3 h-[300px]">
+                    <canvas id="chart-{{ $election->id }}"></canvas>
+                </div>
+            </div>
+            @endforeach
+        </section>
+        @endif
+
         {{-- MENU --}}
         <section>
 
@@ -245,21 +279,83 @@
                 100% { transform: translate(-50%, -50%) translateX(0px); }
             }
         </style>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             (() => {
                 const clock = document.getElementById('dashboard-clock');
 
-                if (!clock) return;
+                if (clock) {
+                    setInterval(() => {
+                        const now = new Date();
+                        clock.textContent = now.toLocaleTimeString('id-ID', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    }, 1000);
+                }
 
-                setInterval(() => {
-                    const now = new Date();
+                @if(isset($activeElections) && $activeElections->isNotEmpty())
+                    const charts = {};
+                    
+                    @foreach($activeElections as $election)
+                        const ctx{{ $election->id }} = document.getElementById('chart-{{ $election->id }}').getContext('2d');
+                        charts[{{ $election->id }}] = new Chart(ctx{{ $election->id }}, {
+                            type: 'bar',
+                            data: {
+                                labels: [],
+                                datasets: [{
+                                    label: 'Perolehan Suara',
+                                    data: [],
+                                    backgroundColor: 'rgba(59, 130, 246, 0.8)', // blue-500
+                                    borderColor: 'rgb(37, 99, 235)', // blue-600
+                                    borderWidth: 1,
+                                    borderRadius: 8,
+                                    maxBarThickness: 60
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            stepSize: 1,
+                                            precision: 0
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                }
+                            }
+                        });
 
-                    clock.textContent = now.toLocaleTimeString('id-ID', {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
+                        function fetchElectionData{{ $election->id }}() {
+                            fetch(`{{ route('admin.dashboard.data') }}?election_id={{ $election->id }}`)
+                                .then(res => res.json())
+                                .then(res => {
+                                    if (res.success) {
+                                        // Update total votes with animation-like effect or directly
+                                        document.getElementById('total-votes-{{ $election->id }}').innerText = res.data.total_votes;
+                                        
+                                        const labels = res.data.candidates.map(c => `Paslon ${c.order_number}: ${c.chairman_name}`);
+                                        const data = res.data.candidates.map(c => c.vote_count);
+                                        
+                                        charts[{{ $election->id }}].data.labels = labels;
+                                        charts[{{ $election->id }}].data.datasets[0].data = data;
+                                        charts[{{ $election->id }}].update();
+                                    }
+                                });
+                        }
 
-                }, 1000);
+                        // Initial fetch and interval
+                        fetchElectionData{{ $election->id }}();
+                        setInterval(fetchElectionData{{ $election->id }}, 10000); // 10 seconds
+                    @endforeach
+                @endif
             })();
         </script>
     @endpush

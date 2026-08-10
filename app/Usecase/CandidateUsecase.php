@@ -15,22 +15,28 @@ use Illuminate\Support\Facades\Validator;
 
 class CandidateUsecase extends Usecase
 {
-    public string $className = 'CandidateUsecase';
+    public function __construct()
+    {
+        $this->className = CandidateUsecase::class;
+    }
 
     public function getAll(array $filterData = []): array
     {
         try {
             $query = DB::table(DatabaseConst::CANDIDATES().' as c')
                 ->leftJoin(DatabaseConst::ELECTIONS().' as e', 'c.election_id', '=', 'e.id')
-                ->select('c.*', 'e.title as election_title')
+                ->select('c.*', 'e.name as election_name')
                 ->whereNull('c.deleted_at')
-                ->when($filterData['keywords'] ?? false, function ($query, $keywords) {
-                    return $query->where(function ($q) use ($keywords) {
-                        $q->where('c.nama_ketua', 'like', '%'.$keywords.'%')
-                            ->orWhere('c.nama_wakil', 'like', '%'.$keywords.'%');
+                ->when(! empty($filterData['election_id']), function ($query) use ($filterData) {
+                    return $query->where('c.election_id', $filterData['election_id']);
+                })
+                ->when(! empty($filterData['keywords']), function ($query) use ($filterData) {
+                    return $query->where(function ($q) use ($filterData) {
+                        $q->where('c.chairman_name', 'like', '%'.$filterData['keywords'].'%')
+                            ->orWhere('c.vice_chairman_name', 'like', '%'.$filterData['keywords'].'%');
                     });
                 })
-                ->orderBy('c.created_at', 'desc');
+                ->orderBy('c.order_number', 'asc');
 
             if (! empty($filterData['no_pagination'])) {
                 $data = $query->get();
@@ -57,6 +63,10 @@ class CandidateUsecase extends Usecase
                 ->where('id', $id)
                 ->first();
 
+            if (! $data) {
+                return Response::buildErrorNotFound();
+            }
+
             return Response::buildSuccess(data: collect($data)->toArray());
         } catch (Exception $e) {
             Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
@@ -69,12 +79,12 @@ class CandidateUsecase extends Usecase
     {
         $validator = Validator::make($data->all(), [
             'election_id' => 'required|integer',
-            'nomor_urut' => 'required|integer',
-            'nama_ketua' => 'required|string|max:255',
-            'nama_wakil' => 'required|string|max:255',
-            'visi' => 'required|string',
-            'misi' => 'required|string',
-            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'order_number' => 'required|integer|min:1',
+            'chairman_name' => 'required|string|max:255',
+            'vice_chairman_name' => 'required|string|max:255',
+            'vision' => 'nullable|string',
+            'mission' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -83,26 +93,26 @@ class CandidateUsecase extends Usecase
 
         DB::beginTransaction();
         try {
-            $fotoPath = null;
-            if ($data->hasFile('foto')) {
-                $fotoPath = $data->file('foto')->store('candidates', 'public');
+            $photoPath = null;
+            if ($data->hasFile('photo')) {
+                $photoPath = $data->file('photo')->store('candidates', 'public');
             }
 
             DB::table(DatabaseConst::CANDIDATES())->insert([
-                'election_id' => $data['election_id'],
-                'nomor_urut' => $data['nomor_urut'],
-                'nama_ketua' => $data['nama_ketua'],
-                'nama_wakil' => $data['nama_wakil'],
-                'visi' => $data['visi'],
-                'misi' => $data['misi'],
-                'foto_path' => $fotoPath,
+                'election_id' => $data->input('election_id'),
+                'order_number' => $data->input('order_number'),
+                'chairman_name' => $data->input('chairman_name'),
+                'vice_chairman_name' => $data->input('vice_chairman_name'),
+                'vision' => $data->input('vision'),
+                'mission' => $data->input('mission'),
+                'photo_path' => $photoPath,
                 'created_by' => Auth::user()?->id,
                 'created_at' => now(),
             ]);
 
             DB::commit();
 
-            return Response::buildSuccessCreated(message: ResponseConst::SUCCESS_MESSAGE_CREATED);
+            return Response::buildSuccessCreated();
         } catch (Exception $e) {
             DB::rollback();
             Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
@@ -115,12 +125,12 @@ class CandidateUsecase extends Usecase
     {
         $validator = Validator::make($data->all(), [
             'election_id' => 'required|integer',
-            'nomor_urut' => 'required|integer',
-            'nama_ketua' => 'required|string|max:255',
-            'nama_wakil' => 'required|string|max:255',
-            'visi' => 'required|string',
-            'misi' => 'required|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'order_number' => 'required|integer|min:1',
+            'chairman_name' => 'required|string|max:255',
+            'vice_chairman_name' => 'required|string|max:255',
+            'vision' => 'nullable|string',
+            'mission' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -129,16 +139,35 @@ class CandidateUsecase extends Usecase
 
         DB::beginTransaction();
         try {
-            $payload = $data->only(['election_id', 'nomor_urut', 'nama_ketua', 'nama_wakil', 'visi', 'misi']);
-            $payload['updated_by'] = Auth::user()?->id;
-            $payload['updated_at'] = now();
+            $candidate = DB::table(DatabaseConst::CANDIDATES())
+                ->where('id', $id)
+                ->whereNull('deleted_at')
+                ->first();
 
-            if ($data->hasFile('foto')) {
-                $candidate = DB::table(DatabaseConst::CANDIDATES())->where('id', $id)->first();
-                if ($candidate && $candidate->foto_path) {
-                    Storage::disk('public')->delete($candidate->foto_path);
+            if (! $candidate) {
+                DB::rollback();
+
+                return Response::buildErrorNotFound();
+            }
+
+            $payload = [
+                'election_id' => $data->input('election_id'),
+                'order_number' => $data->input('order_number'),
+                'chairman_name' => $data->input('chairman_name'),
+                'vice_chairman_name' => $data->input('vice_chairman_name'),
+                'vision' => $data->input('vision'),
+                'mission' => $data->input('mission'),
+                'updated_by' => Auth::user()?->id,
+                'updated_at' => now(),
+            ];
+
+            if ($data->hasFile('photo')) {
+                // Delete old photo if exists
+                if ($candidate->photo_path && Storage::disk('public')->exists($candidate->photo_path)) {
+                    Storage::disk('public')->delete($candidate->photo_path);
                 }
-                $payload['foto_path'] = $data->file('foto')->store('candidates', 'public');
+
+                $payload['photo_path'] = $data->file('photo')->store('candidates', 'public');
             }
 
             DB::table(DatabaseConst::CANDIDATES())->where('id', $id)->update($payload);
@@ -147,9 +176,6 @@ class CandidateUsecase extends Usecase
             return Response::buildSuccess(message: ResponseConst::SUCCESS_MESSAGE_UPDATED);
         } catch (Exception $e) {
             DB::rollback();
-            if (isset($payload['foto_path'])) {
-                Storage::disk('public')->delete($payload['foto_path']);
-            }
             Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
 
             return Response::buildErrorService($e->getMessage());
@@ -160,6 +186,10 @@ class CandidateUsecase extends Usecase
     {
         DB::beginTransaction();
         try {
+            $candidate = DB::table(DatabaseConst::CANDIDATES())
+                ->where('id', $id)
+                ->first();
+
             $delete = DB::table(DatabaseConst::CANDIDATES())->where('id', $id)->update([
                 'deleted_by' => Auth::user()?->id,
                 'deleted_at' => now(),

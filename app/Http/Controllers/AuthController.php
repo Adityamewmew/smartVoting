@@ -36,6 +36,8 @@ class AuthController extends Controller
         switch ($user->access_type) {
             case UserConst::SUPERADMIN:
                 return redirect()->route('admin.dashboard');
+            case 2:
+                return redirect()->route('operator.kiosk.index');
             default:
                 return redirect()->intended(route('admin.dashboard'));
         }

@@ -7,13 +7,14 @@ $kernel->bootstrap();
 use Illuminate\Support\Facades\DB;
 
 $menus = DB::table('sidebar_menus')->get();
-echo "MENUS:\n";
 foreach ($menus as $m) {
-    echo "{$m->id} - {$m->label} - group:{$m->group} - is_active:{$m->is_active}\n";
+    echo "{$m->id} - {$m->label} - icon:{$m->icon}\n";
 }
 
-$access = DB::table('sidebar_menu_accesses')->get();
-echo "\nACCESS:\n";
-foreach ($access as $a) {
-    echo "id:{$a->id} - menu_id:{$a->sidebar_menu_id} - type:{$a->access_type}\n";
-}
+// Fix Bilik Suara icon
+DB::table('sidebar_menus')->where('label', 'Bilik Suara')->update([
+    'icon' => '_admin._layout.icons.sidebar.dashboard'
+]);
+
+cache()->flush();
+echo "Fixed icon for Bilik Suara.\n";

@@ -33,7 +33,22 @@
   - Delete Kandidat.
   - Upload & Hapus Foto Paslon sederhana.
 
+## Task 4: Modul Bilik Suara (Kiosk Mode)
+- **Tujuan:** Layar khusus untuk pemilih melakukan pencoblosan. Karena pemilih absen secara manual di tempat, sistem hanya menyediakan layar pemilihan yang dijaga oleh Operator.
+- **Data (Tabel `votes`):** Election ID, Candidate ID, Waktu Coblos.
+- **Scope MVP:**
+  - Halaman Operator untuk mengaktifkan "Sesi Bilik Suara" berdasarkan Event Pemilihan yang aktif.
+  - Halaman Kiosk (Tampilan penuh/layar besar) yang menampilkan kartu Paslon.
+  - Alur Pemilihan: Pilih Paslon -> Modal Konfirmasi -> Notifikasi Sukses -> Kembali ke layar Kiosk untuk pemilih selanjutnya.
+  - Keamanan sederhana: Mode Kiosk mencegah pemilih keluar dari layar tanpa intervensi Operator.
+
+## Task 5: Laporan Hasil Suara (Dashboard Admin)
+- **Tujuan:** Menampilkan perolehan suara secara real-time.
+- **Scope MVP:**
+  - Menampilkan total suara masuk.
+  - Menampilkan persentase dan jumlah suara masing-masing kandidat dalam bentuk grafik (bar/pie chart sederhana) atau angka.
+
 ## Out of Scope (Next Phase)
-- Upload/Kelola daftar pemilih (Voters).
-- Layar TPS Operator & Bilik Suara Kiosk.
-- Hitung Suara/Laporan Hasil.
+- Cetak Laporan PDF/Excel.
+- Sistem Token/Barcode 1-time use (jika kedepannya butuh verifikasi digital).
+- Hitung Suara/Laporan Hasil Real-time.

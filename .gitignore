@@ -23,3 +23,11 @@ Homestead.json
 Homestead.yaml
 Thumbs.db
 /.claude
+/.agents
+/.ai
+/.codex
+/.commandcode
+/.cursor
+/.gemini
+/.kilo
+/.trae

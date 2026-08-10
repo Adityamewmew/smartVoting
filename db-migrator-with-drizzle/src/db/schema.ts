@@ -181,14 +181,35 @@ export const electionsTable = mysqlTable('elections', {
 export const candidatesTable = mysqlTable('candidates', {
     id: bigint({ mode: 'number', unsigned: true }).primaryKey().autoincrement(),
     election_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => electionsTable.id).notNull(),
-    name: varchar({ length: 255 }).notNull(),
-    description: text(),
-    photo_url: varchar({ length: 255 }),
     order_number: int().notNull(),
+    chairman_name: varchar({ length: 255 }).notNull(),
+    vice_chairman_name: varchar({ length: 255 }).notNull(),
+    vision: text(),
+    mission: text(),
+    photo_path: varchar({ length: 255 }),
     created_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
     updated_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
     deleted_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
     created_at: timestamp().defaultNow(),
     updated_at: timestamp().onUpdateNow(),
     deleted_at: timestamp(),
+});
+
+export const votingSessionStatusEnum = mysqlEnum('status', ['open', 'submitted', 'expired']);
+
+export const votingSessionsTable = mysqlTable('voting_sessions', {
+    id: bigint({ mode: 'number', unsigned: true }).primaryKey().autoincrement(),
+    election_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => electionsTable.id).notNull(),
+    operator_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id).notNull(),
+    session_token: varchar({ length: 36 }).notNull().unique(),
+    status: votingSessionStatusEnum.default('open').notNull(),
+    created_at: timestamp().defaultNow(),
+    updated_at: timestamp().onUpdateNow(),
+});
+
+export const votesTable = mysqlTable('votes', {
+    id: bigint({ mode: 'number', unsigned: true }).primaryKey().autoincrement(),
+    election_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => electionsTable.id).notNull(),
+    candidate_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => candidatesTable.id).notNull(),
+    created_at: timestamp().defaultNow(),
 });

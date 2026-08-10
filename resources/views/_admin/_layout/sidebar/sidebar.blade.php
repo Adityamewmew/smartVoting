@@ -34,6 +34,15 @@
                     @endphp
 
                     @include('_admin._layout.sidebar.sidebar_utama')
+
+                    @if(!empty($sidebarMenus['pemilihan']))
+                        <li class="pt-4 pb-2 px-3 mt-2">
+                            <span class="text-xs font-semibold text-gray-400 dark:text-neutral-500 uppercase tracking-wider">Pemilihan</span>
+                        </li>
+                        @foreach ($sidebarMenus['pemilihan'] as $menu)
+                            @include('_admin._layout.sidebar._menu_item', ['menu' => $menu])
+                        @endforeach
+                    @endif
                 </ul>
             </nav>
         </div>
