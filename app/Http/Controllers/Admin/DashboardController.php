@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Usecase\Admin\SidebarMenuUsecase;
+use App\Usecase\LivePollingUsecase;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +13,7 @@ class DashboardController extends Controller
 {
     public function __construct(
         protected SidebarMenuUsecase $sidebarMenuUsecase,
-        protected \App\Usecase\ElectionUsecase $electionUsecase
+        protected LivePollingUsecase $livePollingUsecase
     ) {}
 
     public function index(): View|\Illuminate\Http\RedirectResponse|Response
@@ -35,9 +36,8 @@ class DashboardController extends Controller
             ->all();
 
         // Fetch Elections for Admin Dashboard (both currently active or closed/past)
-        // so that Admin can still print the reports.
-        $electionsResponse = $this->electionUsecase->getDashboardElections();
-        $activeElections = $electionsResponse['data'] ?? [];
+        $process = $this->livePollingUsecase->getDashboardElections();
+        $activeElections = collect($process['data']['list'] ?? []);
 
         return view('_admin.dashboard', [
             'modules' => $modules,
@@ -53,20 +53,15 @@ class DashboardController extends Controller
             return response()->json(['success' => false, 'message' => 'Election ID is required']);
         }
 
-        $resultsResponse = $this->electionUsecase->getElectionResults($electionId);
-        if (!$resultsResponse['success']) {
-            return response()->json(['success' => false, 'message' => $resultsResponse['message']], 500);
+        $process = $this->livePollingUsecase->getLiveResults($electionId);
+        
+        if (!$process['success']) {
+            return response()->json(['success' => false, 'message' => $process['message']]);
         }
-
-        $totalVotes = $resultsResponse['data']['total_votes'] ?? 0;
-        $candidates = $resultsResponse['data']['candidates'] ?? [];
 
         return response()->json([
             'success' => true,
-            'data' => [
-                'total_votes' => $totalVotes,
-                'candidates' => $candidates
-            ]
+            'data' => $process['data']
         ]);
     }
 
@@ -81,14 +76,16 @@ class DashboardController extends Controller
             return redirect()->route('admin.dashboard')->with('error', 'Election not found');
         }
 
-        $resultsResponse = $this->electionUsecase->getElectionResults($electionId);
-        $totalVotes = $resultsResponse['data']['total_votes'] ?? 0;
-        $candidates = $resultsResponse['data']['candidates'] ?? [];
+        $process = $this->livePollingUsecase->getLiveResults($electionId);
+
+        if (!$process['success']) {
+            return redirect()->route('admin.dashboard')->with('error', 'Gagal memuat data laporan.');
+        }
 
         return view('_admin.print', [
             'election' => $election,
-            'totalVotes' => $totalVotes,
-            'candidates' => $candidates
+            'totalVotes' => $process['data']['total_votes'],
+            'candidates' => $process['data']['candidates']
         ]);
     }
 }

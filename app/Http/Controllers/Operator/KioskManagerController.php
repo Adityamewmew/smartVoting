@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Operator;
 
 use App\Http\Controllers\Controller;
-use App\Usecase\ElectionUsecase;
+use App\Usecase\LivePollingUsecase;
 use App\Usecase\VotingSessionUsecase;
 use App\Constants\ResponseConst;
 use Illuminate\Http\RedirectResponse;
@@ -19,14 +19,14 @@ class KioskManagerController extends Controller
     ];
 
     public function __construct(
-        protected ElectionUsecase $electionUsecase,
+        protected LivePollingUsecase $livePollingUsecase,
         protected VotingSessionUsecase $votingSessionUsecase
     ) {}
 
     public function index(Request $request): View
     {
-        $response = $this->electionUsecase->getActiveWithStats();
-        $activeElections = $response['data'] ?? [];
+        $process = $this->livePollingUsecase->getActiveElectionsWithStats();
+        $activeElections = $process['data']['list'] ?? [];
 
         return view('_operator.kiosk.index', [
             'data' => $activeElections,
