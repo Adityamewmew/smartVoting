@@ -62,6 +62,82 @@ class ElectionUsecase extends Usecase
         }
     }
 
+    public function getActiveWithStats(): array
+    {
+        try {
+            $elections = DB::table(DatabaseConst::ELECTIONS())
+                ->where('status', 'active')
+                ->whereNull('deleted_at')
+                ->get();
+
+            $data = collect($elections)->map(function ($election) {
+                $election->total_votes = DB::table(DatabaseConst::VOTES())
+                    ->where('election_id', $election->id)
+                    ->count();
+                
+                $election->active_sessions = DB::table(DatabaseConst::VOTING_SESSIONS())
+                    ->where('election_id', $election->id)
+                    ->where('status', 'open')
+                    ->count();
+
+                return $election;
+            })->values()->all();
+
+            return Response::buildSuccess(data: $data);
+        } catch (Exception $e) {
+            Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
+
+            return Response::buildErrorService($e->getMessage());
+        }
+    }
+
+    public function getDashboardElections(): array
+    {
+        try {
+            $elections = DB::table(DatabaseConst::ELECTIONS())
+                ->whereIn('status', ['active', 'closed'])
+                ->whereNull('deleted_at')
+                ->get();
+
+            return Response::buildSuccess(data: collect($elections)->toArray());
+        } catch (Exception $e) {
+            Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
+            return Response::buildErrorService($e->getMessage());
+        }
+    }
+
+    public function getElectionResults(int $electionId): array
+    {
+        try {
+            $totalVotes = DB::table(DatabaseConst::VOTES())
+                ->where('election_id', $electionId)
+                ->count();
+
+            $candidates = DB::table(DatabaseConst::CANDIDATES() . ' as c')
+                ->leftJoin(DatabaseConst::VOTES() . ' as v', 'c.id', '=', 'v.candidate_id')
+                ->where('c.election_id', $electionId)
+                ->whereNull('c.deleted_at')
+                ->select(
+                    'c.id',
+                    'c.order_number',
+                    'c.chairman_name',
+                    'c.vice_chairman_name',
+                    DB::raw('COUNT(v.id) as vote_count')
+                )
+                ->groupBy('c.id', 'c.order_number', 'c.chairman_name', 'c.vice_chairman_name')
+                ->orderBy('c.order_number', 'asc')
+                ->get();
+
+            return Response::buildSuccess(data: [
+                'total_votes' => $totalVotes,
+                'candidates' => $candidates
+            ]);
+        } catch (Exception $e) {
+            Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
+            return Response::buildErrorService($e->getMessage());
+        }
+    }
+
     public function create(Request $data): array
     {
         $validator = Validator::make($data->all(), [

@@ -11,7 +11,8 @@ use Illuminate\Support\Facades\Auth;
 class DashboardController extends Controller
 {
     public function __construct(
-        protected SidebarMenuUsecase $sidebarMenuUsecase
+        protected SidebarMenuUsecase $sidebarMenuUsecase,
+        protected \App\Usecase\ElectionUsecase $electionUsecase
     ) {}
 
     public function index(): View|\Illuminate\Http\RedirectResponse|Response
@@ -35,10 +36,8 @@ class DashboardController extends Controller
 
         // Fetch Elections for Admin Dashboard (both currently active or closed/past)
         // so that Admin can still print the reports.
-        $activeElections = \Illuminate\Support\Facades\DB::table(\App\Constants\DatabaseConst::ELECTIONS())
-            ->whereIn('status', ['active', 'closed'])
-            ->whereNull('deleted_at')
-            ->get();
+        $electionsResponse = $this->electionUsecase->getDashboardElections();
+        $activeElections = $electionsResponse['data'] ?? [];
 
         return view('_admin.dashboard', [
             'modules' => $modules,
@@ -54,26 +53,13 @@ class DashboardController extends Controller
             return response()->json(['success' => false, 'message' => 'Election ID is required']);
         }
 
-        // Get total votes
-        $totalVotes = \Illuminate\Support\Facades\DB::table(\App\Constants\DatabaseConst::VOTES())
-            ->where('election_id', $electionId)
-            ->count();
+        $resultsResponse = $this->electionUsecase->getElectionResults($electionId);
+        if (!$resultsResponse['success']) {
+            return response()->json(['success' => false, 'message' => $resultsResponse['message']], 500);
+        }
 
-        // Get vote count per candidate
-        $candidates = \Illuminate\Support\Facades\DB::table(\App\Constants\DatabaseConst::CANDIDATES() . ' as c')
-            ->leftJoin(\App\Constants\DatabaseConst::VOTES() . ' as v', 'c.id', '=', 'v.candidate_id')
-            ->where('c.election_id', $electionId)
-            ->whereNull('c.deleted_at')
-            ->select(
-                'c.id',
-                'c.order_number',
-                'c.chairman_name',
-                'c.vice_chairman_name',
-                \Illuminate\Support\Facades\DB::raw('COUNT(v.id) as vote_count')
-            )
-            ->groupBy('c.id', 'c.order_number', 'c.chairman_name', 'c.vice_chairman_name')
-            ->orderBy('c.order_number', 'asc')
-            ->get();
+        $totalVotes = $resultsResponse['data']['total_votes'] ?? 0;
+        $candidates = $resultsResponse['data']['candidates'] ?? [];
 
         return response()->json([
             'success' => true,
@@ -95,24 +81,9 @@ class DashboardController extends Controller
             return redirect()->route('admin.dashboard')->with('error', 'Election not found');
         }
 
-        $totalVotes = \Illuminate\Support\Facades\DB::table(\App\Constants\DatabaseConst::VOTES())
-            ->where('election_id', $electionId)
-            ->count();
-
-        $candidates = \Illuminate\Support\Facades\DB::table(\App\Constants\DatabaseConst::CANDIDATES() . ' as c')
-            ->leftJoin(\App\Constants\DatabaseConst::VOTES() . ' as v', 'c.id', '=', 'v.candidate_id')
-            ->where('c.election_id', $electionId)
-            ->whereNull('c.deleted_at')
-            ->select(
-                'c.id',
-                'c.order_number',
-                'c.chairman_name',
-                'c.vice_chairman_name',
-                \Illuminate\Support\Facades\DB::raw('COUNT(v.id) as vote_count')
-            )
-            ->groupBy('c.id', 'c.order_number', 'c.chairman_name', 'c.vice_chairman_name')
-            ->orderBy('c.order_number', 'asc')
-            ->get();
+        $resultsResponse = $this->electionUsecase->getElectionResults($electionId);
+        $totalVotes = $resultsResponse['data']['total_votes'] ?? 0;
+        $candidates = $resultsResponse['data']['candidates'] ?? [];
 
         return view('_admin.print', [
             'election' => $election,

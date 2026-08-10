@@ -25,26 +25,8 @@ class KioskManagerController extends Controller
 
     public function index(Request $request): View
     {
-        // Get all active elections
-        // But for MVP, just get all or filter by 'active'
-        $elections = $this->electionUsecase->getAll(['no_pagination' => true]);
-        $elections = $elections['data']['list'] ?? [];
-
-        // Filter active in collection (only rely on manual status from admin)
-        $activeElections = collect($elections)->filter(function ($election) {
-            return $election->status === 'active';
-        })->map(function ($election) {
-            $election->total_votes = \Illuminate\Support\Facades\DB::table(\App\Constants\DatabaseConst::VOTES())
-                ->where('election_id', $election->id)
-                ->count();
-            
-            $election->active_sessions = \Illuminate\Support\Facades\DB::table(\App\Constants\DatabaseConst::VOTING_SESSIONS())
-                ->where('election_id', $election->id)
-                ->where('status', 'open')
-                ->count();
-
-            return $election;
-        })->values();
+        $response = $this->electionUsecase->getActiveWithStats();
+        $activeElections = $response['data'] ?? [];
 
         return view('_operator.kiosk.index', [
             'data' => $activeElections,
