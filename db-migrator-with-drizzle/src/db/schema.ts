@@ -166,6 +166,7 @@ export const electionStatusEnum = mysqlEnum('status', ['draft', 'scheduled', 'ac
 export const electionsTable = mysqlTable('elections', {
     id: bigint({ mode: 'number', unsigned: true }).primaryKey().autoincrement(),
     name: varchar({ length: 255 }).notNull(),
+    slug: varchar({ length: 255 }).unique(),
     description: text(),
     start_time: datetime().notNull(),
     end_time: datetime().notNull(),

@@ -75,8 +75,17 @@ class ElectionUsecase extends Usecase
 
         DB::beginTransaction();
         try {
+            $baseSlug = Str::slug($data['name']);
+            $slug = $baseSlug;
+            $counter = 1;
+            while (DB::table(DatabaseConst::ELECTIONS())->where('slug', $slug)->exists()) {
+                $slug = $baseSlug . '-' . $counter;
+                $counter++;
+            }
+
             DB::table(DatabaseConst::ELECTIONS())->insert([
                 'name' => $data['name'],
+                'slug' => $slug,
                 'description' => $data['description'],
                 'start_time' => Carbon::parse($data['start_time'])->format('Y-m-d H:i:s'),
                 'end_time' => Carbon::parse($data['end_time'])->format('Y-m-d H:i:s'),
@@ -109,17 +118,27 @@ class ElectionUsecase extends Usecase
 
         DB::beginTransaction();
         try {
-            $update = [
-                'name' => $data['name'],
-                'description' => $data['description'],
-                'start_time' => Carbon::parse($data['start_time'])->format('Y-m-d H:i:s'),
-                'end_time' => Carbon::parse($data['end_time'])->format('Y-m-d H:i:s'),
-                'status' => $data['status'],
-                'updated_by' => Auth::user()?->id,
-                'updated_at' => now(),
-            ];
+            $payload = $data->only([
+                'name',
+                'description',
+                'status',
+            ]);
+            $payload['start_time'] = Carbon::parse($data['start_time'])->format('Y-m-d H:i:s');
+            $payload['end_time'] = Carbon::parse($data['end_time'])->format('Y-m-d H:i:s');
 
-            DB::table(DatabaseConst::ELECTIONS())->where('id', $id)->update($update);
+            $baseSlug = Str::slug($data['name']);
+            $slug = $baseSlug;
+            $counter = 1;
+            while (DB::table(DatabaseConst::ELECTIONS())->where('slug', $slug)->where('id', '!=', $id)->exists()) {
+                $slug = $baseSlug . '-' . $counter;
+                $counter++;
+            }
+            $payload['slug'] = $slug;
+
+            $payload['updated_by'] = Auth::user()?->id;
+            $payload['updated_at'] = now();
+
+            DB::table(DatabaseConst::ELECTIONS())->where('id', $id)->update($payload);
             DB::commit();
 
             return Response::buildSuccess(message: ResponseConst::SUCCESS_MESSAGE_UPDATED);

@@ -49,6 +49,12 @@
                             @if($d->description)
                                 <span class="block text-xs text-gray-500 dark:text-neutral-500 max-w-xs truncate">{{ $d->description }}</span>
                             @endif
+                            @if($d->slug)
+                                <a href="{{ url('/pemilihan/' . $d->slug) }}" target="_blank" class="mt-1 inline-flex items-center gap-x-1 text-xs font-medium text-blue-600 decoration-2 hover:underline dark:text-blue-500">
+                                    <svg class="shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                                    /pemilihan/{{ $d->slug }}
+                                </a>
+                            @endif
                         </x-admin.table.td>
                         <x-admin.table.td>
                             <span class="block text-sm text-gray-800 dark:text-neutral-200">

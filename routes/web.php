@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KioskController;
 use App\Http\Controllers\Operator\KioskManagerController;
 use Illuminate\Support\Benchmark;
+use App\Http\Controllers\ElectionLandingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,6 +22,15 @@ Route::get('/', function () {
     }
 
     return redirect()->route('login');
+});
+
+// Landing Page Publik (T-08)
+Route::get('/pemilihan/{slug}', [ElectionLandingController::class, 'show'])->name('landing.election');
+
+Route::prefix('kiosk')->group(function () {
+    Benchmark::dd(function () {
+        (string) view('welcome');
+    });
 });
 
 Route::get('test', function () {
