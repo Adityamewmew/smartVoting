@@ -114,7 +114,7 @@ class LivePollingUsecase extends Usecase
         try {
             $query = DB::table(DatabaseConst::VOTING_SESSIONS().' as vs')
                 ->join(DatabaseConst::ELECTIONS().' as e', 'vs.election_id', '=', 'e.id')
-                ->join(DatabaseConst::USER().' as u', 'vs.generated_by', '=', 'u.id')
+                ->join(DatabaseConst::USER().' as u', 'vs.operator_id', '=', 'u.id')
                 ->select(
                     'vs.id',
                     'vs.status',
