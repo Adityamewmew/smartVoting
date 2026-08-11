@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Constants\ResponseConst;
 use App\Http\Controllers\Controller;
 use App\Usecase\ElectionUsecase;
+use App\Usecase\LivePollingUsecase;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,8 @@ class ElectionController extends Controller
     protected string $baseRedirect;
 
     public function __construct(
-        protected ElectionUsecase $usecase
+        protected ElectionUsecase $usecase,
+        protected LivePollingUsecase $livePollingUsecase
     ) {
         $this->baseRedirect = 'admin/'.$this->page['route'];
     }
@@ -98,5 +100,28 @@ class ElectionController extends Controller
 
         return redirect()->route('admin.elections.index')
             ->with('error', $process['message'] ?? ResponseConst::DEFAULT_ERROR_MESSAGE);
+    }
+
+    public function detail(int $id): View|RedirectResponse
+    {
+        $data = $this->usecase->getByID($id);
+
+        if (empty($data['data'])) {
+            return redirect()->intended($this->baseRedirect)
+                ->with('error', ResponseConst::DEFAULT_ERROR_MESSAGE);
+        }
+
+        $process = $this->livePollingUsecase->getLiveResults($id);
+
+        if (! $process['success']) {
+            return redirect()->route('admin.elections.index')->with('error', 'Gagal memuat data laporan.');
+        }
+
+        return view('_admin.elections.detail', [
+            'election' => (object) $data['data'],
+            'page' => $this->page,
+            'totalVotes' => $process['data']['total_votes'],
+            'candidates' => $process['data']['candidates'],
+        ]);
     }
 }

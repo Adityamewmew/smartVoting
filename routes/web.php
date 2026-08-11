@@ -54,6 +54,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [ElectionController::class, 'index'])->name('index');
         Route::get('/add', [ElectionController::class, 'add'])->name('add');
         Route::post('/create', [ElectionController::class, 'doCreate'])->name('create');
+        Route::get('/{id}/detail', [ElectionController::class, 'detail'])->name('detail');
         Route::get('/update/{id}', [ElectionController::class, 'update'])->name('update');
         Route::post('/update/{id}', [ElectionController::class, 'doUpdate'])->name('doUpdate');
         Route::delete('/delete/{id}', [ElectionController::class, 'delete'])->name('delete');
