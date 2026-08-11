@@ -20,3 +20,13 @@
 .animate-toast-pop {
     animation: toast-pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
+
+/* Keep Preline modal backdrops behind the dialog panel when a plugin creates one. */
+.hs-overlay:not(#hs-application-sidebar) {
+    z-index: 1100 !important;
+}
+
+.hs-overlay-backdrop {
+    z-index: 1000 !important;
+    pointer-events: none !important;
+}

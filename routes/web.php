@@ -6,10 +6,9 @@ use App\Http\Controllers\Admin\ElectionController;
 use App\Http\Controllers\Admin\SidebarMenuController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ElectionLandingController;
 use App\Http\Controllers\KioskController;
 use App\Http\Controllers\Operator\KioskManagerController;
-use Illuminate\Support\Benchmark;
-use App\Http\Controllers\ElectionLandingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -24,8 +23,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Landing Page Publik (T-08)
-Route::get('/pemilihan/{slug}', [ElectionLandingController::class, 'show'])->name('landing.election');
+// Landing Page Publik (T-08) moved to bottom
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'doLogin'])->name('login.post');
@@ -64,7 +62,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::post('/create', [CandidateController::class, 'doCreate'])->name('create');
         Route::get('/update/{id}', [CandidateController::class, 'update'])->name('update');
         Route::post('/update/{id}', [CandidateController::class, 'doUpdate'])->name('doUpdate');
-        Route::get('/delete/{id}', [CandidateController::class, 'delete'])->name('delete');
+        Route::delete('/delete/{id}', [CandidateController::class, 'delete'])->name('delete');
     });
 
     Route::middleware('access_type:1')->prefix('sidebar-menu')->name('sidebar_menu.')->group(function () {
@@ -105,3 +103,7 @@ Route::prefix('bilik')->name('kiosk.')->group(function () {
     Route::post('/{token}/submit', [KioskController::class, 'submit'])->name('submit');
     Route::post('/{token}/expire', [KioskController::class, 'expire'])->name('expire');
 });
+
+// Landing Page Publik (T-08) - Ditempatkan di bawah agar tidak menimpa route sistem seperti /login, /admin, dll.
+Route::get('/{slug}', [App\Http\Controllers\ElectionLandingController::class, 'show'])->name('landing.election');
+

@@ -16,6 +16,30 @@ waitForJQuery(function ($) {
 $(document).ready(function () {
     console.log('SPA Script Loaded');
 
+    window.__spaCleanupCallbacks = window.__spaCleanupCallbacks || [];
+    window.registerSpaCleanup = function (callback) {
+        if (typeof callback === 'function') {
+            window.__spaCleanupCallbacks.push(callback);
+        }
+    };
+
+    function runSpaCleanup() {
+        if (!Array.isArray(window.__spaCleanupCallbacks)) {
+            window.__spaCleanupCallbacks = [];
+            return;
+        }
+
+        window.__spaCleanupCallbacks.forEach(function (callback) {
+            try {
+                callback();
+            } catch (e) {
+                console.warn('SPA cleanup failed:', e);
+            }
+        });
+
+        window.__spaCleanupCallbacks = [];
+    }
+
     // Replace initial history state so back button works properly
     if (!history.state) {
         history.replaceState({
@@ -30,6 +54,8 @@ $(document).ready(function () {
 
     // Helper to update content from HTML response
     function handleSpaResponse(data, urlToPush, isFormSubmit = false) {
+        runSpaCleanup();
+
         // Track open modals before cleanup
         var openModalId = null;
         if (isFormSubmit) {
@@ -422,6 +448,8 @@ $(document).ready(function () {
                 var sidebarEl = doc.querySelector('#hs-application-sidebar');
 
                 if (mainContentEl) {
+                    runSpaCleanup();
+
                     $('#main-content').html(mainContentEl.innerHTML);
 
                     // Re-load page scripts (same logic as handleSpaResponse)

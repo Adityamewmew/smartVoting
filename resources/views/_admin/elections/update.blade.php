@@ -31,6 +31,15 @@
                         required="true" 
                     />
 
+                    <x-admin.input 
+                        label="Custom Slug / URL" 
+                        name="slug" 
+                        :value="old('slug', $data->slug)" 
+                        placeholder="Contoh: osis-2026" 
+                        required="true"
+                        helper="Spasi otomatis menjadi tanda strip (-)."
+                    />
+
                     <x-admin.textarea 
                         label="Deskripsi" 
                         name="description" 

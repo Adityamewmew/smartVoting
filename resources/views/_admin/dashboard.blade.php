@@ -104,7 +104,23 @@
                     ];
 
                     let myChart = null;
-                    const ctx = document.getElementById('chart-{{ $selectedElection->id }}').getContext('2d');
+                    let pollingInterval = null;
+                    let isDashboardActive = true;
+                    const chartCanvas = document.getElementById('chart-{{ $selectedElection->id }}');
+                    const ctx = chartCanvas ? chartCanvas.getContext('2d') : null;
+
+                    if (window.registerSpaCleanup) {
+                        window.registerSpaCleanup(() => {
+                            isDashboardActive = false;
+                            if (pollingInterval) {
+                                clearInterval(pollingInterval);
+                            }
+                            if (myChart) {
+                                myChart.destroy();
+                                myChart = null;
+                            }
+                        });
+                    }
 
                     function formatPercentage(voteCount, totalVotes) {
                         if (totalVotes === 0) return '0%';
@@ -112,18 +128,25 @@
                     }
 
                     function fetchElectionData() {
+                        const totalVotesText = document.getElementById('total-votes-text');
+                        const lastUpdate = document.getElementById('last-update');
+                        const container = document.getElementById('candidates-container');
+
+                        if (!isDashboardActive || !ctx || !totalVotesText || !lastUpdate || !container) {
+                            return;
+                        }
+
                         fetch(`{{ route('admin.dashboard.data') }}?election_id={{ $selectedElection->id }}`)
                             .then(res => res.json())
                             .then(res => {
-                                if (res.success) {
+                                if (isDashboardActive && res.success) {
                                     const totalVotes = res.data.total_votes;
-                                    document.getElementById('total-votes-text').innerHTML = `Total suara masuk <span class="font-normal text-ink">${totalVotes}</span>`;
+                                    totalVotesText.innerHTML = `Total suara masuk <span class="font-normal text-ink">${totalVotes}</span>`;
                                     
                                     const now = new Date();
-                                    document.getElementById('last-update').innerText = 'Update ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+                                    lastUpdate.innerText = 'Update ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
                                     
                                     // Update candidate cards
-                                    const container = document.getElementById('candidates-container');
                                     container.innerHTML = '';
                                     
                                     const labels = [];
@@ -190,7 +213,7 @@
                     }
 
                     fetchElectionData();
-                    setInterval(fetchElectionData, 10000); // 10 seconds
+                    pollingInterval = setInterval(fetchElectionData, 10000); // 10 seconds
                 @endif
             })();
         </script>

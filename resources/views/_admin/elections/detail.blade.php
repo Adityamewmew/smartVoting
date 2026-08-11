@@ -179,7 +179,16 @@
                         });
                 }
 
-                setInterval(fetchLiveUpdates, 10000);
+                const livePollingInterval = setInterval(fetchLiveUpdates, 10000);
+
+                if (window.registerSpaCleanup) {
+                    window.registerSpaCleanup(() => {
+                        clearInterval(livePollingInterval);
+                        if (chart) {
+                            chart.destroy();
+                        }
+                    });
+                }
             })();
         </script>
     @endpush

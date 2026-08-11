@@ -164,7 +164,7 @@
         </div>
         <x-slot:footer class="flex justify-end gap-x-2">
             <x-admin.button color="outline-secondary" data-hs-overlay="#delete-modal">Batal</x-admin.button>
-            <form id="delete-form" method="POST" class="inline">
+            <form id="delete-form" method="POST" action="" class="inline m-0 p-0" navigate-form>
                 @csrf
                 @method('DELETE')
                 <x-admin.button type="submit" color="danger">Hapus</x-admin.button>
@@ -175,9 +175,9 @@
 
 @push('scripts')
     <script>
-        function setDeleteData(id, name) {
+        window.setDeleteData = function (id, name) {
             document.getElementById('delete-name').textContent = name;
             document.getElementById('delete-form').action = `/admin/sidebar-menu/delete/${id}`;
-        }
+        };
     </script>
 @endpush

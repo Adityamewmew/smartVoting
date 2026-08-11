@@ -52,9 +52,9 @@
                                 <span class="block text-xs text-slate max-w-xs truncate">{{ $d->description }}</span>
                             @endif
                             @if($d->slug)
-                                <a href="{{ url('/pemilihan/' . $d->slug) }}" target="_blank" class="mt-1 inline-flex items-center gap-x-1 text-xs font-normal text-slate hover:text-ink hover:underline">
+                                <a href="{{ url('/' . $d->slug) }}" target="_blank" class="mt-1 inline-flex items-center gap-x-1 text-xs font-normal text-slate hover:text-ink hover:underline">
                                     <svg class="shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                                    /pemilihan/{{ $d->slug }}
+                                    /{{ $d->slug }}
                                 </a>
                             @endif
                         </x-admin.table.td>
@@ -124,7 +124,7 @@
         </div>
         <x-slot:footer class="flex justify-end gap-x-2">
             <x-admin.button color="outline-secondary" data-hs-overlay="#delete-modal">Batal</x-admin.button>
-            <form id="delete-form" method="POST" class="inline">
+            <form id="delete-form" method="POST" action="" class="inline m-0 p-0" navigate-form>
                 @csrf
                 @method('DELETE')
                 <x-admin.button type="submit" color="danger">Ya, Hapus</x-admin.button>
@@ -133,9 +133,9 @@
     </x-admin.modal>
 
     <script>
-        function setDeleteData(id, name) {
+        window.setDeleteData = function (id, name) {
             document.getElementById('delete-item-name').textContent = name;
-            document.getElementById('delete-form').action = '{{ url('admin/elections/delete') }}/' + id;
-        }
+            document.getElementById('delete-form').action = '{{ route('admin.elections.index') }}/delete/' + id;
+        };
     </script>
 @endsection

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class ElectionUsecase extends Usecase
 {
@@ -66,20 +67,23 @@ class ElectionUsecase extends Usecase
     {
         $validator = Validator::make($data->all(), [
             'name' => 'required|max:255',
+            'slug' => 'nullable|string|max:255|alpha_dash|not_in:login,admin,api,pemilihan',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after_or_equal:start_time',
             'status' => 'required|in:draft,scheduled,active,closed',
+        ], [
+            'slug.alpha_dash' => 'Slug hanya boleh berisi huruf, angka, strip (-), dan underscore (_). Tidak boleh ada spasi.'
         ]);
 
         $validator->validate();
 
         DB::beginTransaction();
         try {
-            $baseSlug = Str::slug($data['name']);
+            $baseSlug = !empty($data['slug']) ? Str::slug($data['slug']) : Str::slug($data['name']);
             $slug = $baseSlug;
             $counter = 1;
             while (DB::table(DatabaseConst::ELECTIONS())->where('slug', $slug)->exists()) {
-                $slug = $baseSlug . '-' . $counter;
+                $slug = $baseSlug.'-'.$counter;
                 $counter++;
             }
 
@@ -109,9 +113,12 @@ class ElectionUsecase extends Usecase
     {
         $validator = Validator::make($data->all(), [
             'name' => 'required|max:255',
+            'slug' => 'required|string|max:255|alpha_dash|not_in:login,admin,api,pemilihan',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after_or_equal:start_time',
             'status' => 'required|in:draft,scheduled,active,closed',
+        ], [
+            'slug.alpha_dash' => 'Slug hanya boleh berisi huruf, angka, strip (-), dan underscore (_). Tidak boleh ada spasi.'
         ]);
 
         $validator->validate();
@@ -126,11 +133,11 @@ class ElectionUsecase extends Usecase
             $payload['start_time'] = Carbon::parse($data['start_time'])->format('Y-m-d H:i:s');
             $payload['end_time'] = Carbon::parse($data['end_time'])->format('Y-m-d H:i:s');
 
-            $baseSlug = Str::slug($data['name']);
+            $baseSlug = Str::slug($data['slug']);
             $slug = $baseSlug;
             $counter = 1;
             while (DB::table(DatabaseConst::ELECTIONS())->where('slug', $slug)->where('id', '!=', $id)->exists()) {
-                $slug = $baseSlug . '-' . $counter;
+                $slug = $baseSlug.'-'.$counter;
                 $counter++;
             }
             $payload['slug'] = $slug;

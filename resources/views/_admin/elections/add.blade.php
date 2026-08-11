@@ -31,6 +31,14 @@
                         required="true" 
                     />
 
+                    <x-admin.input 
+                        label="Custom Slug / URL" 
+                        name="slug" 
+                        :value="old('slug')" 
+                        placeholder="Contoh: osis-2026" 
+                        helper="Kosongkan untuk generate otomatis dari nama event. Spasi otomatis menjadi tanda strip (-)."
+                    />
+
                     <x-admin.textarea 
                         label="Deskripsi" 
                         name="description" 

@@ -128,7 +128,7 @@
         </div>
         <x-slot:footer class="flex justify-end gap-x-2">
             <x-admin.button color="outline-secondary" data-hs-overlay="#delete-modal">Batal</x-admin.button>
-            <form id="delete-form" method="POST" class="inline">
+            <form id="delete-form" method="POST" action="" class="inline m-0 p-0" navigate-form>
                 @csrf
                 @method('DELETE')
                 <x-admin.button type="submit" color="danger">Ya, Hapus</x-admin.button>
@@ -151,7 +151,7 @@
         </div>
         <x-slot:footer class="flex justify-end gap-x-2">
             <x-admin.button color="outline-secondary" data-hs-overlay="#reset-modal">Batal</x-admin.button>
-            <form id="reset-form" method="POST" class="inline">
+            <form id="reset-form" method="POST" action="" class="inline m-0 p-0" navigate-form>
                 @csrf
                 <x-admin.button type="submit" color="primary">Ya, Reset Password</x-admin.button>
             </form>
@@ -159,13 +159,16 @@
     </x-admin.modal>
 
     <script>
-        function setDeleteData(id, name) {
-            document.getElementById('delete-form').action = '{{ url('admin/users/delete') }}/' + id;
-        }
+        window.setDeleteData = function (id, name) {
+            document.getElementById('delete-form').action = '{{ route('admin.users.index') }}/delete/' + id;
+        };
 
-        function setResetData(id, name) {
-            document.getElementById('reset-user-name').textContent = name;
-            document.getElementById('reset-form').action = '{{ url('admin/users/reset-password') }}/' + id;
-        }
+        window.setResetData = function (id, name) {
+            const resetUserName = document.getElementById('reset-user-name');
+            if (resetUserName) {
+                resetUserName.textContent = name;
+            }
+            document.getElementById('reset-form').action = '{{ route('admin.users.index') }}/reset-password/' + id;
+        };
     </script>
 @endsection

@@ -12,10 +12,10 @@
 
 
 <div id="{{ $id }}"
-    class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto pointer-events-none"
+    class="hs-overlay [--overlay-backdrop:false] hidden size-full fixed top-0 start-0 z-[1100] overflow-x-hidden overflow-y-auto pointer-events-auto bg-gray-900/50 dark:bg-neutral-900/80"
     role="dialog" tabindex="-1" aria-labelledby="{{ $id }}-label">
     <div
-        class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all {{ $size }} sm:w-full m-3 sm:mx-auto">
+        class="relative z-10 hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all {{ $size }} sm:w-full m-3 sm:mx-auto">
         {{-- Outer Layer --}}
         <div
             class="bg-gray-50 border border-gray-200/50 rounded-[1.5rem] p-2.5 shadow-sm pointer-events-auto dark:bg-neutral-900 dark:border-neutral-800">
