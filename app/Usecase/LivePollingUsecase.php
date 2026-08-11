@@ -129,8 +129,12 @@ class LivePollingUsecase extends Usecase
             }
 
             $sessions = $query->orderBy('vs.created_at', 'desc')
-                ->limit($limit)
-                ->get();
+                ->paginate($limit);
+
+            // Append filter parameters if electionId exists
+            if ($electionId) {
+                $sessions->appends(['election_id' => $electionId]);
+            }
 
             return Response::buildSuccess(['sessions' => $sessions], ResponseConst::HTTP_SUCCESS);
         } catch (Exception $e) {

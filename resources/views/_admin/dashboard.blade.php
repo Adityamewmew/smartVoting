@@ -271,7 +271,9 @@
                 <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
                     @forelse($recentSessions as $i => $session)
                         <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">{{ $i + 1 }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">
+                                {{ ($recentSessions->currentPage() - 1) * $recentSessions->perPage() + $i + 1 }}
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">{{ $session->election_name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">{{ $session->operator_name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
@@ -296,6 +298,12 @@
                 </tbody>
             </table>
         </div>
+        
+        @if (count($recentSessions) > 0 && $recentSessions->hasPages())
+            <div class="mt-4 px-2">
+                {{ $recentSessions->links() }}
+            </div>
+        @endif
     </div>
 
     @push('scripts')
