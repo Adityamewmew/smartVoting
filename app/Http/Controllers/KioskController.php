@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Usecase\VotingSessionUsecase;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Constants\DatabaseConst;
+use App\Usecase\VotingSessionUsecase;
 use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class KioskController extends Controller
 {
@@ -21,8 +21,10 @@ class KioskController extends Controller
     public function start(int $electionId)
     {
         $election = DB::table(DatabaseConst::ELECTIONS())->where('id', $electionId)->first();
-        if (!$election) return abort(404);
-        
+        if (! $election) {
+            return abort(404);
+        }
+
         if ($election->status !== 'active') {
             return redirect()->route('operator.kiosk.index')->with('error', 'Pemilihan ini sedang tidak aktif.');
         }
@@ -37,23 +39,23 @@ class KioskController extends Controller
     {
         // Because the tablet is opened by the operator, they must be logged in.
         // For MVP, if not logged in, we can fallback to operator 1 or just show error.
-        $operatorId = \Illuminate\Support\Facades\Auth::user()?->id;
-        
-        if (!$operatorId) {
+        $operatorId = Auth::user()?->id;
+
+        if (! $operatorId) {
             return redirect()->back()->with('error', 'Sesi operator telah habis. Silakan login kembali di tab baru.');
         }
 
         $election = DB::table(DatabaseConst::ELECTIONS())->where('id', $electionId)->first();
-        if (!$election) {
+        if (! $election) {
             return redirect()->back()->with('error', 'Pemilihan tidak ditemukan.');
         }
-        
+
         if ($election->status !== 'active') {
             return redirect()->route('operator.kiosk.index')->with('error', 'Pemilihan ini sedang tidak aktif.');
         }
 
         $process = $this->votingSessionUsecase->generateSession($electionId, $operatorId);
-        
+
         if ($process['success']) {
             return redirect()->route('kiosk.vote', ['token' => $process['data']['token']]);
         }
@@ -67,8 +69,18 @@ class KioskController extends Controller
     public function vote(string $token)
     {
         $process = $this->votingSessionUsecase->verifySession($token);
-        
-        if (!$process['success']) {
+
+        if (! $process['success']) {
+            // If token was already used or expired, redirect back to the start screen
+            $session = DB::table(DatabaseConst::VOTING_SESSIONS())
+                ->where('session_token', $token)
+                ->select('election_id', 'status')
+                ->first();
+
+            if ($session && in_array($session->status, ['submitted', 'expired'])) {
+                return redirect()->route('kiosk.start', $session->election_id);
+            }
+
             return view('kiosk.error', ['message' => $process['message']]);
         }
 
@@ -89,7 +101,7 @@ class KioskController extends Controller
             'token' => $token,
             'session' => $session,
             'candidates' => $candidates,
-            'election' => $election
+            'election' => $election,
         ]);
     }
 
@@ -99,7 +111,7 @@ class KioskController extends Controller
     public function submit(Request $request, string $token): JsonResponse
     {
         $request->validate([
-            'candidate_id' => 'required|integer'
+            'candidate_id' => 'required|integer',
         ]);
 
         $process = $this->votingSessionUsecase->submitVote($token, $request->input('candidate_id'));

@@ -137,7 +137,7 @@
                 return;
             }
 
-            candidates.forEach((c, index) => {
+            candidates.forEach((c) => {
                 const row = document.createElement('div');
                 row.className = 'flex items-start gap-4 py-4 first:pt-0 last:pb-0';
                 row.innerHTML = `

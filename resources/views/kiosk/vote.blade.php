@@ -200,15 +200,9 @@
 
                 playTingSound();
 
-                let redirectSecs = 15;
-                
-                const rInterval = setInterval(() => {
-                    redirectSecs--;
-                    if (redirectSecs <= 0) {
-                        clearInterval(rInterval);
-                        window.location.href = '/bilik/start/{{ $session['election_id'] }}';
-                    }
-                }, 1000);
+                setTimeout(() => {
+                    window.location.href = '/bilik/start/{{ $session['election_id'] }}';
+                }, 3000);
             } else {
                 alert('Terjadi kesalahan: ' + data.message);
                 window.location.reload();

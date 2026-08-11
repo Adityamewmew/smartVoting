@@ -62,7 +62,7 @@ class LivePollingUsecase extends Usecase
             $candidates = DB::table(DatabaseConst::CANDIDATES())
                 ->where('election_id', $electionId)
                 ->whereNull('deleted_at')
-                ->select('id', 'order_number', 'chairman_name', 'vice_chairman_name', 'vision', 'mission')
+                ->select('order_number', 'chairman_name', 'vice_chairman_name')
                 ->orderBy('order_number', 'asc')
                 ->get();
 
