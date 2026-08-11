@@ -6,8 +6,8 @@ use App\Http\Controllers\Admin\ElectionController;
 use App\Http\Controllers\Admin\SidebarMenuController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Operator\KioskManagerController;
 use App\Http\Controllers\KioskController;
+use App\Http\Controllers\Operator\KioskManagerController;
 use Illuminate\Support\Benchmark;
 use Illuminate\Support\Facades\Route;
 
@@ -16,8 +16,10 @@ Route::get('/', function () {
         if (auth()->user()->access_type == 2) {
             return redirect()->route('operator.kiosk.index');
         }
+
         return redirect()->route('admin.dashboard');
     }
+
     return redirect()->route('login');
 });
 
@@ -92,6 +94,7 @@ Route::middleware(['auth', 'access_type:2'])->prefix('operator')->name('operator
     Route::prefix('kiosk')->name('kiosk.')->group(function () {
         Route::get('/', [KioskManagerController::class, 'index'])->name('index');
         Route::post('/generate/{electionId}', [KioskManagerController::class, 'generate'])->name('generate');
+        Route::get('/{electionId}/candidates', [KioskManagerController::class, 'candidates'])->name('candidates');
     });
 });
 

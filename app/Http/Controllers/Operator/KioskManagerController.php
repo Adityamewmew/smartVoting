@@ -5,10 +5,9 @@ namespace App\Http\Controllers\Operator;
 use App\Http\Controllers\Controller;
 use App\Usecase\LivePollingUsecase;
 use App\Usecase\VotingSessionUsecase;
-use App\Constants\ResponseConst;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class KioskManagerController extends Controller
@@ -37,5 +36,12 @@ class KioskManagerController extends Controller
     public function generate(int $electionId): RedirectResponse
     {
         return redirect()->route('kiosk.start', ['electionId' => $electionId]);
+    }
+
+    public function candidates(int $electionId): JsonResponse
+    {
+        $process = $this->livePollingUsecase->getCandidatesByElection($electionId);
+
+        return response()->json($process);
     }
 }

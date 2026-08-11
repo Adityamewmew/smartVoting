@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SmartVoting - Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#191b23",
+                        "secondary-fixed": "#d5e3fc",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-secondary-container": "#57657a",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-container": "#ededf9",
+                        "outline-variant": "#c3c6d7",
+                        "on-primary-fixed": "#00174b",
+                        "inverse-primary": "#b4c5ff",
+                        "card-light": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#eeefff",
+                        "warning": "#f59e0b",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f3fe",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-bright": "#faf8ff",
+                        "surface-container-highest": "#e1e2ed",
+                        "tertiary-container": "#bc4800",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-secondary-fixed-variant": "#3a485b",
+                        "on-background": "#191b23",
+                        "surface-variant": "#e1e2ed",
+                        "primary-fixed": "#dbe1ff",
+                        "surface-container-high": "#e7e7f3",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#360f00",
+                        "secondary": "#515f74",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#d5e3fc",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "primary": "#004ac6",
+                        "on-secondary": "#ffffff",
+                        "card-dark": "#262626",
+                        "on-tertiary-container": "#ffede6",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "surface": "#faf8ff",
+                        "primary-container": "#2563eb",
+                        "inverse-surface": "#2e3039",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "success": "#059669",
+                        "surface-dim": "#d9d9e5",
+                        "tertiary": "#943700",
+                        "outline": "#737686",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "surface-dark": "#171717",
+                        "surface-light": "#f9fafb",
+                        "danger": "#dc2626",
+                        "info": "#0891b2",
+                        "surface-tint": "#0053db",
+                        "background": "#faf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "element-gap": "1rem",
+                        "container-padding": "1.5rem",
+                        "sidebar-width": "260px",
+                        "section-gap": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "display-kiosk": ["Geist"],
+                        "body-sm": ["Geist"],
+                        "label-xs": ["Geist"],
+                        "label-md": ["Geist"],
+                        "headline-lg-mobile": ["Geist"],
+                        "headline-lg": ["Geist"],
+                        "body-base": ["Geist"],
+                        "headline-md": ["Geist"]
+                    },
+                    "fontSize": {
+                        "display-kiosk": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-xs": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-base antialiased min-h-screen">
+<!-- Mobile Navigation Shell (TopAppBar) -->
+<header class="bg-surface dark:bg-surface-dark border-b border-outline-variant dark:border-outline h-16 w-full sticky top-0 z-40 flex items-center justify-between px-6">
+<div class="flex items-center gap-3">
+<button class="text-on-surface-variant dark:text-outline-variant hover:text-on-surface dark:hover:text-surface-bright hover:bg-surface-container dark:hover:bg-inverse-surface rounded-full p-2 transition-all cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface-variant">SmartVoting</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant dark:text-outline-variant hover:text-on-surface dark:hover:text-surface-bright hover:bg-surface-container dark:hover:bg-inverse-surface rounded-full p-2 transition-all cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<img alt="Administrator Profile" class="w-8 h-8 rounded-full object-cover shadow-sm border border-outline-variant" data-alt="A small, circular avatar portrait of a professional system administrator. The image features a neutral gray background with subtle, soft professional lighting suitable for a modern corporate dashboard light-mode aesthetic. The portrait should be crisp and high-resolution, conveying trust and precision." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDdBlHZ5wG7LkgymzFnDQLVWgkNE0Chq-GJC67bxcm36sJZo7nMBz-N07jaNIQR5D_PqruUTx035MhtkjxlBaSpD0sUGgNPF-Bb8BGfRoFzkA2nCkY2EMghsE1NVMX7rrKrx7Td5_qAAuZzUQwIyfxyFSymFsBtixrvXDqoVJ0RCf-eUfe_8WNv7q_IhfX5J0Q-i3ML2JcZkitFYf6M5L8jo_zVmPmKq3MAG7EyM5PPsx7EpIhVeE2rtA"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="p-container-padding flex flex-col gap-section-gap pb-24">
+<!-- Header -->
+<section>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-1">Dashboard</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Overview of current election status.</p>
+</section>
+<!-- Key Metrics Cards (Vertical Stack) -->
+<section class="flex flex-col gap-4">
+<!-- Metric 1: Active Events -->
+<div class="bg-card-light rounded-xl shadow-sm border border-outline-variant p-4 flex items-center gap-4">
+<div class="bg-primary-container text-on-primary-container p-3 rounded-xl flex-shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">event_available</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Active Events</p>
+<p class="font-headline-md text-headline-md text-primary mt-1 font-bold">3</p>
+</div>
+</div>
+<!-- Metric 2: Total Votes -->
+<div class="bg-card-light rounded-xl shadow-sm border border-outline-variant p-4 flex items-center gap-4">
+<div class="bg-secondary-container text-on-secondary-container p-3 rounded-xl flex-shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">how_to_vote</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Total Votes</p>
+<p class="font-headline-md text-headline-md text-on-surface mt-1 font-bold">12,450</p>
+</div>
+</div>
+<!-- Metric 3: Open Booths -->
+<div class="bg-card-light rounded-xl shadow-sm border border-outline-variant p-4 flex items-center gap-4">
+<div class="bg-surface-tint/10 text-primary p-3 rounded-xl flex-shrink-0">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">storefront</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Open Booths</p>
+<p class="font-headline-md text-headline-md text-on-surface mt-1 font-bold">8</p>
+</div>
+</div>
+</section>
+<!-- Active Elections Section (Scrollable Cards) -->
+<section class="flex flex-col gap-4 mt-2">
+<div class="flex justify-between items-end">
+<h2 class="font-headline-md text-headline-md text-on-surface">Pemilihan Sedang Berjalan</h2>
+<a class="font-label-md text-label-md text-primary hover:underline" href="#">View All</a>
+</div>
+<!-- Horizontal Scroll Container -->
+<div class="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 -mx-container-padding px-container-padding hide-scrollbar">
+<!-- Election Card 1 -->
+<div class="snap-center shrink-0 w-72 bg-card-light rounded-xl shadow-sm border border-outline-variant flex flex-col overflow-hidden">
+<div class="p-4 flex-grow">
+<div class="flex justify-between items-start mb-3">
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded-md font-label-xs text-label-xs uppercase font-bold tracking-wider">Active</span>
+<span class="material-symbols-outlined text-outline-variant">more_vert</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Pemilihan Ketua BEM 2024</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-4">Pemilihan untuk menentukan ketua Badan Eksekutif Mahasiswa periode 2024-2025.</p>
+<div class="space-y-2 mt-auto">
+<div class="flex justify-between font-label-xs text-label-xs">
+<span class="text-on-surface-variant">Voter Turnout</span>
+<span class="font-bold text-on-surface">65%</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full" style="width: 65%"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-3 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-xs text-label-xs text-on-surface-variant">Ends in 2h 45m</span>
+<button class="text-primary font-label-md text-label-md font-bold hover:text-on-primary-fixed-variant transition-colors">Manage</button>
+</div>
+</div>
+<!-- Election Card 2 -->
+<div class="snap-center shrink-0 w-72 bg-card-light rounded-xl shadow-sm border border-outline-variant flex flex-col overflow-hidden">
+<div class="p-4 flex-grow">
+<div class="flex justify-between items-start mb-3">
+<span class="bg-primary-container text-on-primary-container px-2 py-1 rounded-md font-label-xs text-label-xs uppercase font-bold tracking-wider">Active</span>
+<span class="material-symbols-outlined text-outline-variant">more_vert</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Fakultas Teknik Representative</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-4">Pemilihan perwakilan mahasiswa untuk senat Fakultas Teknik.</p>
+<div class="space-y-2 mt-auto">
+<div class="flex justify-between font-label-xs text-label-xs">
+<span class="text-on-surface-variant">Voter Turnout</span>
+<span class="font-bold text-on-surface">42%</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-1.5">
+<div class="bg-warning h-1.5 rounded-full" style="width: 42%"></div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-3 border-t border-outline-variant flex justify-between items-center">
+<span class="font-label-xs text-label-xs text-on-surface-variant">Ends in 1d 5h</span>
+<button class="text-primary font-label-md text-label-md font-bold hover:text-on-primary-fixed-variant transition-colors">Manage</button>
+</div>
+</div>
+</div>
+<style>
+                .hide-scrollbar::-webkit-scrollbar {
+                    display: none;
+                }
+                .hide-scrollbar {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+            </style>
+</section>
+</main>
+<!-- Contextual FAB (Create New Election) -->
+<div class="fixed bottom-6 right-6 z-50">
+<button class="bg-primary text-on-primary p-4 rounded-2xl shadow-lg hover:shadow-xl hover:bg-on-primary-fixed-variant transition-all active:scale-95 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+<span class="font-label-md text-label-md font-bold hidden sm:block">Create</span>
+</button>
+</div>
+</body></html>

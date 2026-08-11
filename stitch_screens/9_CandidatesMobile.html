@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Candidates - SmartVoting</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface": "#191b23",
+                        "secondary-fixed": "#d5e3fc",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-secondary-container": "#57657a",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "surface-container": "#ededf9",
+                        "outline-variant": "#c3c6d7",
+                        "on-primary-fixed": "#00174b",
+                        "inverse-primary": "#b4c5ff",
+                        "card-light": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-container": "#eeefff",
+                        "warning": "#f59e0b",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f3f3fe",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "surface-bright": "#faf8ff",
+                        "surface-container-highest": "#e1e2ed",
+                        "tertiary-container": "#bc4800",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-secondary-fixed-variant": "#3a485b",
+                        "on-background": "#191b23",
+                        "surface-variant": "#e1e2ed",
+                        "primary-fixed": "#dbe1ff",
+                        "surface-container-high": "#e7e7f3",
+                        "on-error-container": "#93000a",
+                        "tertiary-fixed": "#ffdbcd",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-fixed": "#360f00",
+                        "secondary": "#515f74",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#d5e3fc",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "primary": "#004ac6",
+                        "on-secondary": "#ffffff",
+                        "card-dark": "#262626",
+                        "on-tertiary-container": "#ffede6",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "surface": "#faf8ff",
+                        "primary-container": "#2563eb",
+                        "inverse-surface": "#2e3039",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "success": "#059669",
+                        "surface-dim": "#d9d9e5",
+                        "tertiary": "#943700",
+                        "outline": "#737686",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "surface-dark": "#171717",
+                        "surface-light": "#f9fafb",
+                        "danger": "#dc2626",
+                        "info": "#0891b2",
+                        "surface-tint": "#0053db",
+                        "background": "#faf8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "element-gap": "1rem",
+                        "container-padding": "1.5rem",
+                        "sidebar-width": "260px",
+                        "section-gap": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "display-kiosk": ["Geist"],
+                        "body-sm": ["Geist"],
+                        "label-xs": ["Geist"],
+                        "label-md": ["Geist"],
+                        "headline-lg-mobile": ["Geist"],
+                        "headline-lg": ["Geist"],
+                        "body-base": ["Geist"],
+                        "headline-md": ["Geist"]
+                    },
+                    "fontSize": {
+                        "display-kiosk": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-xs": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                        "headline-lg-mobile": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-base min-h-screen flex flex-col antialiased">
+<!-- TopAppBar (Mobile view for Candidates) -->
+<header class="h-16 w-full sticky top-0 z-40 bg-surface dark:bg-surface-dark flex items-center justify-between px-6 border-b border-outline-variant dark:border-outline flat no shadows">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-on-surface-variant hover:bg-surface-container rounded-full p-2 transition-all cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface-variant">SmartVoting</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant dark:text-outline-variant hover:text-on-surface dark:hover:text-surface-bright hover:bg-surface-container dark:hover:bg-inverse-surface rounded-full p-2 transition-all cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button class="text-on-surface-variant dark:text-outline-variant hover:text-on-surface dark:hover:text-surface-bright hover:bg-surface-container dark:hover:bg-inverse-surface rounded-full p-2 transition-all cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">help</span>
+</button>
+<img alt="Administrator Profile" class="w-8 h-8 rounded-full object-cover ml-2 border border-outline-variant" data-alt="A small, circular avatar portrait of a professional system administrator in a brightly lit modern office setting. Light mode aesthetic with soft whites and subtle blue tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2IVQUBg8PDQbcG5aqutC-w2S6dKu5GptwYdC0T5aeWygNcWEroT01z2OmilpXVQl4DgH7yCqFABMIkqvR84SzTIZ9aitBmv8H5Anijzppnvu1vZvv7_SkG02hwJQo5dAqsG-M3EPIgiNZBxJ3Hg4mnRjJZXDiiCfNl21awe-8xdI1Lc3f0ZHqqcM7kfI7Ta51K7n3FMAgjqrYl1EaVzYPdXohj2IV0Qna3dvHypJrWf1UxZylkeHyFQ"/>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col p-4 gap-section-gap w-full max-w-md mx-auto">
+<!-- Page Header & Actions -->
+<div class="flex flex-col gap-4">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Candidates</h2>
+<div class="flex flex-col gap-3">
+<!-- Search Bar -->
+<div class="relative w-full">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2 border border-outline-variant rounded-lg leading-5 bg-card-light placeholder-on-surface-variant focus:outline-none focus:ring-2 focus:ring-primary-container focus:border-primary-container font-body-sm text-body-sm transition-shadow" placeholder="Search candidates..." type="text"/>
+</div>
+<!-- Election Filter -->
+<div class="relative w-full">
+<select class="block w-full pl-3 pr-10 py-2 border border-outline-variant rounded-lg leading-5 bg-card-light focus:outline-none focus:ring-2 focus:ring-primary-container focus:border-primary-container font-body-sm text-body-sm appearance-none">
+<option>All Elections</option>
+<option>Student Council 2024</option>
+<option>Faculty Rep 2024</option>
+</select>
+<div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+<span class="material-symbols-outlined text-outline">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Candidate Cards Grid (Mobile single column) -->
+<div class="grid grid-cols-1 gap-4">
+<!-- Card 1 -->
+<div class="bg-card-light rounded-xl shadow-sm border border-outline-variant p-4 flex flex-col gap-4">
+<div class="flex items-start gap-4">
+<div class="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-surface-container-high border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a confident young male student wearing a crisp white shirt and a blue tie. The background is a soft, blurred bright academic setting reflecting a clean corporate modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB2ItHDND8GtZ5N02cfaaCsoIJt5sJ9xZTnuYFa8W9DGkRAQXhMAgvcWwrf7mS1v3ApCudzGGzne2kvy67ptr1ktOnliZ4hJxCtt3FpeapP4aEjj-fj4iSHbnlzr8EWx-FATe8KYr7P3k1KIX_KmSdpD4QWsypbRyRd9vBvJazZg2UttBLv-BfowZlcZGFOOQywqeSUSlJB4DHvFgsPVLPWP7Z0QHmUZ8BPZL8yaxPUPxEIY3e9iowm6Q"/>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<span class="font-label-xs text-label-xs text-primary font-bold uppercase tracking-wider mb-1">Presidential</span>
+<h3 class="font-headline-md text-body-base font-semibold text-on-surface truncate">Alex Chen</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Computer Science</p>
+<div class="mt-2 inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container-low text-on-surface-variant font-label-xs text-label-xs w-max border border-outline-variant">
+                            Student Council 2024
+                        </div>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-2 pt-4 border-t border-surface-variant">
+<button class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-surface hover:bg-surface-container-high text-primary font-label-md text-label-md transition-colors border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]">edit</span> Edit
+                    </button>
+<button class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-surface hover:bg-error-container text-danger font-label-md text-label-md transition-colors border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]">delete</span> Hapus
+                    </button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-card-light rounded-xl shadow-sm border border-outline-variant p-4 flex flex-col gap-4">
+<div class="flex items-start gap-4">
+<div class="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-surface-container-high border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of an optimistic young female student wearing a smart casual blazer over a light blouse. The background is a soft, blurred modern library setting reflecting a clean corporate modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiuMJPk8BAaINyktLLUtVFpTSn19d8PA13lbNF7W9AsZKbvVyoMrhsrxEMEjuuSQoqC4Go37X6Fj4703NpKksmHn8NUnHRagh18ETCoqDau2gHUkFmcGPitMf9LImp_aoRFzLXfl1hFGA_BLaPANnHK1fKEXyycszUo14hyCI5yN7OyK0q0yYSAad96bg5DJ0Lc_LxgXHFu_Ja5zlmuA2j7T94ZxgIQMsyX06knY4JLbfRYMYY-iTaxA"/>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<span class="font-label-xs text-label-xs text-primary font-bold uppercase tracking-wider mb-1">Presidential</span>
+<h3 class="font-headline-md text-body-base font-semibold text-on-surface truncate">Sarah Jenkins</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Political Science</p>
+<div class="mt-2 inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container-low text-on-surface-variant font-label-xs text-label-xs w-max border border-outline-variant">
+                            Student Council 2024
+                        </div>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-2 pt-4 border-t border-surface-variant">
+<button class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-surface hover:bg-surface-container-high text-primary font-label-md text-label-md transition-colors border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]">edit</span> Edit
+                    </button>
+<button class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-surface hover:bg-error-container text-danger font-label-md text-label-md transition-colors border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]">delete</span> Hapus
+                    </button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-card-light rounded-xl shadow-sm border border-outline-variant p-4 flex flex-col gap-4">
+<div class="flex items-start gap-4">
+<div class="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-surface-container-high border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a focused young male student wearing a neat polo shirt. The background is a soft, blurred bright modern campus hallway reflecting a clean corporate modern aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCSCFe24wD3r8QaZN-z9zWbIPtSuHWfQaTShRw7lkIo3gVwINmdcuaaiiO9xl-0N78l5iByGBBE0ggmRvFrIBPjdIxb0O9UoBzNg-0DuMZo7Sa2KfNnPB4BiJwBnVdSOEGuxLNEleVAzBh4Y-XrOSlnJa39-8Vst6uH5wTqWaO1HNYhElIHOln1AyMEPrd6euMT7_Cpj6QcQv6IBSeZavjSKyYgOOU4jWkBRawo3ERPNzM6oDjwhgAxcw"/>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<span class="font-label-xs text-label-xs text-secondary font-bold uppercase tracking-wider mb-1">Faculty Rep</span>
+<h3 class="font-headline-md text-body-base font-semibold text-on-surface truncate">Marcus Johnson</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Engineering</p>
+<div class="mt-2 inline-flex items-center px-2 py-0.5 rounded-full bg-surface-container-low text-on-surface-variant font-label-xs text-label-xs w-max border border-outline-variant">
+                            Faculty Rep 2024
+                        </div>
+</div>
+</div>
+<div class="flex items-center gap-2 mt-2 pt-4 border-t border-surface-variant">
+<button class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-surface hover:bg-surface-container-high text-primary font-label-md text-label-md transition-colors border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]">edit</span> Edit
+                    </button>
+<button class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg bg-surface hover:bg-error-container text-danger font-label-md text-label-md transition-colors border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]">delete</span> Hapus
+                    </button>
+</div>
+</div>
+</div>
+<!-- Floating Action Button for Adding New Candidate -->
+<button class="fixed bottom-6 right-6 w-14 h-14 bg-primary-container text-on-primary-container rounded-2xl shadow-lg flex items-center justify-center hover:bg-primary-fixed hover:scale-105 transition-all duration-200 active:scale-95 z-50">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+</main>
+</body></html>

@@ -5,9 +5,9 @@ namespace App\Usecase;
 use App\Constants\DatabaseConst;
 use App\Constants\ResponseConst;
 use App\Http\Presenter\Response;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class LivePollingUsecase extends Usecase
 {
@@ -23,7 +23,7 @@ class LivePollingUsecase extends Usecase
                 $election->total_votes = DB::table(DatabaseConst::VOTES())
                     ->where('election_id', $election->id)
                     ->count();
-                
+
                 $election->active_sessions = DB::table(DatabaseConst::VOTING_SESSIONS())
                     ->where('election_id', $election->id)
                     ->where('status', 'open')
@@ -35,6 +35,7 @@ class LivePollingUsecase extends Usecase
             return Response::buildSuccess(['list' => $data], ResponseConst::HTTP_SUCCESS);
         } catch (Exception $e) {
             Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
+
             return Response::buildErrorService($e->getMessage());
         }
     }
@@ -50,6 +51,25 @@ class LivePollingUsecase extends Usecase
             return Response::buildSuccess(['list' => $elections], ResponseConst::HTTP_SUCCESS);
         } catch (Exception $e) {
             Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
+
+            return Response::buildErrorService($e->getMessage());
+        }
+    }
+
+    public function getCandidatesByElection(int $electionId): array
+    {
+        try {
+            $candidates = DB::table(DatabaseConst::CANDIDATES())
+                ->where('election_id', $electionId)
+                ->whereNull('deleted_at')
+                ->select('id', 'order_number', 'chairman_name', 'vice_chairman_name', 'vision', 'mission')
+                ->orderBy('order_number', 'asc')
+                ->get();
+
+            return Response::buildSuccess(['candidates' => $candidates], ResponseConst::HTTP_SUCCESS);
+        } catch (Exception $e) {
+            Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
+
             return Response::buildErrorService($e->getMessage());
         }
     }
@@ -63,8 +83,8 @@ class LivePollingUsecase extends Usecase
                 ->count();
 
             // Get vote count per candidate
-            $candidates = DB::table(DatabaseConst::CANDIDATES() . ' as c')
-                ->leftJoin(DatabaseConst::VOTES() . ' as v', 'c.id', '=', 'v.candidate_id')
+            $candidates = DB::table(DatabaseConst::CANDIDATES().' as c')
+                ->leftJoin(DatabaseConst::VOTES().' as v', 'c.id', '=', 'v.candidate_id')
                 ->where('c.election_id', $electionId)
                 ->whereNull('c.deleted_at')
                 ->select(
@@ -80,10 +100,11 @@ class LivePollingUsecase extends Usecase
 
             return Response::buildSuccess([
                 'total_votes' => $totalVotes,
-                'candidates' => $candidates
+                'candidates' => $candidates,
             ], ResponseConst::HTTP_SUCCESS);
         } catch (Exception $e) {
             Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
+
             return Response::buildErrorService($e->getMessage());
         }
     }

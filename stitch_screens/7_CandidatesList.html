@@ -1,0 +1,297 @@
+<!DOCTYPE html><html lang="id"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>SmartVoting - Candidates</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary-fixed-variant": "#003ea8",
+                      "outline-variant": "#c3c6d7",
+                      "outline": "#737686",
+                      "success": "#059669",
+                      "on-secondary": "#ffffff",
+                      "inverse-primary": "#b4c5ff",
+                      "on-tertiary-container": "#ffede6",
+                      "surface": "#faf8ff",
+                      "info": "#0891b2",
+                      "surface-bright": "#faf8ff",
+                      "secondary-fixed": "#d5e3fc",
+                      "secondary": "#515f74",
+                      "inverse-on-surface": "#f0f0fb",
+                      "on-primary": "#ffffff",
+                      "primary": "#004ac6",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "card-dark": "#262626",
+                      "tertiary-fixed-dim": "#ffb596",
+                      "surface-container-high": "#e7e7f3",
+                      "surface-container": "#ededf9",
+                      "surface-dark": "#171717",
+                      "tertiary-container": "#bc4800",
+                      "background": "#faf8ff",
+                      "surface-dim": "#d9d9e5",
+                      "surface-variant": "#e1e2ed",
+                      "surface-light": "#f9fafb",
+                      "on-secondary-fixed-variant": "#3a485b",
+                      "on-error": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "surface-tint": "#0053db",
+                      "card-light": "#ffffff",
+                      "inverse-surface": "#2e3039",
+                      "error": "#ba1a1a",
+                      "surface-container-highest": "#e1e2ed",
+                      "danger": "#dc2626",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#7d2d00",
+                      "on-surface": "#191b23",
+                      "on-primary-fixed": "#00174b",
+                      "on-primary-container": "#eeefff",
+                      "on-secondary-fixed": "#0d1c2e",
+                      "primary-fixed": "#dbe1ff",
+                      "secondary-fixed-dim": "#b9c7df",
+                      "tertiary-fixed": "#ffdbcd",
+                      "on-tertiary-fixed": "#360f00",
+                      "on-background": "#191b23",
+                      "on-secondary-container": "#57657a",
+                      "on-surface-variant": "#434655",
+                      "tertiary": "#943700",
+                      "secondary-container": "#d5e3fc",
+                      "primary-container": "#2563eb",
+                      "primary-fixed-dim": "#b4c5ff",
+                      "surface-container-low": "#f3f3fe",
+                      "warning": "#f59e0b"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px",
+                      "3xl": "1.5rem"
+              },
+              "spacing": {
+                      "element-gap": "1rem",
+                      "container-padding": "1.5rem",
+                      "section-gap": "1.5rem",
+                      "sidebar-width": "260px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Geist", "sans-serif"],
+                      "label-md": ["Geist", "sans-serif"],
+                      "label-xs": ["Geist", "sans-serif"],
+                      "headline-lg-mobile": ["Geist", "sans-serif"],
+                      "body-base": ["Geist", "sans-serif"],
+                      "headline-lg": ["Geist", "sans-serif"],
+                      "body-sm": ["Geist", "sans-serif"],
+                      "display-kiosk": ["Geist", "sans-serif"]
+              },
+              "fontSize": {
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                      "label-xs": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "headline-lg-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "700"}],
+                      "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "display-kiosk": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            }
+          }
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background font-body-base antialiased flex min-h-screen">
+<!-- SideNavBar -->
+<aside class="w-sidebar-width h-screen sticky top-0 left-0 bg-surface dark:bg-surface-dark shadow-sm dark:shadow-none hidden md:flex flex-col h-full p-4 gap-2 border-r border-outline-variant z-50">
+<div class="mb-8 px-4 py-2">
+<h1 class="text-headline-lg font-headline-lg text-primary dark:text-primary-fixed-dim">SmartVoting</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Admin Console</p>
+</div>
+
+<nav class="flex-1 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-highest dark:hover:bg-inverse-surface rounded-xl transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-highest dark:hover:bg-inverse-surface rounded-xl transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">how_to_vote</span>
+                Elections
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container dark:bg-on-secondary-fixed-variant text-on-secondary-container dark:text-secondary-fixed rounded-xl font-bold font-label-md text-label-md transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person_search</span>
+                Candidates
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-highest dark:hover:bg-inverse-surface rounded-xl transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">group</span>
+                Users
+            </a>
+</nav>
+<div class="mt-auto flex flex-col gap-1 border-t border-outline-variant pt-4">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-highest dark:hover:bg-inverse-surface rounded-xl transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-error hover:bg-error-container hover:text-on-error-container rounded-xl transition-colors font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-w-0">
+<!-- TopAppBar (Mobile & Tablet) -->
+<header class="md:hidden h-16 w-full sticky top-0 z-40 bg-surface dark:bg-surface-dark flex items-center justify-between px-6 border-b border-outline-variant shadow-sm">
+<span class="material-symbols-outlined cursor-pointer hover:bg-surface-container dark:hover:bg-inverse-surface rounded-full p-2 transition-all active:opacity-80">menu</span>
+<span class="font-headline-md text-headline-md font-bold text-on-surface dark:text-on-surface-variant">SmartVoting</span>
+<div class="flex gap-2">
+<span class="material-symbols-outlined cursor-pointer text-on-surface-variant hover:bg-surface-container dark:hover:bg-inverse-surface rounded-full p-2 transition-all">notifications</span>
+<img alt="Administrator Profile" class="w-8 h-8 rounded-full object-cover" data-alt="A small, professional portrait photograph of an administrator used as a profile picture placeholder in a modern web application header. The lighting is soft and corporate." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBO5STgtPfLfzmrbXy3GsRknboNhYZxWWLGyMTh65PgSaYtN6jI44groCrE6wY3xIWvXkglCHBVZrpjzKr5rCdSd5tBmYqX270RRQ9Q6JDKgx9uw1pt0BckLgpTyf849hvQsrEcKdhcAWFWgcyRHxRkEzfa7wtrd12TMkSTgp-hW44M0kyTdNbplu8n9G8nd4_NMF8l0YzXqdlnF_hQhz_vwig5DiFAB8WfTlOqsVYFApVF08GkLU0CuA">
+</div>
+</header>
+<!-- Desktop Header Content Area -->
+<header class="hidden md:flex items-center justify-between px-container-padding py-6 border-b border-outline-variant bg-surface-light">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Candidates Management</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Manage electoral candidates for Student Council Election 2024</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="pl-10 pr-4 py-2 rounded-xl border border-outline-variant bg-surface focus:ring-2 focus:ring-primary focus:border-primary w-64 font-body-sm text-body-sm placeholder:text-outline" placeholder="Search candidates..." type="text">
+</div>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-xl font-label-md text-label-md font-bold hover:bg-primary-fixed-variant transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+                    Tambah Kandidat
+                 </button>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-container-padding bg-surface-light flex-1">
+<!-- Context Filter -->
+<div class="mb-section-gap flex items-center justify-between">
+<div class="flex items-center gap-3">
+<label class="font-label-md text-label-md text-on-surface-variant">Active Election:</label>
+<select class="rounded-xl border border-outline-variant bg-surface py-2 pl-4 pr-10 font-body-sm text-body-sm focus:ring-2 focus:ring-primary focus:border-primary shadow-sm">
+<option>Student Council Election 2024</option>
+<option>Faculty Senate 2023</option>
+</select>
+</div>
+<div class="flex gap-2 bg-surface-container-low p-1 rounded-xl border border-outline-variant">
+<button class="p-2 rounded-lg bg-surface shadow-sm text-primary flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+</button>
+<button class="p-2 rounded-lg text-on-surface-variant hover:bg-surface flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined">format_list_bulleted</span>
+</button>
+</div>
+</div>
+<!-- Grid Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-element-gap">
+<!-- Candidate Card 1 -->
+<div class="bg-card-light rounded-2xl border border-outline-variant shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+<div class="h-48 relative bg-surface-container-highest">
+<img alt="Candidate Photo" class="w-full h-full object-cover" data-alt="A professional studio portrait of two high school students, a male and a female, standing side by side smiling confidently in a modern, well-lit studio environment representing a student council candidate team. The background is a clean, neutral gray gradient." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVFU6m19TzIZoJ4KmZD3_enP2G6WWYL1W-iKed9VfcH6b_K2Ot2d3oo4U88yMjE8l5RkLNZZj7FgMPJc1qmOT79N3s92gSKqFXLeMCgSifi3ghvBc4Fb8XBSrXBJZ2UXfyAKk5-5LyG2lNxDv7K6QcfYbvAUD9wX_BMD8IGnHIbrAzKOALrOj856s92qtdi44NdkbP0JruD7LpqAj6goocWg6MzOR2z5H5ltfAhPElJxmHaoYYQTybhQ">
+<div class="absolute top-4 left-4 bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center font-headline-md text-headline-md font-bold shadow-md">
+                            01
+                        </div>
+<div class="absolute top-4 right-4 bg-success/10 text-success px-3 py-1 rounded-full font-label-xs text-label-xs font-bold border border-success/20 backdrop-blur-sm">
+                            Verified
+                        </div>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<div class="mb-4 flex-1">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Alex Mercer &amp; Sarah Chen</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">school</span>
+                                Science &amp; Technology Major
+                            </p>
+</div>
+<div class="flex items-center gap-2 mt-auto border-t border-outline-variant pt-4">
+<button class="flex-1 py-2 px-4 rounded-xl border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                                Edit
+                            </button>
+<button class="flex-1 py-2 px-4 rounded-xl border border-error-container text-danger bg-error-container/20 font-label-md text-label-md hover:bg-error-container transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+                                Hapus
+                            </button>
+</div>
+</div>
+</div>
+<!-- Candidate Card 2 -->
+<div class="bg-card-light rounded-2xl border border-outline-variant shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow">
+<div class="h-48 relative bg-surface-container-highest">
+<img alt="Candidate Photo" class="w-full h-full object-cover" data-alt="A professional studio portrait of two university students, both females, wearing formal blazers, smiling warmly into the camera. They represent a student government ticket. The setting is bright with a clean, neutral background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBZXK4jCbTy1upJgAvWoher03IrZfEaWj5lHTuGKwkbUfHqjxBIXRPcxtf0tkyfW03iKLOQcSoTdlNthYdvsrhF25VyCZvhtEaoCgFIJM9DXovXSSrfKJN4VhzLQoBoBGQaJhC694juxTiZKGrTKy9CHAsqbehwL8g9CeRbGOt7aQ3R1tLz7YfJSgtd13cqhWOo2DhrkSQNEboPCJQuLZTd0KhnhMPQ-Ma-KLPinanH5xLFh1xUOxartg">
+<div class="absolute top-4 left-4 bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center font-headline-md text-headline-md font-bold shadow-md">
+                            02
+                        </div>
+<div class="absolute top-4 right-4 bg-success/10 text-success px-3 py-1 rounded-full font-label-xs text-label-xs font-bold border border-success/20 backdrop-blur-sm">
+                            Verified
+                        </div>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<div class="mb-4 flex-1">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-1">Elena Rodriguez &amp; Mei Lin</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">school</span>
+                                Arts &amp; Humanities Major
+                            </p>
+</div>
+<div class="flex items-center gap-2 mt-auto border-t border-outline-variant pt-4">
+<button class="flex-1 py-2 px-4 rounded-xl border border-outline-variant text-on-surface font-label-md text-label-md hover:bg-surface-container-highest transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                                Edit
+                            </button>
+<button class="flex-1 py-2 px-4 rounded-xl border border-error-container text-danger bg-error-container/20 font-label-md text-label-md hover:bg-error-container transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+                                Hapus
+                            </button>
+</div>
+</div>
+</div>
+<!-- Candidate Card 3 (Draft) -->
+<div class="bg-card-light rounded-2xl border border-dashed border-outline-variant shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow opacity-80">
+<div class="h-48 relative bg-surface-container-low flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-outline-variant">person_add</span>
+<div class="absolute top-4 left-4 bg-surface-variant text-on-surface-variant w-10 h-10 rounded-full flex items-center justify-center font-headline-md text-headline-md font-bold shadow-sm">
+                            03
+                        </div>
+<div class="absolute top-4 right-4 bg-surface-variant text-on-surface-variant px-3 py-1 rounded-full font-label-xs text-label-xs font-bold border border-outline-variant backdrop-blur-sm">
+                            Draft
+                        </div>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<div class="mb-4 flex-1">
+<h3 class="font-headline-md text-headline-md text-on-surface-variant mb-1 italic">Pending Details...</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">info</span>
+                                Incomplete Profile
+                            </p>
+</div>
+<div class="flex items-center gap-2 mt-auto border-t border-outline-variant pt-4">
+<button class="flex-1 py-2 px-4 rounded-xl bg-primary-container text-on-primary-container font-label-md text-label-md hover:bg-primary hover:text-on-primary transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+                                Complete
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+
+</body></html>

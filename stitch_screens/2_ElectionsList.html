@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-surface" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Elections - SmartVoting</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        @font-face {
+            font-family: 'Geist';
+            src: url('https://cdn.jsdelivr.net/gh/fontsource/fontsource@main/packages/geist/fonts/variable/woff2/GeistVF.woff2') format('woff2');
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-error": "#ffffff",
+                        "warning": "#f59e0b",
+                        "success": "#059669",
+                        "surface-variant": "#e1e2ed",
+                        "card-light": "#ffffff",
+                        "secondary-fixed": "#d5e3fc",
+                        "outline": "#737686",
+                        "inverse-on-surface": "#f0f0fb",
+                        "surface-container-high": "#e7e7f3",
+                        "surface-light": "#f9fafb",
+                        "on-secondary-container": "#57657a",
+                        "surface-dark": "#171717",
+                        "on-surface": "#191b23",
+                        "surface": "#faf8ff",
+                        "error-container": "#ffdad6",
+                        "info": "#0891b2",
+                        "surface-container-highest": "#e1e2ed",
+                        "tertiary-container": "#bc4800",
+                        "primary": "#004ac6",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#b4c5ff",
+                        "on-secondary-fixed-variant": "#3a485b",
+                        "secondary-fixed-dim": "#b9c7df",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "inverse-surface": "#2e3039",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "on-tertiary-fixed": "#360f00",
+                        "secondary-container": "#d5e3fc",
+                        "surface-container-low": "#f3f3fe",
+                        "background": "#faf8ff",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#515f74",
+                        "tertiary": "#943700",
+                        "surface-tint": "#0053db",
+                        "on-secondary-fixed": "#0d1c2e",
+                        "on-tertiary-container": "#ffede6",
+                        "tertiary-fixed": "#ffdbcd",
+                        "primary-fixed": "#dbe1ff",
+                        "surface-bright": "#faf8ff",
+                        "on-background": "#191b23",
+                        "surface-dim": "#d9d9e5",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#eeefff",
+                        "primary-container": "#2563eb",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#434655",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-primary-fixed": "#00174b",
+                        "surface-container": "#ededf9",
+                        "outline-variant": "#c3c6d7",
+                        "card-dark": "#262626",
+                        "danger": "#dc2626",
+                        "on-primary": "#ffffff"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "section-gap": "1.5rem",
+                        "sidebar-width": "260px",
+                        "element-gap": "1rem",
+                        "container-padding": "1.5rem"
+                    },
+                    fontFamily: {
+                        "label-xs": ["Geist"],
+                        "body-sm": ["Geist"],
+                        "body-base": ["Geist"],
+                        "headline-lg": ["Geist"],
+                        "display-kiosk": ["Geist"],
+                        "headline-md": ["Geist"],
+                        "headline-lg-mobile": ["Geist"],
+                        "label-md": ["Geist"]
+                    },
+                    fontSize: {
+                        "label-xs": ["12px", { lineHeight: "16px", fontWeight: "500" }],
+                        "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+                        "body-base": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                        "headline-lg": ["24px", { lineHeight: "32px", fontWeight: "700" }],
+                        "display-kiosk": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "headline-md": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+                        "headline-lg-mobile": ["20px", { lineHeight: "28px", fontWeight: "700" }],
+                        "label-md": ["14px", { lineHeight: "20px", fontWeight: "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="h-full flex text-on-surface bg-surface font-body-base">
+<!-- SideNavBar -->
+<aside class="w-sidebar-width h-screen sticky top-0 left-0 bg-surface dark:bg-surface-dark border-r border-outline-variant flex flex-col p-4 gap-2 shadow-sm z-30 hidden md:flex">
+<div class="px-4 py-2 mb-4">
+<h1 class="text-headline-lg font-headline-lg text-primary">SmartVoting</h1>
+<p class="font-label-md text-label-md text-on-surface-variant">Admin Console</p>
+</div>
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-colors font-label-md text-label-md transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container rounded-xl font-bold font-label-md text-label-md transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="how_to_vote" data-weight="fill" style="font-variation-settings: 'FILL' 1;">how_to_vote</span>
+                Elections
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-colors font-label-md text-label-md transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+                Candidates
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-colors font-label-md text-label-md transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+                Users
+            </a>
+</nav>
+<div class="mt-auto flex flex-col gap-2 pt-4 border-t border-outline-variant">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-colors font-label-md text-label-md transition-all duration-200 ease-in-out active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high rounded-xl transition-colors font-label-md text-label-md transition-all duration-200 ease-in-out active:scale-95 text-danger" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col min-h-0 overflow-hidden">
+<!-- TopAppBar (Mobile Only) -->
+<header class="h-16 w-full sticky top-0 z-40 bg-surface border-b border-outline-variant flex items-center justify-between px-6 w-full md:hidden">
+<div class="font-headline-md text-headline-md font-bold text-on-surface">SmartVoting</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container rounded-full p-2 transition-all cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container rounded-full p-2 transition-all cursor-pointer active:opacity-80">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<img alt="Administrator Profile" class="w-8 h-8 rounded-full object-cover" data-alt="A small, circular avatar portrait of an administrative user, professional lighting, clean white background, conveying trust and competence in a corporate setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLk3FrcNgJccjr69d3SpRCOmheoJwnKucwx5ie9bPahlx6X7NA9JjTZ9LZYZtafyZXq0d7ZLAr9yJFeATCTYjtgslMVgYd99LIKnO7PAY80DRZJgRlWuFZ_LjTw-ndpNWcGW0_AqEFZ335ZyJqEkFMkgStU-RKKnCstnH4PzrwE1Mdd6eF78jxWnObguDN57dm8khuEOihUCyW5tfSJ8c9WgQWec5LuIP8nJbJhxERdwvVlPHL2kdEgw"/>
+</div>
+</header>
+<div class="flex-1 overflow-auto p-6">
+<div class="max-w-6xl mx-auto flex flex-col gap-6">
+<!-- Page Header -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div>
+<h2 class="text-headline-lg font-headline-lg text-on-surface">Elections</h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">Manage and monitor voting events</p>
+</div>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-6 py-3 rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2 justify-center shadow-sm">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                        Create New Election
+                    </button>
+</div>
+<!-- Search and Filters -->
+<div class="bg-card-light shadow-sm rounded-xl border border-outline-variant p-4 flex flex-col sm:flex-row gap-4">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary font-body-sm text-body-sm text-on-surface placeholder:text-outline outline-none transition-all" placeholder="Search elections..." type="text"/>
+</div>
+<div class="flex gap-2">
+<select class="px-4 py-2 bg-surface border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface focus:ring-2 focus:ring-primary outline-none">
+<option value="">All Statuses</option>
+<option value="active">Active</option>
+<option value="scheduled">Scheduled</option>
+<option value="draft">Draft</option>
+<option value="closed">Closed</option>
+</select>
+<button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container-high transition-colors text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="filter_list">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Elections Grid (Bento style) -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Active Election Card -->
+<div class="bg-card-light rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-success"></div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">2024 Board of Directors Election</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Annual leadership voting</p>
+</div>
+<span class="bg-success/10 text-success font-label-xs text-label-xs px-2.5 py-1 rounded-full border border-success/20 flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-success"></span>
+                                Active
+                            </span>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="bg-surface-container-low p-3 rounded-lg">
+<span class="text-label-xs font-label-xs text-on-surface-variant block mb-1">Start Date</span>
+<span class="text-body-sm font-body-sm text-on-surface font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-outline">calendar_today</span>
+                                    Oct 15, 2024
+                                </span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-lg">
+<span class="text-label-xs font-label-xs text-on-surface-variant block mb-1">End Date</span>
+<span class="text-body-sm font-body-sm text-on-surface font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-outline">event</span>
+                                    Oct 30, 2024
+                                </span>
+</div>
+</div>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-outline-variant">
+<div class="flex items-center gap-4 text-body-sm font-body-sm text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">how_to_vote</span> 1,245 Votes</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">group</span> 5 Candidates</span>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-high transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">edit</span> Edit
+                                </button>
+<button class="px-4 py-2 bg-primary-container text-on-primary-container rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">bar_chart</span> Results
+                                </button>
+</div>
+</div>
+</div>
+<!-- Scheduled Election Card -->
+<div class="bg-card-light rounded-xl border border-outline-variant shadow-sm hover:shadow-md transition-shadow p-6 flex flex-col relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-info"></div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface group-hover:text-primary transition-colors">Q4 Policy Amendments</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Bylaw changes and updates</p>
+</div>
+<span class="bg-info/10 text-info font-label-xs text-label-xs px-2.5 py-1 rounded-full border border-info/20 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+                                Scheduled
+                            </span>
+</div>
+<div class="grid grid-cols-2 gap-4 mb-6">
+<div class="bg-surface-container-low p-3 rounded-lg">
+<span class="text-label-xs font-label-xs text-on-surface-variant block mb-1">Start Date</span>
+<span class="text-body-sm font-body-sm text-on-surface font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-outline">calendar_today</span>
+                                    Nov 01, 2024
+                                </span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-lg">
+<span class="text-label-xs font-label-xs text-on-surface-variant block mb-1">End Date</span>
+<span class="text-body-sm font-body-sm text-on-surface font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-outline">event</span>
+                                    Nov 15, 2024
+                                </span>
+</div>
+</div>
+<div class="mt-auto flex items-center justify-between pt-4 border-t border-outline-variant">
+<div class="flex items-center gap-4 text-body-sm font-body-sm text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">how_to_vote</span> 0 Votes</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">format_list_bulleted</span> 3 Options</span>
+</div>
+<div class="flex gap-2">
+<button class="px-4 py-2 border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-high transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">edit</span> Edit
+                                </button>
+<button class="px-4 py-2 border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-high transition-colors flex items-center gap-2 opacity-50 cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined text-[18px]">bar_chart</span> Results
+                                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>
