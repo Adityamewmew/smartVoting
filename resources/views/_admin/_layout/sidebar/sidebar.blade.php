@@ -110,7 +110,7 @@
                             <button type="submit"
                                 class="w-full flex items-center gap-x-3 py-2.5 px-3 rounded-lg text-sm text-red-600 hover:bg-red-50 focus:outline-hidden focus:bg-red-50 transition-colors dark:text-red-400 dark:hover:bg-red-900/20 dark:focus:bg-red-900/20">
                                 @include('_admin._layout.icons.sidebar.logout')
-                                Log out
+                                Keluar
                             </button>
                         </form>
                     </div>
