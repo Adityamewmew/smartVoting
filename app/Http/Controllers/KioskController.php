@@ -81,7 +81,10 @@ class KioskController extends Controller
                 return redirect()->route('kiosk.start', $session->election_id);
             }
 
-            return view('kiosk.error', ['message' => $process['message']]);
+            return view('kiosk.error', [
+                'message' => $process['message'],
+                'electionId' => $session?->election_id,
+            ]);
         }
 
         $session = $process['data'];

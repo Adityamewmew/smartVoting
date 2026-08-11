@@ -17,10 +17,30 @@
             {{ $message ?? 'Sesi pemilihan ini tidak valid, sudah digunakan, atau telah kedaluwarsa.' }}
         </p>
 
-        <p class="text-sm font-medium text-gray-500 bg-gray-50 dark:bg-neutral-900 p-4 rounded-xl">
+        <p class="text-sm font-medium text-gray-500 bg-gray-50 dark:bg-neutral-900 p-4 rounded-xl mb-6">
             Silakan hubungi Operator TPS untuk mendapatkan akses kembali.
         </p>
 
+        <p class="text-sm text-gray-400 dark:text-neutral-500">
+            Halaman ini akan otomatis kembali dalam <span id="countdown" class="font-bold text-gray-600 dark:text-neutral-300">10</span> detik...
+        </p>
     </div>
 </div>
+
+<script>
+    const redirectUrl = @if(!empty($electionId))
+        '/bilik/start/{{ $electionId }}'
+    @else
+        '/login'
+    @endif;
+
+    let secs = 10;
+    const el = document.getElementById('countdown');
+
+    setInterval(() => {
+        secs--;
+        el.textContent = secs;
+        if (secs <= 0) window.location.href = redirectUrl;
+    }, 1000);
+</script>
 @endsection
