@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Constants\DatabaseConst;
 use App\Http\Controllers\Controller;
 use App\Usecase\Admin\SidebarMenuUsecase;
 use App\Usecase\LivePollingUsecase;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -16,7 +20,7 @@ class DashboardController extends Controller
         protected LivePollingUsecase $livePollingUsecase
     ) {}
 
-    public function index(): View|\Illuminate\Http\RedirectResponse|Response
+    public function index(): View|RedirectResponse|Response
     {
         if (Auth::user()->access_type == 2) {
             return redirect()->route('operator.kiosk.index');
@@ -39,53 +43,58 @@ class DashboardController extends Controller
         $process = $this->livePollingUsecase->getDashboardElections();
         $activeElections = collect($process['data']['list'] ?? []);
 
+        // Fetch recent voting sessions (T-07)
+        $processSessions = $this->livePollingUsecase->getRecentSessions();
+        $recentSessions = $processSessions['data']['sessions'] ?? [];
+
         return view('_admin.dashboard', [
             'modules' => $modules,
             'activeElections' => $activeElections,
+            'recentSessions' => $recentSessions,
         ]);
     }
 
-    public function data(\Illuminate\Http\Request $request)
+    public function data(Request $request)
     {
         $electionId = $request->query('election_id');
 
-        if (!$electionId) {
+        if (! $electionId) {
             return response()->json(['success' => false, 'message' => 'Election ID is required']);
         }
 
         $process = $this->livePollingUsecase->getLiveResults($electionId);
-        
-        if (!$process['success']) {
+
+        if (! $process['success']) {
             return response()->json(['success' => false, 'message' => $process['message']]);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $process['data']
+            'data' => $process['data'],
         ]);
     }
 
-    public function print(int $electionId): View|\Illuminate\Http\RedirectResponse
+    public function print(int $electionId): View|RedirectResponse
     {
-        $election = \Illuminate\Support\Facades\DB::table(\App\Constants\DatabaseConst::ELECTIONS())
+        $election = DB::table(DatabaseConst::ELECTIONS())
             ->where('id', $electionId)
             ->whereNull('deleted_at')
             ->first();
 
-        if (!$election) {
+        if (! $election) {
             return redirect()->route('admin.dashboard')->with('error', 'Election not found');
         }
 
         $process = $this->livePollingUsecase->getLiveResults($electionId);
 
-        if (!$process['success']) {
+        if (! $process['success']) {
             return redirect()->route('admin.dashboard')->with('error', 'Gagal memuat data laporan.');
         }
 
         return view('_admin.print', [
             'election' => $election,
             'totalVotes' => $process['data']['total_votes'],
-            'candidates' => $process['data']['candidates']
+            'candidates' => $process['data']['candidates'],
         ]);
     }
 }

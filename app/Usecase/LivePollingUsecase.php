@@ -108,4 +108,35 @@ class LivePollingUsecase extends Usecase
             return Response::buildErrorService($e->getMessage());
         }
     }
+
+    public function getRecentSessions(int $limit = 20, ?int $electionId = null): array
+    {
+        try {
+            $query = DB::table(DatabaseConst::VOTING_SESSIONS().' as vs')
+                ->join(DatabaseConst::ELECTIONS().' as e', 'vs.election_id', '=', 'e.id')
+                ->join(DatabaseConst::USER().' as u', 'vs.generated_by', '=', 'u.id')
+                ->select(
+                    'vs.id',
+                    'vs.status',
+                    'vs.created_at as open_time',
+                    'vs.updated_at as close_time',
+                    'e.name as election_name',
+                    'u.name as operator_name'
+                );
+
+            if ($electionId) {
+                $query->where('vs.election_id', $electionId);
+            }
+
+            $sessions = $query->orderBy('vs.created_at', 'desc')
+                ->limit($limit)
+                ->get();
+
+            return Response::buildSuccess(['sessions' => $sessions], ResponseConst::HTTP_SUCCESS);
+        } catch (Exception $e) {
+            Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
+
+            return Response::buildErrorService($e->getMessage());
+        }
+    }
 }

@@ -117,11 +117,16 @@ class ElectionController extends Controller
             return redirect()->route('admin.elections.index')->with('error', 'Gagal memuat data laporan.');
         }
 
+        // Fetch recent voting sessions (T-07)
+        $processSessions = $this->livePollingUsecase->getRecentSessions(20, $id);
+        $recentSessions = $processSessions['data']['sessions'] ?? [];
+
         return view('_admin.elections.detail', [
             'election' => (object) $data['data'],
             'page' => $this->page,
             'totalVotes' => $process['data']['total_votes'],
             'candidates' => $process['data']['candidates'],
+            'recentSessions' => $recentSessions,
         ]);
     }
 }
