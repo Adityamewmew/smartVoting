@@ -27,18 +27,6 @@ Route::get('/', function () {
 // Landing Page Publik (T-08)
 Route::get('/pemilihan/{slug}', [ElectionLandingController::class, 'show'])->name('landing.election');
 
-Route::prefix('kiosk')->group(function () {
-    Benchmark::dd(function () {
-        (string) view('welcome');
-    });
-});
-
-Route::get('test', function () {
-    Benchmark::dd(function () {
-        (string) view('welcome');
-    });
-});
-
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'doLogin'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
