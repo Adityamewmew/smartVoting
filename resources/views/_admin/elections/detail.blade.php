@@ -3,105 +3,103 @@
 @section('title', 'Detail Laporan: ' . $election->name)
 
 @section('content')
-    <div class="mb-4 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-            <a href="{{ route('admin.dashboard') }}" navigate class="p-2 border border-gray-200 bg-white rounded-lg hover:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:hover:bg-neutral-700">
-                <svg class="size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+    <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+            <a href="{{ route('admin.dashboard') }}" navigate class="p-2 border border-graphite-hairline bg-paper rounded-full hover:bg-vellum transition-colors">
+                <svg class="size-5 text-ink" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             </a>
-            <h1 class="text-2xl font-bold text-gray-800 dark:text-neutral-200">
+            <h1 class="text-3xl font-normal text-ink">
                 Detail Laporan
             </h1>
         </div>
-        <a href="{{ route('admin.dashboard.print', $election->id) }}" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white text-gray-700 border border-gray-200 rounded-lg shadow-sm hover:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+        <x-admin.button href="{{ route('admin.dashboard.print', $election->id) }}" target="_blank" color="outline-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
             Cetak Laporan
-        </a>
+        </x-admin.button>
     </div>
 
     {{-- Info Card --}}
-    <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6 shadow-sm mb-6 flex flex-col md:flex-row gap-8 items-center">
+    <x-admin.card class="mb-6 border-graphite-hairline flex flex-col md:flex-row gap-8 items-center p-8">
         <!-- Total Votes -->
-        <div class="w-full md:w-1/3 flex flex-col items-center justify-center p-8 bg-blue-50 dark:bg-blue-500/10 rounded-2xl border border-blue-100 dark:border-blue-500/20">
-            <span class="text-sm font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-2">Total Suara Masuk</span>
-            <span class="text-6xl font-black text-blue-700 dark:text-blue-500 tabular-nums" id="total-votes-detail">{{ $totalVotes }}</span>
+        <div class="w-full md:w-1/3 flex flex-col items-center justify-center p-8 bg-vellum rounded-[20px]">
+            <span class="text-sm font-normal text-slate uppercase tracking-wider mb-2">Total Suara Masuk</span>
+            <span class="text-6xl font-normal text-ink tabular-nums" id="total-votes-detail">{{ $totalVotes }}</span>
         </div>
         <!-- Chart -->
         <div class="w-full md:w-2/3 h-[300px]">
             <canvas id="chart-detail"></canvas>
         </div>
-    </div>
+    </x-admin.card>
 
     {{-- Table Results --}}
-    <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl overflow-hidden shadow-sm">
-        <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
-            <thead class="bg-gray-50 dark:bg-neutral-800">
-                <tr>
-                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">No. Urut</th>
-                    <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Nama Pasangan Calon</th>
-                    <th scope="col" class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Perolehan Suara</th>
-                    <th scope="col" class="px-6 py-3 text-end text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Persentase</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-neutral-700" id="candidates-table-body">
-                @foreach($candidates as $c)
-                    @php
-                        $percentage = $totalVotes > 0 ? round(($c->vote_count / $totalVotes) * 100, 1) : 0;
-                    @endphp
-                    <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-800 dark:text-neutral-200 text-center">{{ $c->order_number }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">
-                            {{ $c->chairman_name }} & {{ $c->vice_chairman_name }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-800 dark:text-neutral-200 text-end" id="vote-count-{{ $c->id }}">
-                            {{ $c->vote_count }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200 text-end" id="vote-percentage-{{ $c->id }}">
-                            {{ $percentage }}%
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-
-    {{-- Recent Voting Sessions --}}
-    <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6 shadow-sm mb-6 mt-6">
-        <h2 class="text-xl font-bold text-gray-800 dark:text-neutral-200 mb-4">Riwayat Aktivitas Voting</h2>
+    <x-admin.card class="mb-6 border-graphite-hairline p-0 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
-                <thead class="bg-gray-50 dark:bg-neutral-800">
+            <table class="min-w-full divide-y divide-graphite-hairline">
+                <thead class="bg-paper">
                     <tr>
-                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">No.</th>
-                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Operator</th>
-                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Status</th>
-                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Waktu Dibuka</th>
-                        <th scope="col" class="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-400">Waktu Ditutup</th>
+                        <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">No. Urut</th>
+                        <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">Nama Pasangan Calon</th>
+                        <th scope="col" class="px-6 py-4 text-end text-xs font-normal text-slate uppercase">Perolehan Suara</th>
+                        <th scope="col" class="px-6 py-4 text-end text-xs font-normal text-slate uppercase">Persentase</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+                <tbody class="divide-y divide-graphite-hairline" id="candidates-table-body">
+                    @foreach($candidates as $c)
+                        @php
+                            $percentage = $totalVotes > 0 ? round(($c->vote_count / $totalVotes) * 100, 1) : 0;
+                        @endphp
+                        <tr class="hover:bg-vellum/50 transition">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-normal text-ink text-center">{{ $c->order_number }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-ink">
+                                {{ $c->chairman_name }} & {{ $c->vice_chairman_name }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-normal text-ink text-end" id="vote-count-{{ $c->id }}">
+                                {{ $c->vote_count }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-ink text-end" id="vote-percentage-{{ $c->id }}">
+                                {{ $percentage }}%
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </x-admin.card>
+
+    {{-- Recent Voting Sessions --}}
+    <x-admin.card class="border-graphite-hairline p-0 overflow-hidden mb-6">
+        <div class="p-6 border-b border-graphite-hairline">
+            <h2 class="text-2xl font-normal text-ink">Riwayat Aktivitas Voting</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-graphite-hairline">
+                <thead class="bg-paper">
+                    <tr>
+                        <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">No.</th>
+                        <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">Operator</th>
+                        <th scope="col" class="px-6 py-4 text-center text-xs font-normal text-slate uppercase">Status</th>
+                        <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">Waktu Dibuka</th>
+                        <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">Waktu Ditutup</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-graphite-hairline">
                     @forelse($recentSessions as $i => $session)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">
+                        <tr class="hover:bg-vellum/50 transition">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-normal text-ink">
                                 {{ ($recentSessions->currentPage() - 1) * $recentSessions->perPage() + $i + 1 }}
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-neutral-200">{{ $session->operator_name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-ink">{{ $session->operator_name }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                                @if($session->status === 'open')
-                                    <span class="inline-flex items-center gap-1.5 py-1 px-2 rounded-md text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-500">Open</span>
-                                @elseif($session->status === 'submitted')
-                                    <span class="inline-flex items-center gap-1.5 py-1 px-2 rounded-md text-xs font-medium bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-500">Submitted</span>
-                                @else
-                                    <span class="inline-flex items-center gap-1.5 py-1 px-2 rounded-md text-xs font-medium bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-500">Expired</span>
-                                @endif
+                                <x-admin.badge :text="ucfirst($session->status)" :status="$session->status" />
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-neutral-400">{{ \Carbon\Carbon::parse($session->open_time)->format('d M Y, H:i:s') }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-neutral-400">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate">{{ \Carbon\Carbon::parse($session->open_time)->format('d M Y, H:i:s') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate">
                                 {{ $session->close_time ? \Carbon\Carbon::parse($session->close_time)->format('d M Y, H:i:s') : '-' }}
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500 dark:text-neutral-400">Belum ada aktivitas voting</td>
+                            <td colspan="5" class="px-6 py-8 whitespace-nowrap text-sm text-center text-slate">Belum ada aktivitas voting</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -109,11 +107,11 @@
         </div>
         
         @if (count($recentSessions) > 0 && $recentSessions->hasPages())
-            <div class="mt-4 px-2">
+            <div class="p-4 border-t border-graphite-hairline">
                 {{ $recentSessions->links() }}
             </div>
         @endif
-    </div>
+    </x-admin.card>
 
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -130,10 +128,10 @@
                         datasets: [{
                             label: 'Perolehan Suara',
                             data: initialData,
-                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                            borderColor: 'rgb(37, 99, 235)',
+                            backgroundColor: '#171717',
+                            borderColor: '#171717',
                             borderWidth: 1,
-                            borderRadius: 8,
+                            borderRadius: 0,
                             maxBarThickness: 60
                         }]
                     },
@@ -150,13 +148,12 @@
                     }
                 });
 
-                function fetchElectionData() {
+                function fetchLiveUpdates() {
                     fetch(`{{ route('admin.dashboard.data') }}?election_id={{ $election->id }}`)
                         .then(res => res.json())
                         .then(res => {
                             if (res.success) {
-                                const totalVotes = res.data.total_votes;
-                                document.getElementById('total-votes-detail').innerText = totalVotes;
+                                document.getElementById('total-votes-detail').innerText = res.data.total_votes;
                                 
                                 const labels = res.data.candidates.map(c => `Paslon ${c.order_number}`);
                                 const data = res.data.candidates.map(c => c.vote_count);
@@ -165,19 +162,30 @@
                                 chart.data.datasets[0].data = data;
                                 chart.update();
 
+                                // Update table
+                                const tbody = document.getElementById('candidates-table-body');
+                                tbody.innerHTML = '';
                                 res.data.candidates.forEach(c => {
-                                    const voteCell = document.getElementById(`vote-count-${c.id}`);
-                                    const percCell = document.getElementById(`vote-percentage-${c.id}`);
-                                    if (voteCell && percCell) {
-                                        voteCell.innerText = c.vote_count;
-                                        percCell.innerText = totalVotes > 0 ? ((c.vote_count / totalVotes) * 100).toFixed(1) + '%' : '0%';
-                                    }
+                                    const tr = document.createElement('tr');
+                                    tr.className = 'hover:bg-vellum/50 transition';
+                                    
+                                    const pct = res.data.total_votes > 0 
+                                        ? ((c.vote_count / res.data.total_votes) * 100).toFixed(1) 
+                                        : 0;
+
+                                    tr.innerHTML = `
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-normal text-ink text-center">${c.order_number}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-ink">${c.chairman_name} & ${c.vice_chairman_name || ''}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-normal text-ink text-end">${c.vote_count}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-ink text-end">${pct}%</td>
+                                    `;
+                                    tbody.appendChild(tr);
                                 });
                             }
                         });
                 }
 
-                setInterval(fetchElectionData, 10000); // 10 seconds
+                setInterval(fetchLiveUpdates, 10000);
             })();
         </script>
     @endpush

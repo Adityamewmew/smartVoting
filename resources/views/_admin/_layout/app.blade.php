@@ -13,7 +13,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:ital,wght@0,100..900;1,100..900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
     <!-- Styles / Scripts -->
@@ -26,13 +26,17 @@
 
 <body>
     <!-- ========== HEADER ========== -->
-    <header
-        class="inset-x-0 flex flex-wrap md:justify-start md:flex-nowrap z-[48] w-full bg-white border-b border-gray-200 text-sm py-1 lg:py-0 xl:py-0 lg:ps-65 dark:bg-neutral-800 dark:border-neutral-700 fixed top-0 left-0 right-0 shadow-lg">
-        <nav class="px-4 sm:px-2 flex basis-full items-center w-full mx-auto">
-            <div class="me-1 lg:me-0 lg:hidden flex items-center">
-                <!-- Navigation Toggle -->
+    <header class="fixed top-0 left-0 right-0 z-[48] w-full bg-white shadow-sm border-b border-gray-100">
+        <nav class="flex items-center justify-between px-4 sm:px-6 w-full h-16">
+            <div class="flex items-center justify-between w-full lg:w-auto">
+                <!-- Logo -->
+                <a class="flex-none rounded-md inline-block focus:outline-hidden focus:opacity-80" href="#">
+                    <img src="{{ asset('images/logo-light.png') }}" alt="Logo Smart Project Starter Kit" class="h-8 w-auto">
+                </a>
+
+                <!-- Navigation Toggle (Mobile) -->
                 <button type="button"
-                    class="me-0 size-8 px-3 flex justify-center items-center gap-x-2 border border-gray-200 text-gray-800 hover:text-gray-500 rounded-lg focus:outline-hidden focus:text-gray-500 disabled:opacity-50 disabled:pointer-events-none dark:border-neutral-700 dark:text-neutral-200 dark:hover:text-neutral-500 dark:focus:text-neutral-500 shadow-lg"
+                    class="lg:hidden me-0 size-8 px-3 flex justify-center items-center gap-x-2 border border-gray-200 text-gray-800 hover:text-gray-500 rounded-lg focus:outline-hidden focus:text-gray-500 disabled:opacity-50 disabled:pointer-events-none glass-button shadow-none"
                     aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-application-sidebar"
                     aria-label="Toggle navigation" data-hs-overlay="#hs-application-sidebar">
                     <span class="sr-only">Toggle Navigation</span>
@@ -44,29 +48,26 @@
                         <path d="m8 9 3 3-3 3" />
                     </svg>
                 </button>
-                <!-- End Navigation Toggle -->
-                <!-- Logo -->
-                <a class="flex-none rounded-md text-xl inline-block font-semibold focus:outline-hidden focus:opacity-80"
-                    href="#" aria-label="Preline">
-                    <img src="{{ asset('images/logo-light.png') }}" alt="Logo Smart Project Starter Kit" class="w-40 h-auto p-4">
-                </a>
-                <!-- End Logo -->
-
             </div>
 
-            <div class="w-full flex items-center justify-end ms-auto gap-x-1 md:gap-x-3">
-
-
+            <!-- Date Time area (Hidden on mobile) -->
+            <div class="hidden lg:flex items-center gap-3">
+                <div class="bg-blue-50 text-blue-800 text-sm font-semibold px-4 py-1.5 rounded-full border border-blue-100">
+                    {{ \Carbon\Carbon::now()->locale('id')->isoFormat('dddd, D MMMM YYYY') }}
+                </div>
+                <div class="bg-[#FFB22C]/10 text-[#FFB22C] text-sm font-bold px-4 py-1.5 rounded-full border border-[#FFB22C]/20">
+                    {{ \Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('H.i') }} WIB
+                </div>
             </div>
         </nav>
     </header>
-    <div class="mt-16 sm:mt-0"></div>
+    <div class="mt-16"></div>
     <!-- ========== END HEADER ========== -->
 
     @include('_admin._layout.sidebar.sidebar')
 
     <!-- Content -->
-    <div class="w-full lg:ps-64 bg-gray-50 dark:bg-neutral-900 min-h-screen">
+    <div class="w-full lg:ps-64 min-h-screen relative z-10">
         <div id="main-content" class="space-y-6 px-6 py-8 sm:px-8 sm:py-10 max-w-screen-2xl mx-auto w-full">
             @if (session('success'))
                 <div id="spa-flash-success" style="display: none;">{{ session('success') }}</div>

@@ -19,7 +19,7 @@
         default => 'py-2.5 sm:py-3 px-4 pe-9 sm:pe-9 sm:text-sm',
     };
 
-    $baseClasses = "{$sizeClasses} block w-full border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400";
+    $baseClasses = "{$sizeClasses} block w-full rounded-[8px] focus:ring-2 focus:ring-white/50 dark:text-neutral-400 placeholder-ink/60 font-normal glass-input";
     $disabledClass = $disabled ? 'opacity-50 cursor-not-allowed' : '';
     $customClass = $attributes->get('class');
     $selectClass = trim(implode(' ', array_filter([$baseClasses, $disabledClass, $customClass])));
@@ -34,7 +34,7 @@
         </label>
     @endif
     <select id="{{ $selectId }}" name="{{ $name }}" class="{{ $selectClass }}"
-        {{ $disabled ? 'disabled' : '' }}>
+        {{ $disabled ? 'disabled' : '' }} {{ $attributes->except(['class', 'id', 'name', 'disabled']) }}>
         @if ($placeholder)
             <option value="">{{ $placeholder }}</option>
         @endif

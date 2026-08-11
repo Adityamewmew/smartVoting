@@ -4,20 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') - SmartVoting</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-50 text-gray-900 font-sans antialiased min-h-screen flex flex-col">
+<body class="font-sans antialiased min-h-screen flex flex-col font-normal">
     <!-- Navbar -->
-    <header class="bg-white shadow-sm border-b border-gray-200">
+    <header class="glass-header">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                <div class="w-8 h-8 rounded-full bg-ink flex items-center justify-center text-paper font-normal text-xl">
                     S
                 </div>
-                <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">SmartVoting</span>
+                <span class="text-xl font-normal text-ink">SmartVoting</span>
             </div>
             <div>
-                <a href="{{ route('login') }}" class="text-sm font-medium text-gray-600 hover:text-blue-600 transition">Login Admin</a>
+                <a href="{{ route('login') }}" class="text-sm font-normal text-ink hover:underline">Login Admin</a>
             </div>
         </div>
     </header>

@@ -61,8 +61,8 @@
         }
     }
 
-    $activeClass = 'bg-linear-to-r from-blue-50 to-indigo-50 text-blue-700 border-blue-200 dark:from-blue-900/20 dark:to-indigo-900/20 dark:text-blue-400 dark:border-blue-800';
-    $inactiveClass = 'text-gray-700 hover:bg-linear-to-r hover:from-gray-100 hover:to-gray-50 border-transparent hover:border-gray-200 dark:text-neutral-300 dark:hover:from-neutral-700/50 dark:hover:to-neutral-800/50 dark:hover:border-neutral-600';
+    $activeClass = 'glass-button text-white shadow-sm font-medium';
+    $inactiveClass = 'text-slate hover:bg-[var(--color-brand-yellow)]/10 hover:text-[var(--color-brand-yellow)] border-transparent';
 @endphp
 
 @if (!$hasChildren)
@@ -77,21 +77,18 @@
                 }
             @endphp
             <a navigate
-                class="group flex items-center gap-x-3 py-2.5 px-3.5 {{ $isActive ? $activeClass : $inactiveClass }} text-sm font-light rounded-xl border transition-all duration-200"
+                class="group flex items-center gap-x-3 py-2.5 px-3.5 {{ $isActive ? $activeClass : $inactiveClass }} text-sm font-normal rounded-xl transition-all duration-200"
                 href="{{ $url }}">
                 @if ($menu->icon)
                     <span class="relative">
                         @include($menu->icon)
-                        @if ($isActive)
-                            <span class="absolute -inset-1 bg-blue-500/20 rounded-lg blur-sm"></span>
-                        @endif
                     </span>
                 @endif
                 <span class="relative">{{ $menu->label }}</span>
             </a>
         @else
             <span
-                class="group flex items-center gap-x-3 py-2.5 px-3.5 {{ $inactiveClass }} text-sm font-light rounded-xl border transition-all duration-200">
+                class="group flex items-center gap-x-3 py-2.5 px-3.5 {{ $inactiveClass }} text-sm font-normal rounded-xl transition-all duration-200">
                 @if ($menu->icon)
                     <span class="relative">
                         @include($menu->icon)
@@ -105,16 +102,13 @@
     {{-- Accordion item with children --}}
     <li class="hs-accordion {{ $isActive ? 'active' : '' }}" id="{{ $accordionId }}">
         <button type="button"
-            class="hs-accordion-toggle group w-full text-start flex items-center justify-between gap-x-3 py-2.5 px-3.5 text-sm text-gray-700 font-light rounded-xl border hover:bg-linear-to-r hover:from-gray-100 hover:to-gray-50 border-transparent hover:border-gray-200 transition-all duration-200 dark:text-neutral-300 dark:hover:from-neutral-700/50 dark:hover:to-neutral-800/50 dark:hover:border-neutral-600 cursor-pointer {{ $isActive ? 'bg-linear-to-r from-blue-50 to-indigo-50 border-blue-200 dark:from-blue-900/20 dark:to-indigo-900/20 dark:border-blue-800' : '' }}"
+            class="hs-accordion-toggle group w-full text-start flex items-center justify-between gap-x-3 py-2.5 px-3.5 text-sm rounded-xl transition-all duration-200 cursor-pointer {{ $isActive ? $activeClass : $inactiveClass }}"
             aria-expanded="{{ $isActive ? 'true' : 'false' }}"
             aria-controls="{{ $accordionId }}-child">
             <div class="flex items-center gap-x-3">
                 @if ($menu->icon)
                     <span class="relative">
                         @include($menu->icon)
-                        @if ($isActive)
-                            <span class="absolute -inset-1 bg-blue-500/20 rounded-lg blur-sm"></span>
-                        @endif
                     </span>
                 @endif
                 <span>{{ $menu->label }}</span>
@@ -148,10 +142,10 @@
                     @endphp
                     <li>
                         <a navigate
-                            class="group flex items-center gap-x-2.5 py-2 px-3.5 text-sm rounded-lg {{ $childActive ? 'bg-blue-50 text-blue-700 font-semibold dark:bg-blue-900/20 dark:text-blue-400' : 'text-gray-600 hover:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700/50' }} transition-all duration-200"
+                            class="group flex items-center gap-x-2.5 py-2 px-3.5 text-sm rounded-lg {{ $childActive ? 'bg-[var(--color-brand-yellow)] text-white font-semibold dark:bg-blue-900/20 dark:text-amber-400' : 'text-gray-600 hover:bg-gray-100 dark:text-neutral-400 dark:hover:bg-neutral-700/50' }} transition-all duration-200"
                             href="{{ $childUrl }}">
                             <span
-                                class="size-1.5 rounded-full {{ $childActive ? 'bg-blue-500' : 'bg-gray-300 group-hover:bg-gray-400 dark:bg-neutral-600 dark:group-hover:bg-neutral-500' }} transition-colors"></span>
+                                class="size-1.5 rounded-full {{ $childActive ? 'bg-amber-500' : 'bg-gray-300 group-hover:bg-gray-400 dark:bg-neutral-600 dark:group-hover:bg-neutral-500' }} transition-colors"></span>
                             {{ $child->label }}
                         </a>
                     </li>

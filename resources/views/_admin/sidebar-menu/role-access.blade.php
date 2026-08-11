@@ -21,7 +21,7 @@
             <a navigate href="{{ route('admin.sidebar_menu.role_access', $typeValue) }}"
                 class="py-2 px-4 inline-flex items-center gap-x-1.5 text-sm font-semibold rounded-lg border transition-all
                 {{ $typeValue === $accessType
-                    ? 'border-blue-600 bg-blue-600 text-white shadow-sm'
+                    ? 'border-[var(--color-brand-yellow)] glass-button text-white'
                     : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700' }}">
                 {{ $typeLabel }}
             </a>
@@ -35,9 +35,9 @@
             @php
                 $colorMap = [
                     'blue' => [
-                        'badge' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-                        'header' => 'border-blue-200 dark:border-blue-800',
-                        'check' => 'text-blue-600 focus:ring-blue-500',
+                        'badge' => 'bg-amber-100 text-[var(--color-brand-brown)] dark:bg-blue-900/30 dark:text-amber-400',
+                        'header' => 'border-[var(--color-brand-yellow)]/30 dark:border-blue-800',
+                        'check' => 'text-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)]',
                     ],
                     'purple' => [
                         'badge' => 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
@@ -92,7 +92,7 @@
                     <div class="p-4 space-y-2" id="{{ $groupId }}">
                         @forelse ($menus as $menu)
                             {{-- Parent menu --}}
-                            <div class="rounded-xl border {{ $menu->is_enabled ? 'border-blue-200 bg-blue-50/50 dark:border-blue-800 dark:bg-blue-900/10' : 'border-gray-100 bg-white dark:border-neutral-700 dark:bg-neutral-900' }}">
+                            <div class="rounded-xl border {{ $menu->is_enabled ? 'border-[var(--color-brand-yellow)]/30 bg-amber-50/50 dark:border-blue-800 dark:bg-blue-900/10' : 'border-gray-100 bg-white dark:border-neutral-700 dark:bg-neutral-900' }}">
                                 <label
                                     class="flex items-center gap-x-3 px-4 py-2.5 cursor-pointer rounded-xl">
                                     <input type="checkbox" name="menu_ids[]" value="{{ $menu->id }}"
@@ -131,7 +131,7 @@
                                         @foreach ($menu->children as $child)
                                             <label
                                                 class="flex items-center gap-x-3 px-3 py-2 cursor-pointer rounded-lg transition-all
-                                                {{ $child->is_enabled ? 'bg-blue-50 dark:bg-blue-900/10' : 'hover:bg-gray-50 dark:hover:bg-neutral-800' }}">
+                                                {{ $child->is_enabled ? 'bg-amber-50 dark:bg-blue-900/10' : 'hover:bg-gray-50 dark:hover:bg-neutral-800' }}">
                                                 <div class="size-4 shrink-0 flex items-center justify-center">
                                                     <span class="size-1.5 rounded-full bg-gray-300 dark:bg-neutral-500"></span>
                                                 </div>
@@ -165,7 +165,7 @@
 
         <div class="mt-6 flex items-center gap-3">
             <button type="submit"
-                class="py-3 px-8 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 cursor-pointer">
+                class="py-3 px-8 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg glass-button text-white cursor-pointer">
                 Simpan Hak Akses
             </button>
             <a navigate href="{{ route('admin.sidebar_menu.index') }}"
@@ -209,10 +209,10 @@
             const label = cb.closest('label');
             if (!label) return;
             if (cb.checked) {
-                label.classList.add('bg-blue-50', 'dark:bg-blue-900/10');
+                label.classList.add('bg-amber-50', 'dark:bg-blue-900/10');
                 label.classList.remove('hover:bg-gray-50', 'dark:hover:bg-neutral-800');
             } else {
-                label.classList.remove('bg-blue-50', 'dark:bg-blue-900/10');
+                label.classList.remove('bg-amber-50', 'dark:bg-blue-900/10');
                 label.classList.add('hover:bg-gray-50', 'dark:hover:bg-neutral-800');
             }
         }

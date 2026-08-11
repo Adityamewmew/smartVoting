@@ -24,7 +24,7 @@
 
 </head>
 
-<body class="bg-gray-50 dark:bg-neutral-900">
+<body class="">
 
     <div class="min-h-screen flex items-center justify-center">
         @yield('content')

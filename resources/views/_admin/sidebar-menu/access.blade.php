@@ -22,7 +22,7 @@
                     </h2>
                     @php
                         $groupColors = [
-                            'utama' => 'bg-blue-100 text-blue-700',
+                            'utama' => 'bg-amber-100 text-[var(--color-brand-brown)]',
                         ];
                         $colorClass = $groupColors[$data->group] ?? 'bg-gray-100 text-gray-700';
                     @endphp
@@ -43,9 +43,9 @@
                     @foreach ($accessTypes as $typeValue => $typeLabel)
                         <label
                             class="flex items-center gap-x-3 p-3 rounded-xl border cursor-pointer transition-all
-                            {{ in_array($typeValue, $accesses) ? 'border-blue-300 bg-blue-50 dark:border-blue-800 dark:bg-blue-900/20' : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-neutral-600' }}">
+                            {{ in_array($typeValue, $accesses) ? 'border-[var(--color-brand-yellow)]/50 bg-amber-50 dark:border-blue-800 dark:bg-blue-900/20' : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-neutral-600' }}">
                             <input type="checkbox" name="access_types[]" value="{{ $typeValue }}"
-                                class="shrink-0 size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:bg-neutral-800 dark:border-neutral-600 cursor-pointer"
+                                class="shrink-0 size-4 rounded border-gray-300 text-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)] dark:bg-neutral-800 dark:border-neutral-600 cursor-pointer"
                                 {{ in_array($typeValue, $accesses) ? 'checked' : '' }}>
                             <div>
                                 <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">
@@ -61,7 +61,7 @@
 
                 <div class="mt-6 flex items-center gap-3">
                     <button type="submit"
-                        class="py-3 px-6 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 cursor-pointer">
+                        class="py-3 px-6 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg glass-button text-white">
                         Simpan Hak Akses
                     </button>
                     <a navigate href="{{ route('admin.sidebar_menu.index') }}"

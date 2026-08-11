@@ -19,28 +19,19 @@
     };
 
     $colorClasses = match ($color) {
-        'primary'
-            => 'bg-linear-to-b from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_1px_2px_rgba(0,0,0,0.1)] active:shadow-inner active:from-blue-700 active:to-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-blue-800',
-        'secondary'
-            => 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:bg-gray-200 border-transparent dark:bg-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-600 dark:focus:bg-neutral-600',
-        'warning' => 'bg-yellow-500 text-white hover:bg-yellow-600 focus:bg-yellow-600 border-transparent',
-        'danger' => 'bg-red-600 text-white hover:bg-red-700 focus:bg-red-700 border-transparent',
-        'success' => 'bg-green-600 text-white hover:bg-green-700 focus:bg-green-700 border-transparent',
-        'outline-primary'
-            => 'bg-white text-blue-600 hover:bg-blue-50 focus:bg-blue-50 border-blue-600/30 hover:border-blue-700 dark:bg-transparent dark:text-blue-500 dark:border-blue-500 dark:hover:bg-blue-500/10 dark:hover:border-blue-400',
-        'outline-secondary'
-            => 'bg-white text-gray-700 hover:bg-gray-50 focus:bg-gray-50 border-gray-200 hover:border-gray-300 dark:bg-transparent dark:text-neutral-300 dark:border-neutral-700 dark:hover:bg-neutral-800 shadow-xl shadow-gray-400/20',
-        'outline-warning'
-            => 'bg-white text-yellow-600 hover:bg-yellow-50 focus:bg-yellow-50 border-yellow-600/30 hover:border-yellow-700 dark:bg-transparent dark:text-yellow-500 dark:border-yellow-500 dark:hover:bg-yellow-500/10',
-        'outline-danger'
-            => 'bg-white text-red-600 hover:bg-red-50 focus:bg-red-50 border-red-600/30 hover:border-red-700 dark:bg-transparent dark:text-red-500 dark:border-red-500 dark:hover:bg-red-500/10',
-        'outline-success'
-            => 'bg-white text-green-600 hover:bg-green-50 focus:bg-green-50 border-green-600/30 hover:border-green-700 dark:bg-transparent dark:text-green-500 dark:border-green-500 dark:hover:bg-green-500/10',
-        default => 'bg-blue-600 text-white hover:bg-blue-700 focus:bg-blue-700 border-transparent',
+        'primary' => 'glass-button text-white font-semibold',
+        'secondary' => 'glass-button text-white font-semibold',
+        'danger' => 'bg-red-500/80 text-white hover:bg-red-600/90 backdrop-blur-md shadow-lg', 
+        'success' => 'bg-green-500/80 text-white hover:bg-green-600/90 backdrop-blur-md shadow-lg',
+        'outline-primary' => 'glass-button text-white font-semibold',
+        'outline-secondary' => 'bg-transparent text-ink hover:underline px-0 py-0', /* Ghost text link */
+        'outline-danger' => 'glass-button text-red-600 border-red-500/30 font-semibold',
+        'outline-success' => 'glass-button text-green-600 border-green-500/30 font-semibold',
+        default => 'glass-button text-white font-semibold',
     };
 
     $baseClasses =
-        'inline-flex items-center justify-center gap-x-2 font-medium rounded-xl border dark:border-1 transition-all duration-200 focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none';
+        'inline-flex items-center justify-center gap-x-2 font-normal rounded-full transition-all duration-200 focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none';
     $classes = implode(' ', array_filter([$class, $baseClasses, $sizeClasses, $colorClasses]));
 
     $attributes = $attributes->merge([

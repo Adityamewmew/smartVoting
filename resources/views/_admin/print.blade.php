@@ -80,7 +80,7 @@
 
     <div class="fixed bottom-4 right-4 no-print flex gap-4">
         <button onclick="window.close()" class="px-4 py-2 bg-gray-500 text-white rounded shadow hover:bg-gray-600 transition">Tutup</button>
-        <button onclick="window.print()" class="px-6 py-2 bg-blue-600 text-white rounded shadow hover:bg-blue-700 transition">Cetak Sekarang</button>
+        <button onclick="window.print()" class="px-6 py-2 glass-button text-white rounded shadow transition">Cetak Sekarang</button>
     </div>
 
     <script>

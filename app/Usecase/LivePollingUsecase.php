@@ -40,12 +40,16 @@ class LivePollingUsecase extends Usecase
         }
     }
 
-    public function getDashboardElections(): array
+    public function getDashboardElections(?string $keywords = null): array
     {
         try {
             $elections = DB::table(DatabaseConst::ELECTIONS())
                 ->whereIn('status', ['active', 'closed'])
                 ->whereNull('deleted_at')
+                ->when($keywords, function ($query, $keywords) {
+                    return $query->where('name', 'like', '%' . $keywords . '%');
+                })
+                ->orderBy('created_at', 'desc')
                 ->get();
 
             return Response::buildSuccess(['list' => $elections], ResponseConst::HTTP_SUCCESS);

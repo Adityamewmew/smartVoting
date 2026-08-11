@@ -3,24 +3,6 @@
 @section('title', 'Manajemen Menu Sidebar')
 
 @section('content')
-    <x-admin.page-header :title="'Data ' . $page['title']" subtitle="Kelola menu sidebar dan hak aksesnya">
-        <a navigate href="{{ route('admin.sidebar_menu.role_access', 1) }}"
-            class="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:border-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400 dark:hover:bg-indigo-900/30">
-            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
-            Akses per Role
-        </a>
-        <x-admin.button href="{{ route('admin.sidebar_menu.add') }}" class="font-bold">
-            @include('_admin._layout.icons.add')
-            Tambah Menu
-        </x-admin.button>
-    </x-admin.page-header>
-
     <div class="mb-6">
         <form action="{{ route('admin.sidebar_menu.index') }}" method="GET" navigate-form
             class="flex flex-col sm:flex-row items-center gap-3">
@@ -44,6 +26,22 @@
                         Reset
                     </x-admin.button>
                 @endif
+            
+                <a navigate href="{{ route('admin.sidebar_menu.role_access', 1) }}"
+            class="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:border-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400 dark:hover:bg-indigo-900/30">
+            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            Akses per Role
+        </a>
+        <x-admin.button href="{{ route('admin.sidebar_menu.add') }}" class="font-bold">
+            @include('_admin._layout.icons.add')
+            Tambah Menu
+        </x-admin.button>
             </div>
         </form>
     </div>
@@ -73,7 +71,7 @@
                         <x-admin.table.td>
                             @php
                                 $colorClasses = [
-                                    'blue'    => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+                                    'blue'    => 'bg-amber-100 text-[var(--color-brand-brown)] dark:bg-blue-900/30 dark:text-amber-400',
                                     'purple'  => 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
                                     'emerald' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
                                     'orange'  => 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
@@ -124,7 +122,7 @@
                                 @include('_admin._layout.icons.sidebar.change-password')
                             </a>
                             <a navigate
-                                class="inline-flex items-center justify-center size-8 text-sm font-semibold rounded-lg border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:border-blue-300 focus:outline-none disabled:opacity-50 disabled:pointer-events-none dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-500"
+                                class="inline-flex items-center justify-center size-8 text-sm font-semibold rounded-lg border border-[var(--color-brand-yellow)]/30 bg-amber-50 text-[var(--color-brand-yellow)] hover:bg-amber-100 hover:border-[var(--color-brand-yellow)]/50 focus:outline-none disabled:opacity-50 disabled:pointer-events-none dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-500"
                                 href="{{ route('admin.sidebar_menu.update', $d->id) }}" title="Edit">
                                 @include('_admin._layout.icons.pencil')
                             </a>

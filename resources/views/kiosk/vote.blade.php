@@ -6,69 +6,69 @@
 <div class="flex-grow flex flex-col p-4 md:p-8 relative">
     
     <!-- Header -->
-    <div class="flex justify-between items-center mb-8 bg-white dark:bg-neutral-800 p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 dark:border-neutral-700">
+    <div class="flex justify-between items-center mb-8 bg-paper p-4 md:p-6 rounded-[20px] shadow-none border border-graphite-hairline">
         <div>
-            <h2 class="text-2xl font-bold text-gray-800 dark:text-white">{{ $election->name }}</h2>
-            <p class="text-sm text-gray-500">Silakan sentuh pada kartu Paslon pilihan Anda</p>
+            <h2 class="text-2xl font-normal text-ink">{{ $election->name }}</h2>
+            <p class="text-sm text-slate font-normal">Silakan sentuh pada kartu Paslon pilihan Anda</p>
         </div>
         <div class="flex flex-col items-end">
-            <span class="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-1">Waktu Tersisa</span>
-            <div id="timer" class="text-4xl font-black text-red-600 tabular-nums">01:00</div>
+            <span class="text-sm font-normal text-slate uppercase tracking-widest mb-1">Waktu Tersisa</span>
+            <div id="timer" class="text-4xl font-normal text-red-600 tabular-nums">01:00</div>
         </div>
     </div>
 
     <!-- Candidate Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 flex-grow content-start">
         @foreach($candidates as $candidate)
-        <button type="button" onclick="confirmVote({{ $candidate->id }}, '{{ $candidate->order_number }}')" class="group relative flex flex-col items-center bg-white dark:bg-neutral-800 rounded-3xl p-6 border-2 border-transparent hover:border-blue-500 shadow-lg hover:shadow-2xl hover:shadow-blue-500/20 transition-all text-left text-gray-800 dark:text-neutral-200 cursor-pointer active:scale-95 focus:outline-none focus:ring-4 focus:ring-blue-500">
+        <button type="button" onclick="confirmVote({{ $candidate->id }}, '{{ $candidate->order_number }}')" class="group relative flex flex-col items-center bg-paper rounded-[20px] p-6 border border-graphite-hairline hover:border-ink transition-colors text-left text-ink cursor-pointer focus:outline-none">
             
-            <div class="absolute -top-6 bg-blue-600 text-white size-14 rounded-full flex items-center justify-center text-2xl font-black border-4 border-gray-50 dark:border-neutral-900 shadow-md">
+            <div class="absolute -top-6 bg-ink text-paper size-14 rounded-full flex items-center justify-center text-2xl font-normal border-4 border-paper shadow-none">
                 {{ $candidate->order_number }}
             </div>
 
-            <div class="mt-4 mb-4 w-full aspect-square bg-gray-100 dark:bg-neutral-700 rounded-2xl overflow-hidden flex items-center justify-center border border-gray-200 dark:border-neutral-600 relative">
+            <div class="mt-4 mb-4 w-full aspect-square bg-vellum rounded-xl overflow-hidden flex items-center justify-center border border-graphite-hairline relative">
                 @if($candidate->photo_path)
                     <img src="{{ Storage::url($candidate->photo_path) }}" alt="Foto Paslon {{ $candidate->order_number }}" class="w-full h-full object-cover">
                 @else
-                    <span class="text-gray-400 font-bold text-xl uppercase">No Image</span>
+                    <span class="text-slate font-normal text-xl uppercase">No Image</span>
                 @endif
-                <div class="absolute inset-0 bg-blue-600/0 group-hover:bg-blue-600/10 transition-colors"></div>
+                <div class="absolute inset-0 bg-ink/0 group-hover:bg-ink/5 transition-colors"></div>
             </div>
 
-            <h3 class="text-xl font-bold text-center w-full">{{ $candidate->chairman_name }}</h3>
-            <span class="text-sm text-gray-500 dark:text-gray-400 font-semibold mb-3">&</span>
-            <h3 class="text-xl font-bold text-center w-full">{{ $candidate->vice_chairman_name }}</h3>
+            <h3 class="text-xl font-normal text-center w-full">{{ $candidate->chairman_name }}</h3>
+            <span class="text-sm text-slate font-normal mb-3">&</span>
+            <h3 class="text-xl font-normal text-center w-full">{{ $candidate->vice_chairman_name }}</h3>
 
         </button>
         @endforeach
     </div>
 
     <!-- Overlay Loading & Success -->
-    <div id="loading-overlay" class="fixed inset-0 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center">
-        <div id="loading-spinner" class="animate-spin inline-block size-16 border-[4px] border-current border-t-transparent text-blue-600 rounded-full" role="status" aria-label="loading">
+    <div id="loading-overlay" class="fixed inset-0 bg-paper/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center">
+        <div id="loading-spinner" class="animate-spin inline-block size-16 border-2 border-vellum border-t-ink rounded-full" role="status" aria-label="loading">
             <span class="sr-only">Loading...</span>
         </div>
         <div id="success-message" class="hidden flex-col items-center">
             <div class="size-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6">
-                <svg class="size-14" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <svg class="size-14" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
             </div>
-            <h2 class="text-3xl font-extrabold text-gray-800 dark:text-white">Terima Kasih!</h2>
-            <p class="text-xl text-gray-600 dark:text-neutral-400 mt-2">Suara Anda telah berhasil disimpan.</p>
+            <h2 class="text-3xl font-normal text-ink">Terima Kasih!</h2>
+            <p class="text-xl text-slate font-normal mt-2">Suara Anda telah berhasil disimpan.</p>
         </div>
     </div>
 
     <!-- Modal Confirm -->
-    <div id="confirm-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-        <div class="bg-white dark:bg-neutral-800 max-w-lg w-full rounded-3xl p-8 shadow-2xl transform scale-95 transition-transform duration-300" id="confirm-modal-content">
-            <h3 class="text-2xl font-bold text-gray-900 dark:text-white text-center mb-4">Konfirmasi Pilihan</h3>
-            <p class="text-lg text-gray-600 dark:text-neutral-400 text-center mb-8">
-                Apakah Anda yakin ingin memilih Paslon Nomor <span id="confirm-nomor" class="font-black text-blue-600 text-2xl ml-1"></span> ?
+    <div id="confirm-modal" class="fixed inset-0 bg-ink/60 backdrop-blur-sm z-40 hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-paper max-w-lg w-full rounded-[20px] p-8 shadow-none border border-graphite-hairline transform scale-95 transition-transform duration-300" id="confirm-modal-content">
+            <h3 class="text-2xl font-normal text-ink text-center mb-4">Konfirmasi Pilihan</h3>
+            <p class="text-lg text-slate font-normal text-center mb-8">
+                Apakah Anda yakin ingin memilih Paslon Nomor <span id="confirm-nomor" class="font-normal text-ink text-2xl ml-1"></span> ?
             </p>
             <div class="flex gap-4">
-                <button type="button" onclick="closeConfirm()" class="flex-1 py-4 px-4 inline-flex justify-center items-center gap-x-2 text-lg font-bold rounded-xl border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800">
+                <button type="button" onclick="closeConfirm()" class="flex-1 py-4 px-4 inline-flex justify-center items-center gap-x-2 text-lg font-normal rounded-full border border-graphite-hairline bg-paper text-ink hover:bg-vellum focus:outline-none transition-colors cursor-pointer">
                     Batal
                 </button>
-                <button type="button" id="btn-submit-vote" class="flex-1 py-4 px-4 inline-flex justify-center items-center gap-x-2 text-lg font-bold rounded-xl border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 shadow-lg shadow-blue-500/30">
+                <button type="button" id="btn-submit-vote" class="flex-1 py-4 px-4 inline-flex justify-center items-center gap-x-2 text-lg font-normal rounded-full border border-transparent bg-ink text-paper hover:bg-ink/90 focus:outline-none transition-colors cursor-pointer">
                     Ya, Yakin
                 </button>
             </div>
@@ -81,7 +81,7 @@
 <script>
     let timeLeft = 60;
     const timerEl = document.getElementById('timer');
-    const token = '{{ $token }}';
+    const token = '{!! $token !!}';
     let selectedCandidateId = null;
     let timerInterval;
 

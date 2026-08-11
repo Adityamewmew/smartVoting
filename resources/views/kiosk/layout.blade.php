@@ -12,7 +12,7 @@
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-gray-50 dark:bg-neutral-900 text-gray-800 dark:text-neutral-200 antialiased min-h-screen flex flex-col items-center justify-center select-none">
+<body class="font-normal antialiased min-h-screen flex flex-col items-center justify-center select-none">
     
     <main class="w-full h-full min-h-screen flex flex-col relative">
         @yield('content')

@@ -31,20 +31,17 @@ class CandidateController extends Controller
         $elections = $this->electionUsecase->getAll(['no_pagination' => true]);
         $elections = $elections['data']['list'] ?? [];
 
-        // If no election_id is provided, try to select the first active or scheduled election, or just the first one
+        // If no election_id is provided in the request, try to select the first active or scheduled election, or just the first one
         $electionId = $request->get('election_id');
-        if (! $electionId && count($elections) > 0) {
+        if (! $request->has('election_id') && count($elections) > 0) {
             $electionId = $elections[0]->id;
         }
 
-        $data = [];
-        if ($electionId) {
-            $response = $this->usecase->getAll([
-                'keywords' => $request->get('keywords'),
-                'election_id' => $electionId,
-            ]);
-            $data = $response['data']['list'] ?? [];
-        }
+        $response = $this->usecase->getAll([
+            'keywords' => $request->get('keywords'),
+            'election_id' => $electionId,
+        ]);
+        $data = $response['data']['list'] ?? [];
 
         return view('_admin.candidates.index', [
             'data' => $data,

@@ -23,7 +23,7 @@
         default => 'py-2.5 sm:py-3 px-4 sm:text-sm',
     };
 
-    $baseInputClasses = "{$sizeClasses} block w-full border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 placeholder-gray-400";
+    $baseInputClasses = "{$sizeClasses} block w-full rounded-[8px] focus:ring-2 focus:ring-white/50 dark:text-neutral-400 placeholder-ink/60 font-normal glass-input";
     $disabledClass = $disabled ? 'opacity-50 cursor-not-allowed' : '';
     $readonlyClass = $readonly ? 'bg-gray-50 dark:bg-neutral-800/50' : '';
     $inputClasses = implode(
@@ -47,7 +47,7 @@
 
 <div class="space-y-2">
     @if ($label)
-        <label for="{{ $inputId }}" class="text-sm text-gray-600 dark:text-neutral-200 pb-3">
+        <label for="{{ $inputId }}" class="text-sm text-ink font-normal pb-3">
             {{ $label }}
             @if ($required)
                 <span class="text-red-500">*</span>

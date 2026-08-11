@@ -6,23 +6,20 @@
     class="hs-overlay  [--auto-close:lg]
   hs-overlay-open:translate-x-0
   -translate-x-full transition-all duration-300 transform
-  w-65 h-full
+  w-65
   hidden
-  fixed inset-y-0 start-0 z-60
-  lg:block lg:translate-x-0 lg:end-auto lg:bottom-0
+  fixed top-16 bottom-0 start-0 z-40
+  lg:block lg:translate-x-0 lg:end-auto
   dark:bg-neutral-800 dark:border-neutral-700
-  bg-white shadow-xl shadow-gray-300/20"
+  glass-header border-r border-white/20 shadow-lg"
     role="dialog" tabindex="-1" aria-label="Sidebar">
     <div class="relative flex flex-col h-full max-h-full">
-        <div class="px-2 pt-0 flex items-center bg-primary/3">
-            <a class="flex-none rounded-xl text-xl inline-block font-semibold focus:outline-hidden focus:opacity-80"
-                href="#" aria-label="Smart Project Starter Kit">
-                <img src="{{ asset('images/logo-light.png') }}" alt="Logo Smart Project Starter Kit" class="w-56 h-auto p-4">
-            </a>
+        <div class="px-5 pt-6 pb-2">
+            <span class="text-xs font-bold text-slate uppercase tracking-wider">Menu Aplikasi</span>
         </div>
 
         <div
-            class="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500 mt-4">
+            class="flex-1 overflow-y-auto [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-track]:bg-neutral-700 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500">
             <nav class="hs-accordion-group p-4 w-full flex flex-col flex-wrap">
                 <ul class="flex flex-col space-y-1.5">
                     @php

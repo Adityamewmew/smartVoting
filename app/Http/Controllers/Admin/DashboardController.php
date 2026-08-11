@@ -20,7 +20,7 @@ class DashboardController extends Controller
         protected LivePollingUsecase $livePollingUsecase
     ) {}
 
-    public function index(): View|RedirectResponse|Response
+    public function index(Request $request): View|RedirectResponse|Response
     {
         if (Auth::user()->access_type == 2) {
             return redirect()->route('operator.kiosk.index');
@@ -39,17 +39,27 @@ class DashboardController extends Controller
             ->values()
             ->all();
 
+        $electionId = $request->get('election_id');
+        $keywords = $request->get('keywords');
+
         // Fetch Elections for Admin Dashboard (both currently active or closed/past)
-        $process = $this->livePollingUsecase->getDashboardElections();
-        $activeElections = collect($process['data']['list'] ?? []);
+        $process = $this->livePollingUsecase->getDashboardElections($keywords);
+        $electionsList = collect($process['data']['list'] ?? []);
+
+        if ($electionId) {
+            $selectedElection = $electionsList->firstWhere('id', $electionId);
+        } else {
+            // Default to the first active election, or the first election
+            $selectedElection = $electionsList->firstWhere('status', 'active') ?? $electionsList->first();
+        }
 
         // Fetch recent voting sessions (T-07)
         $processSessions = $this->livePollingUsecase->getRecentSessions();
         $recentSessions = $processSessions['data']['sessions'] ?? [];
 
         return view('_admin.dashboard', [
-            'modules' => $modules,
-            'activeElections' => $activeElections,
+            'electionsList' => $electionsList,
+            'selectedElection' => $selectedElection,
             'recentSessions' => $recentSessions,
         ]);
     }

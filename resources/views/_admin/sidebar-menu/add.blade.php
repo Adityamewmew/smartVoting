@@ -32,7 +32,7 @@
                         <label for="label" class="block text-sm font-medium mb-2 dark:text-white">Label Menu <span
                                 class="text-red-500">*</span></label>
                         <input type="text" id="label" name="label" value="{{ old('label') }}"
-                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 placeholder-neutral-300 dark:placeholder-neutral-500 @error('label') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror"
+                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 placeholder-neutral-300 dark:placeholder-neutral-500 @error('label') border-red-500 focus:border-red-500 focus:ring-red-500 @enderror"
                             placeholder="Contoh: Dashboard" required>
                         @error('label')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
@@ -44,7 +44,7 @@
                         <label for="group" class="block text-sm font-medium mb-2 dark:text-white">Group <span
                                 class="text-red-500">*</span></label>
                         <select id="group" name="group"
-                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 @error('group') border-red-500 @enderror"
+                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 @error('group') border-red-500 @enderror"
                             required>
                             <option value="">-- Pilih Group --</option>
                             @foreach ($groups as $g)
@@ -60,7 +60,7 @@
                     <div>
                         <label for="parent_id" class="block text-sm font-medium mb-2 dark:text-white">Parent Menu</label>
                         <select id="parent_id" name="parent_id"
-                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 @error('parent_id') border-red-500 @enderror">
+                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 @error('parent_id') border-red-500 @enderror">
                             <option value="">-- Tidak ada (item root) --</option>
                             @foreach ($parentOptions as $opt)
                                 <option value="{{ $opt->id }}" @selected(old('parent_id') == $opt->id)>
@@ -78,7 +78,7 @@
                     <div>
                         <label for="route_name" class="block text-sm font-medium mb-2 dark:text-white">Route Name</label>
                         <input type="text" id="route_name" name="route_name" value="{{ old('route_name') }}"
-                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 font-mono placeholder-neutral-300 dark:placeholder-neutral-500 @error('route_name') border-red-500 @enderror"
+                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 font-mono placeholder-neutral-300 dark:placeholder-neutral-500 @error('route_name') border-red-500 @enderror"
                             placeholder="Contoh: admin.dashboard">
                         <p class="text-xs text-gray-500 mt-1 dark:text-neutral-500">Named route Laravel. Kosongkan jika item ini adalah accordion parent tanpa link.</p>
                         @error('route_name')
@@ -90,7 +90,7 @@
                     <div>
                         <label for="icon" class="block text-sm font-medium mb-2 dark:text-white">Icon (blade include path)</label>
                         <input type="text" id="icon" name="icon" value="{{ old('icon') }}"
-                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 font-mono placeholder-neutral-300 dark:placeholder-neutral-500 @error('icon') border-red-500 @enderror"
+                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 font-mono placeholder-neutral-300 dark:placeholder-neutral-500 @error('icon') border-red-500 @enderror"
                             placeholder="Contoh: _admin._layout.icons.sidebar.dashboard">
                         @error('icon')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
@@ -101,7 +101,7 @@
                     <div>
                         <label for="sort_order" class="block text-sm font-medium mb-2 dark:text-white">Urutan Tampil</label>
                         <input type="number" id="sort_order" name="sort_order" value="{{ old('sort_order', 0) }}"
-                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 @error('sort_order') border-red-500 @enderror"
+                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 @error('sort_order') border-red-500 @enderror"
                             min="0">
                         @error('sort_order')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
@@ -112,7 +112,7 @@
                     <div>
                         <label for="is_active" class="block text-sm font-medium mb-2 dark:text-white">Status</label>
                         <select id="is_active" name="is_active"
-                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
+                            class="py-3 px-4 block w-full border-gray-200 rounded-lg text-sm focus:border-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
                             <option value="1" @selected(old('is_active', '1') == '1')>Aktif</option>
                             <option value="0" @selected(old('is_active') == '0')>Nonaktif</option>
                         </select>
@@ -121,7 +121,7 @@
 
                 <div class="mt-6 flex items-center gap-3">
                     <button type="submit"
-                        class="py-3 px-6 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 cursor-pointer">
+                        class="py-3 px-6 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg glass-button text-white">
                         Simpan Menu
                     </button>
                     <a navigate href="{{ route('admin.sidebar_menu.index') }}"

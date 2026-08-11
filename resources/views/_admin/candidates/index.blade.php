@@ -3,20 +3,22 @@
 @section('title', 'Data ' . $page['title'])
 
 @section('content')
-    <x-admin.page-header :title="'Data ' . $page['title']" subtitle="Daftar Kandidat Paslon">
-        <x-admin.button href="{{ route('admin.candidates.add', ['election_id' => $selectedElectionId]) }}" class="font-bold">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <h2 class="text-2xl font-semibold text-ink">Data {{ $page['title'] }}</h2>
+        <x-admin.button href="{{ route('admin.candidates.add', ['election_id' => $selectedElectionId]) }}" class="font-bold" size="sm">
             @include('_admin._layout.icons.add')
             Tambah Kandidat
         </x-admin.button>
-    </x-admin.page-header>
+    </div>
 
     <div class="mb-6">
+        <p class="text-xs font-semibold text-slate mb-3 uppercase tracking-wider">Pencarian Data</p>
         <form action="{{ route('admin.candidates.index') }}" method="GET" navigate-form
             class="flex flex-col sm:flex-row items-center gap-3">
             
             <!-- Select Event -->
             <div class="w-full sm:w-64">
-                <select name="election_id" class="w-full py-2.5 sm:py-2 px-4 sm:text-sm block border border-gray-200 rounded-lg focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 placeholder-gray-400" onchange="this.form.submit()">
+                <select name="election_id" class="w-full py-2.5 sm:py-2 px-4 sm:text-sm block border border-gray-200 rounded-lg focus:border-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 placeholder-gray-400 glass-input" onchange="this.form.submit()">
                     <option value="">-- Semua Event Pemilihan --</option>
                     @foreach($elections as $election)
                         <option value="{{ $election->id }}" {{ $selectedElectionId == $election->id ? 'selected' : '' }}>
@@ -54,47 +56,53 @@
                     <x-admin.table.th>No. Urut</x-admin.table.th>
                     <x-admin.table.th>Foto</x-admin.table.th>
                     <x-admin.table.th>Nama Paslon</x-admin.table.th>
+                    <x-admin.table.th>Event</x-admin.table.th>
                     <x-admin.table.th>Visi & Misi</x-admin.table.th>
                     <x-admin.table.th align="end"></x-admin.table.th>
                 </tr>
             </x-admin.table.thead>
             <x-admin.table.tbody>
                 @forelse($data as $d)
-                    <x-admin.table.tr>
+                    <x-admin.table.tr class="hover:bg-vellum/50 transition">
                         <x-admin.table.td>
-                            <span class="block text-2xl font-black text-gray-800 dark:text-neutral-200">{{ $d->order_number }}</span>
+                            <span class="block text-2xl font-normal text-ink">{{ $d->order_number }}</span>
                         </x-admin.table.td>
                         <x-admin.table.td>
                             @if($d->photo_path)
-                                <img src="{{ Storage::url($d->photo_path) }}" alt="Foto Paslon" class="w-16 h-16 object-cover rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-700">
+                                <img src="{{ Storage::url($d->photo_path) }}" alt="Foto Paslon" class="w-16 h-16 object-cover rounded-xl shadow-none border border-graphite-hairline">
                             @else
-                                <div class="w-16 h-16 bg-neutral-100 dark:bg-neutral-800 rounded-xl flex items-center justify-center border border-neutral-200 dark:border-neutral-700">
-                                    <span class="text-neutral-400 text-[10px] uppercase font-bold tracking-wider">No Image</span>
+                                <div class="w-16 h-16 bg-vellum rounded-xl flex items-center justify-center border border-graphite-hairline">
+                                    <span class="text-slate text-[10px] uppercase font-normal tracking-wider">No Image</span>
                                 </div>
                             @endif
                         </x-admin.table.td>
                         <x-admin.table.td>
-                            <span class="block text-sm font-bold text-gray-800 dark:text-neutral-200">K: {{ $d->chairman_name }}</span>
-                            <span class="block text-sm text-gray-600 dark:text-neutral-400 font-medium">W: {{ $d->vice_chairman_name }}</span>
+                            <span class="block text-sm font-normal text-ink">K: {{ $d->chairman_name }}</span>
+                            <span class="block text-sm text-slate font-normal mt-1">W: {{ $d->vice_chairman_name }}</span>
                         </x-admin.table.td>
                         <x-admin.table.td>
-                            <div class="max-w-xs text-xs text-gray-500 dark:text-neutral-400">
+                            <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-full text-xs font-normal bg-brand-yellow/10 text-yellow-700">
+                                {{ $d->election_name }}
+                            </span>
+                        </x-admin.table.td>
+                        <x-admin.table.td>
+                            <div class="max-w-xs text-xs text-slate space-y-1">
                                 @if($d->vision)
-                                    <p class="truncate"><span class="font-semibold text-gray-700 dark:text-neutral-300">Visi:</span> {{ $d->vision }}</p>
+                                    <p class="truncate"><span class="font-normal text-ink">Visi:</span> {{ $d->vision }}</p>
                                 @endif
                                 @if($d->mission)
-                                    <p class="truncate"><span class="font-semibold text-gray-700 dark:text-neutral-300">Misi:</span> {{ $d->mission }}</p>
+                                    <p class="truncate"><span class="font-normal text-ink">Misi:</span> {{ $d->mission }}</p>
                                 @endif
                             </div>
                         </x-admin.table.td>
                         <x-admin.table.td innerClass="px-6 py-1.5 flex items-center justify-end gap-x-1">
                             <a navigate
-                                class="inline-flex items-center justify-center size-8 text-sm font-semibold rounded-lg border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:border-blue-300 focus:outline-none focus:bg-blue-100 disabled:opacity-50 disabled:pointer-events-none dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-500 dark:hover:bg-blue-800/30 dark:hover:border-blue-700"
+                                class="inline-flex items-center justify-center size-8 text-sm font-normal rounded-full border border-graphite-hairline bg-paper text-slate hover:bg-vellum hover:text-ink focus:outline-none transition-colors"
                                 href="{{ route('admin.candidates.update', $d->id) }}" title="Edit">
                                 @include('_admin._layout.icons.pencil')
                             </a>
                             <button type="button"
-                                class="inline-flex items-center justify-center size-8 text-sm font-semibold rounded-lg border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 hover:border-red-300 focus:outline-none focus:bg-red-100 disabled:opacity-50 disabled:pointer-events-none dark:border-red-800 dark:bg-red-900/20 dark:text-red-500 dark:hover:bg-red-800/30 dark:hover:border-red-700 cursor-pointer"
+                                class="inline-flex items-center justify-center size-8 text-sm font-normal rounded-full border border-graphite-hairline bg-paper text-slate hover:bg-ink hover:text-paper hover:border-ink focus:outline-none transition-colors cursor-pointer"
                                 title="Delete" data-hs-overlay="#delete-modal"
                                 onclick="setDeleteData('{{ $d->id }}', 'Kandidat Nomor Urut {{ $d->order_number }}')">
                                 @include('_admin._layout.icons.trash')

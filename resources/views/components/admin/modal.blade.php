@@ -28,7 +28,7 @@
                     class="flex justify-between items-center py-5 px-6 border-b border-neutral-100 dark:border-neutral-700">
                     <div class="flex items-center gap-3">
                         @if ($icon)
-                            <div class="p-2 bg-blue-50 rounded-xl dark:bg-blue-900/30">
+                            <div class="p-2 bg-amber-50 rounded-xl dark:bg-blue-900/30">
                                 {!! $icon !!}
                             </div>
                         @endif

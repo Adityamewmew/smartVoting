@@ -7,13 +7,16 @@
 @endphp
 
 @section('content')
-    <x-admin.page-header :title="'Data ' . $page['title']" subtitle="Pengguna Aplikasi">
-        <x-admin.button href="{{ route('admin.users.add') }}" class="font-bold">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <h2 class="text-2xl font-semibold text-ink">{{ $page['title'] ?? 'Pengguna Aplikasi' }}</h2>
+        <x-admin.button href="{{ route('admin.users.add') }}" class="font-bold" size="sm">
             @include('_admin._layout.icons.add')
             Tambah Data
         </x-admin.button>
-    </x-admin.page-header>
+    </div>
+
     <div class="mb-6">
+        <p class="text-xs font-semibold text-slate mb-3 uppercase tracking-wider">Pencarian Data</p>
         <form action="{{ route('admin.users.index') }}" method="GET" navigate-form
             class="flex flex-col sm:flex-row items-center gap-3">
             <div class="w-full sm:w-64">
@@ -52,47 +55,44 @@
             </x-admin.table.thead>
             <x-admin.table.tbody>
                 @forelse($data as $d)
-                    <x-admin.table.tr>
+                    <x-admin.table.tr class="hover:bg-vellum/50 transition">
                         <x-admin.table.td>
                             <div class="flex items-center gap-x-3">
-                                <span
-                                    class="inline-flex items-center justify-center size-9.5 rounded-full bg-white border border-gray-300 dark:bg-neutral-800 dark:border-neutral-700">
-                                    <span class="font-medium text-sm text-gray-800 dark:text-neutral-200">
+                                <span class="inline-flex items-center justify-center size-9.5 rounded-full bg-vellum border border-graphite-hairline">
+                                    <span class="font-normal text-sm text-ink">
                                         {{ strtoupper(substr($d->name, 0, 1)) }}
                                     </span>
                                 </span>
                                 <div class="grow">
-                                    <span
-                                        class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">{{ $d->name }}</span>
-                                    <span
-                                        class="block text-sm text-gray-500 dark:text-neutral-500">{{ $d->email }}</span>
+                                    <span class="block text-sm font-normal text-ink">{{ $d->name }}</span>
+                                    <span class="block text-sm text-slate font-normal">{{ $d->email }}</span>
                                 </div>
                             </div>
                         </x-admin.table.td>
                         <x-admin.table.td>
-                            <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200">
+                            <span class="text-sm font-normal text-ink">
                                 {{ UserConst::getAccessTypes()[$d->access_type] ?? '-' }}
                             </span>
                         </x-admin.table.td>
                         <x-admin.table.td innerClass="px-6 py-1.5 flex items-center justify-end gap-x-1">
                             <a navigate
-                                class="inline-flex items-center justify-center size-8 text-sm font-semibold rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-100 disabled:opacity-50 disabled:pointer-events-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:hover:bg-neutral-700"
+                                class="inline-flex items-center justify-center size-8 text-sm font-normal rounded-full border border-graphite-hairline bg-paper text-slate hover:bg-vellum hover:text-ink focus:outline-none transition-colors"
                                 href="{{ route('admin.users.detail', $d->id) }}" title="View">
                                 @include('_admin._layout.icons.view_detail')
                             </a>
                             <a navigate
-                                class="inline-flex items-center justify-center size-8 text-sm font-semibold rounded-lg border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:border-blue-300 focus:outline-none focus:bg-blue-100 disabled:opacity-50 disabled:pointer-events-none dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-500 dark:hover:bg-blue-800/30 dark:hover:border-blue-700"
+                                class="inline-flex items-center justify-center size-8 text-sm font-normal rounded-full border border-graphite-hairline bg-paper text-slate hover:bg-vellum hover:text-ink focus:outline-none transition-colors"
                                 href="{{ route('admin.users.update', $d->id) }}" title="Edit">
                                 @include('_admin._layout.icons.pencil')
                             </a>
                             <button type="button"
-                                class="inline-flex items-center justify-center size-8 text-sm font-semibold rounded-lg border border-yellow-200 bg-yellow-50 text-yellow-600 hover:bg-yellow-100 hover:border-yellow-300 focus:outline-none focus:bg-yellow-100 disabled:opacity-50 disabled:pointer-events-none dark:border-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-500 dark:hover:bg-yellow-800/30 dark:hover:border-yellow-700 cursor-pointer"
+                                class="inline-flex items-center justify-center size-8 text-sm font-normal rounded-full border border-graphite-hairline bg-paper text-slate hover:bg-vellum hover:text-ink focus:outline-none transition-colors cursor-pointer"
                                 title="Reset Password" data-hs-overlay="#reset-modal"
                                 onclick="setResetData('{{ $d->id }}', '{{ $d->name }}')">
                                 @include('_admin._layout.icons.sidebar.change-password')
                             </button>
                             <button type="button"
-                                class="inline-flex items-center justify-center size-8 text-sm font-semibold rounded-lg border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 hover:border-red-300 focus:outline-none focus:bg-red-100 disabled:opacity-50 disabled:pointer-events-none dark:border-red-800 dark:bg-red-900/20 dark:text-red-500 dark:hover:bg-red-800/30 dark:hover:border-red-700 cursor-pointer"
+                                class="inline-flex items-center justify-center size-8 text-sm font-normal rounded-full border border-graphite-hairline bg-paper text-slate hover:bg-ink hover:text-paper hover:border-ink focus:outline-none transition-colors cursor-pointer"
                                 title="Delete" data-hs-overlay="#delete-modal"
                                 onclick="setDeleteData('{{ $d->id }}', '{{ $d->name }}')">
                                 @include('_admin._layout.icons.trash')

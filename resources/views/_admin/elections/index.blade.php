@@ -3,14 +3,16 @@
 @section('title', 'Event Pemilihan')
 
 @section('content')
-    <x-admin.page-header :title="'Data ' . $page['title']" subtitle="Daftar Event Pemilihan">
-        <x-admin.button href="{{ route('admin.elections.add') }}" class="font-bold">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <h2 class="text-2xl font-semibold text-ink">{{ $page['title'] ?? 'Event Pemilihan' }}</h2>
+        <x-admin.button href="{{ route('admin.elections.add') }}" class="font-bold" size="sm">
             @include('_admin._layout.icons.add')
             Tambah Event
         </x-admin.button>
-    </x-admin.page-header>
+    </div>
 
     <div class="mb-6">
+        <p class="text-xs font-semibold text-slate mb-3 uppercase tracking-wider">Pencarian Data</p>
         <form action="{{ route('admin.elections.index') }}" method="GET" navigate-form
             class="flex flex-col sm:flex-row items-center gap-3">
             <div class="w-full sm:w-64">
@@ -43,21 +45,21 @@
             </x-admin.table.thead>
             <x-admin.table.tbody>
                 @forelse($data as $d)
-                    <x-admin.table.tr>
+                    <x-admin.table.tr class="hover:bg-vellum/50 transition">
                         <x-admin.table.td>
-                            <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">{{ $d->name }}</span>
+                            <span class="block text-sm font-normal text-ink">{{ $d->name }}</span>
                             @if($d->description)
-                                <span class="block text-xs text-gray-500 dark:text-neutral-500 max-w-xs truncate">{{ $d->description }}</span>
+                                <span class="block text-xs text-slate max-w-xs truncate">{{ $d->description }}</span>
                             @endif
                             @if($d->slug)
-                                <a href="{{ url('/pemilihan/' . $d->slug) }}" target="_blank" class="mt-1 inline-flex items-center gap-x-1 text-xs font-medium text-blue-600 decoration-2 hover:underline dark:text-blue-500">
+                                <a href="{{ url('/pemilihan/' . $d->slug) }}" target="_blank" class="mt-1 inline-flex items-center gap-x-1 text-xs font-normal text-slate hover:text-ink hover:underline">
                                     <svg class="shrink-0 size-3" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
                                     /pemilihan/{{ $d->slug }}
                                 </a>
                             @endif
                         </x-admin.table.td>
                         <x-admin.table.td>
-                            <span class="block text-sm text-gray-800 dark:text-neutral-200">
+                            <span class="block text-sm text-ink">
                                 {{ \Carbon\Carbon::parse($d->start_time)->format('d M Y H:i') }}
                                 -
                                 {{ \Carbon\Carbon::parse($d->end_time)->format('d M Y H:i') }}
@@ -65,12 +67,6 @@
                         </x-admin.table.td>
                         <x-admin.table.td>
                             @php
-                                $statusColors = [
-                                    'draft' => 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-200',
-                                    'scheduled' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800/30 dark:text-yellow-500',
-                                    'active' => 'bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-500',
-                                    'closed' => 'bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-500',
-                                ];
                                 $statusLabels = [
                                     'draft' => 'Draft',
                                     'scheduled' => 'Terjadwal',
@@ -78,23 +74,21 @@
                                     'closed' => 'Ditutup',
                                 ];
                             @endphp
-                            <span class="inline-flex items-center gap-1.5 py-0.5 px-2 rounded-md text-xs font-medium {{ $statusColors[$d->status] ?? $statusColors['draft'] }}">
-                                {{ $statusLabels[$d->status] ?? ucfirst($d->status) }}
-                            </span>
+                            <x-admin.badge :status="$d->status" :text="$statusLabels[$d->status] ?? ucfirst($d->status)" />
                         </x-admin.table.td>
                         <x-admin.table.td innerClass="px-6 py-1.5 flex items-center justify-end gap-x-1">
                             <a navigate
-                                class="inline-flex items-center justify-center size-8 text-sm font-semibold rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 focus:outline-none focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-900 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-800"
+                                class="inline-flex items-center justify-center size-8 text-sm font-normal rounded-full border border-graphite-hairline bg-paper text-slate hover:bg-vellum hover:text-ink focus:outline-none transition-colors"
                                 href="{{ route('admin.elections.detail', $d->id) }}" title="Lihat Detail">
                                 <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                             </a>
                             <a navigate
-                                class="inline-flex items-center justify-center size-8 text-sm font-semibold rounded-lg border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100 hover:border-blue-300 focus:outline-none focus:bg-blue-100 disabled:opacity-50 disabled:pointer-events-none dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-500 dark:hover:bg-blue-800/30 dark:hover:border-blue-700"
+                                class="inline-flex items-center justify-center size-8 text-sm font-normal rounded-full border border-graphite-hairline bg-paper text-slate hover:bg-vellum hover:text-ink focus:outline-none transition-colors"
                                 href="{{ route('admin.elections.update', $d->id) }}" title="Edit">
                                 @include('_admin._layout.icons.pencil')
                             </a>
                             <button type="button"
-                                class="inline-flex items-center justify-center size-8 text-sm font-semibold rounded-lg border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 hover:border-red-300 focus:outline-none focus:bg-red-100 disabled:opacity-50 disabled:pointer-events-none dark:border-red-800 dark:bg-red-900/20 dark:text-red-500 dark:hover:bg-red-800/30 dark:hover:border-red-700 cursor-pointer"
+                                class="inline-flex items-center justify-center size-8 text-sm font-normal rounded-full border border-graphite-hairline bg-paper text-slate hover:bg-ink hover:text-paper hover:border-ink focus:outline-none transition-colors cursor-pointer"
                                 title="Delete" data-hs-overlay="#delete-modal"
                                 onclick="setDeleteData('{{ $d->id }}', '{{ addslashes($d->name) }}')">
                                 @include('_admin._layout.icons.trash')
