@@ -42,42 +42,40 @@
         {{-- Recent Voting Sessions --}}
         <section>
             <x-admin.card class="border-graphite-hairline p-0 overflow-hidden shadow-none">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-graphite-hairline">
-                        <thead class="bg-paper">
-                            <tr>
-                                <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">No.</th>
-                                <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">Nama Event</th>
-                                <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">Operator</th>
-                                <th scope="col" class="px-6 py-4 text-center text-xs font-normal text-slate uppercase">Status</th>
-                                <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">Waktu Dibuka</th>
-                                <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">Waktu Ditutup</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-graphite-hairline">
-                            @forelse($recentSessions as $i => $session)
-                                <tr class="hover:bg-vellum/50 transition">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-normal text-ink">
-                                        {{ ($recentSessions->currentPage() - 1) * $recentSessions->perPage() + $i + 1 }}
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-ink">{{ $session->election_name }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-ink">{{ $session->operator_name }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                                        <x-admin.badge :text="ucfirst($session->status)" :status="$session->status" />
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate">{{ \Carbon\Carbon::parse($session->open_time)->format('d M Y, H:i:s') }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate">
-                                        {{ $session->close_time ? \Carbon\Carbon::parse($session->close_time)->format('d M Y, H:i:s') : '-' }}
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="px-6 py-8 whitespace-nowrap text-sm text-center text-slate">Belum ada aktivitas voting</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+            <x-admin.table.wrapper class="shadow-none rounded-none border-0">
+                <x-admin.table>
+                    <x-admin.table.thead>
+                        <tr>
+                            <x-admin.table.th>No.</x-admin.table.th>
+                            <x-admin.table.th>Nama Event</x-admin.table.th>
+                            <x-admin.table.th>Operator</x-admin.table.th>
+                            <x-admin.table.th align="center">Status</x-admin.table.th>
+                            <x-admin.table.th>Waktu Dibuka</x-admin.table.th>
+                            <x-admin.table.th>Waktu Ditutup</x-admin.table.th>
+                        </tr>
+                    </x-admin.table.thead>
+                    <x-admin.table.tbody>
+                        @forelse($recentSessions as $i => $session)
+                            <x-admin.table.tr class="hover:bg-vellum/50 transition">
+                                <x-admin.table.td>{{ ($recentSessions->currentPage() - 1) * $recentSessions->perPage() + $i + 1 }}</x-admin.table.td>
+                                <x-admin.table.td>{{ $session->election_name }}</x-admin.table.td>
+                                <x-admin.table.td>{{ $session->operator_name }}</x-admin.table.td>
+                                <x-admin.table.td innerClass="text-center">
+                                    <x-admin.badge :text="ucfirst($session->status)" :status="$session->status" />
+                                </x-admin.table.td>
+                                <x-admin.table.td class="text-slate">{{ \Carbon\Carbon::parse($session->open_time)->format('d M Y, H:i:s') }}</x-admin.table.td>
+                                <x-admin.table.td class="text-slate">
+                                    {{ $session->close_time ? \Carbon\Carbon::parse($session->close_time)->format('d M Y, H:i:s') : '-' }}
+                                </x-admin.table.td>
+                            </x-admin.table.tr>
+                        @empty
+                            <x-admin.table.tr>
+                                <x-admin.table.td colspan="6" innerClass="text-center text-slate py-8">Belum ada aktivitas voting</x-admin.table.td>
+                            </x-admin.table.tr>
+                        @endforelse
+                    </x-admin.table.tbody>
+                </x-admin.table>
+            </x-admin.table.wrapper>
                 
                 @if (count($recentSessions) > 0 && $recentSessions->hasPages())
                     <div class="p-4 border-t border-graphite-hairline">

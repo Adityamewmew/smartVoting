@@ -19,7 +19,7 @@
     </div>
 
     {{-- Info Card --}}
-    <x-admin.card class="mb-6 border-graphite-hairline flex flex-col md:flex-row gap-8 items-center p-8">
+    <div class="mb-6 p-8 bg-paper border border-graphite-hairline rounded-2xl flex flex-col md:flex-row gap-8 items-center shadow-sm">
         <!-- Total Votes -->
         <div class="w-full md:w-1/3 flex flex-col items-center justify-center p-8 bg-vellum rounded-[20px]">
             <span class="text-sm font-normal text-slate uppercase tracking-wider mb-2">Total Suara Masuk</span>
@@ -29,89 +29,83 @@
         <div class="w-full md:w-2/3 h-[300px]">
             <canvas id="chart-detail"></canvas>
         </div>
-    </x-admin.card>
+    </div>
 
     {{-- Table Results --}}
-    <x-admin.card class="mb-6 border-graphite-hairline p-0 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-graphite-hairline">
-                <thead class="bg-paper">
-                    <tr>
-                        <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">No. Urut</th>
-                        <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">Nama Pasangan Calon</th>
-                        <th scope="col" class="px-6 py-4 text-end text-xs font-normal text-slate uppercase">Perolehan Suara</th>
-                        <th scope="col" class="px-6 py-4 text-end text-xs font-normal text-slate uppercase">Persentase</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-graphite-hairline" id="candidates-table-body">
-                    @foreach($candidates as $c)
-                        @php
-                            $percentage = $totalVotes > 0 ? round(($c->vote_count / $totalVotes) * 100, 1) : 0;
-                        @endphp
-                        <tr class="hover:bg-vellum/50 transition">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-normal text-ink text-center">{{ $c->order_number }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-ink">
-                                {{ $c->chairman_name }} & {{ $c->vice_chairman_name }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-normal text-ink text-end" id="vote-count-{{ $c->id }}">
-                                {{ $c->vote_count }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-ink text-end" id="vote-percentage-{{ $c->id }}">
-                                {{ $percentage }}%
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </x-admin.card>
+    <x-admin.table.wrapper class="mb-6">
+        <x-admin.table>
+            <x-admin.table.thead>
+                <tr>
+                    <x-admin.table.th>No. Urut</x-admin.table.th>
+                    <x-admin.table.th>Nama Pasangan Calon</x-admin.table.th>
+                    <x-admin.table.th align="end">Perolehan Suara</x-admin.table.th>
+                    <x-admin.table.th align="end">Persentase</x-admin.table.th>
+                </tr>
+            </x-admin.table.thead>
+            <x-admin.table.tbody id="candidates-table-body">
+                @foreach($candidates as $c)
+                    @php
+                        $percentage = $totalVotes > 0 ? round(($c->vote_count / $totalVotes) * 100, 1) : 0;
+                    @endphp
+                    <x-admin.table.tr class="hover:bg-vellum/50 transition">
+                        <x-admin.table.td innerClass="text-center">{{ $c->order_number }}</x-admin.table.td>
+                        <x-admin.table.td>
+                            {{ $c->chairman_name }} & {{ $c->vice_chairman_name }}
+                        </x-admin.table.td>
+                        <x-admin.table.td innerClass="text-end" id="vote-count-{{ $c->id }}">
+                            {{ $c->vote_count }}
+                        </x-admin.table.td>
+                        <x-admin.table.td innerClass="text-end" id="vote-percentage-{{ $c->id }}">
+                            {{ $percentage }}%
+                        </x-admin.table.td>
+                    </x-admin.table.tr>
+                @endforeach
+            </x-admin.table.tbody>
+        </x-admin.table>
+    </x-admin.table.wrapper>
 
     {{-- Recent Voting Sessions --}}
-    <x-admin.card class="border-graphite-hairline p-0 overflow-hidden mb-6">
-        <div class="p-6 border-b border-graphite-hairline">
-            <h2 class="text-2xl font-normal text-ink">Riwayat Aktivitas Voting</h2>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-graphite-hairline">
-                <thead class="bg-paper">
-                    <tr>
-                        <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">No.</th>
-                        <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">Operator</th>
-                        <th scope="col" class="px-6 py-4 text-center text-xs font-normal text-slate uppercase">Status</th>
-                        <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">Waktu Dibuka</th>
-                        <th scope="col" class="px-6 py-4 text-start text-xs font-normal text-slate uppercase">Waktu Ditutup</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-graphite-hairline">
-                    @forelse($recentSessions as $i => $session)
-                        <tr class="hover:bg-vellum/50 transition">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-normal text-ink">
-                                {{ ($recentSessions->currentPage() - 1) * $recentSessions->perPage() + $i + 1 }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-ink">{{ $session->operator_name }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
-                                <x-admin.badge :text="ucfirst($session->status)" :status="$session->status" />
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate">{{ \Carbon\Carbon::parse($session->open_time)->format('d M Y, H:i:s') }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate">
-                                {{ $session->close_time ? \Carbon\Carbon::parse($session->close_time)->format('d M Y, H:i:s') : '-' }}
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="px-6 py-8 whitespace-nowrap text-sm text-center text-slate">Belum ada aktivitas voting</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+    <div class="mb-2 mt-8">
+        <h2 class="text-2xl font-normal text-ink">Riwayat Aktivitas Voting</h2>
+    </div>
+    <x-admin.table.wrapper class="mb-6">
+        <x-admin.table>
+            <x-admin.table.thead>
+                <tr>
+                    <x-admin.table.th>No.</x-admin.table.th>
+                    <x-admin.table.th>Operator</x-admin.table.th>
+                    <x-admin.table.th align="center">Status</x-admin.table.th>
+                    <x-admin.table.th>Waktu Dibuka</x-admin.table.th>
+                    <x-admin.table.th>Waktu Ditutup</x-admin.table.th>
+                </tr>
+            </x-admin.table.thead>
+            <x-admin.table.tbody>
+                @forelse($recentSessions as $i => $session)
+                    <x-admin.table.tr class="hover:bg-vellum/50 transition">
+                        <x-admin.table.td>{{ ($recentSessions->currentPage() - 1) * $recentSessions->perPage() + $i + 1 }}</x-admin.table.td>
+                        <x-admin.table.td>{{ $session->operator_name }}</x-admin.table.td>
+                        <x-admin.table.td innerClass="text-center">
+                            <x-admin.badge :text="ucfirst($session->status)" :status="$session->status" />
+                        </x-admin.table.td>
+                        <x-admin.table.td class="text-slate">{{ \Carbon\Carbon::parse($session->open_time)->format('d M Y, H:i:s') }}</x-admin.table.td>
+                        <x-admin.table.td class="text-slate">
+                            {{ $session->close_time ? \Carbon\Carbon::parse($session->close_time)->format('d M Y, H:i:s') : '-' }}
+                        </x-admin.table.td>
+                    </x-admin.table.tr>
+                @empty
+                    <x-admin.table.tr>
+                        <x-admin.table.td colspan="5" innerClass="text-center text-slate py-8">Belum ada aktivitas voting</x-admin.table.td>
+                    </x-admin.table.tr>
+                @endforelse
+            </x-admin.table.tbody>
+        </x-admin.table>
         
         @if (count($recentSessions) > 0 && $recentSessions->hasPages())
             <div class="p-4 border-t border-graphite-hairline">
                 {{ $recentSessions->links() }}
             </div>
         @endif
-    </x-admin.card>
+    </x-admin.table.wrapper>
 
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

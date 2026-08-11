@@ -24,20 +24,21 @@
                 @csrf
                 
                 <div class="space-y-6">
-                    <div>
-                        <label for="election_id" class="text-sm text-ink font-normal pb-3 block">Event Pemilihan <span class="text-red-500">*</span></label>
-                        <select id="election_id" name="election_id" class="py-2.5 sm:py-3 px-4 block w-full border border-graphite-hairline rounded-[8px] focus:border-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)] dark:bg-neutral-900 dark:border-neutral-700 text-ink font-normal bg-paper transition-colors shadow-none" required>
-                            <option value="">-- Pilih Event --</option>
-                            @foreach($elections as $election)
-                                <option value="{{ $election->id }}" {{ (old('election_id') ?? $selectedElectionId) == $election->id ? 'selected' : '' }}>
-                                    {{ $election->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('election_id')
-                            <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    @php
+                        $electionOptions = [];
+                        foreach($elections as $election) {
+                            $electionOptions[$election->id] = $election->name;
+                        }
+                    @endphp
+                    <x-admin.select 
+                        label="Event Pemilihan" 
+                        name="election_id" 
+                        :options="$electionOptions" 
+                        placeholder="-- Pilih Event --" 
+                        :value="old('election_id', $selectedElectionId)" 
+                        required="true"
+                        :error="$errors->first('election_id')"
+                    />
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <x-admin.input 

@@ -153,38 +153,24 @@
     </x-admin.table.wrapper>
 
     {{-- Delete Modal --}}
-    <div id="delete-modal" class="hs-overlay hidden size-full fixed top-0 start-0 z-[80] overflow-x-hidden overflow-y-auto"
-        role="dialog" tabindex="-1">
-        <div class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-md sm:w-full m-3 sm:mx-auto">
-            <div class="bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-neutral-800 dark:border-neutral-700">
-                <div class="p-6 text-center">
-                    <div class="flex justify-center mb-4">
-                        <div class="size-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                            @include('_admin._layout.icons.trash')
-                        </div>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-800 dark:text-neutral-200 mb-1">Hapus Menu Sidebar</h3>
-                    <p class="text-sm text-gray-500 dark:text-neutral-400 mb-6">
-                        Apakah Anda yakin ingin menghapus menu <strong id="delete-name"></strong>?
-                    </p>
-                    <form id="delete-form" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <div class="flex justify-center gap-3">
-                            <button type="button" data-hs-overlay="#delete-modal"
-                                class="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 cursor-pointer">
-                                Batal
-                            </button>
-                            <button type="submit"
-                                class="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg bg-red-600 text-white hover:bg-red-700 cursor-pointer">
-                                Hapus
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+    <x-admin.modal id="delete-modal" title="Hapus Menu Sidebar" size="sm:max-w-md">
+        <div class="text-center py-4">
+            <span class="mb-4 inline-flex justify-center items-center size-14 rounded-full border-4 border-red-50 bg-red-100 text-red-500">
+                @include('_admin._layout.icons.trash')
+            </span>
+            <p class="text-slate">
+                Apakah Anda yakin ingin menghapus menu <strong id="delete-name" class="font-semibold text-ink"></strong>?
+            </p>
         </div>
-    </div>
+        <x-slot:footer class="flex justify-end gap-x-2">
+            <x-admin.button color="outline-secondary" data-hs-overlay="#delete-modal">Batal</x-admin.button>
+            <form id="delete-form" method="POST" class="inline">
+                @csrf
+                @method('DELETE')
+                <x-admin.button type="submit" color="danger">Hapus</x-admin.button>
+            </form>
+        </x-slot:footer>
+    </x-admin.modal>
 @endsection
 
 @push('scripts')

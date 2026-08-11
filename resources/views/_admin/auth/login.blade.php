@@ -28,53 +28,36 @@
                     @enderror
 
                     <!-- Form Group -->
-                    <div>
-                        <label for="email" class="block text-sm mb-2 dark:text-white">Akun (Email / NPSN)</label>
-                        <div class="relative">
-                            <input type="text" id="email" name="email"
-                                class="py-3 px-4 block w-full glass-input dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                                required aria-describedby="email-error">
-                            <div class="hidden absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
-                                <svg class="size-5 text-red-500" width="16" height="16" fill="currentColor"
-                                    viewBox="0 0 16 16" aria-hidden="true">
-                                    <path
-                                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
+                    <x-admin.input
+                        type="text"
+                        id="email"
+                        name="email"
+                        label="Akun (Email / NPSN)"
+                        required
+                        aria-describedby="email-error"
+                    />
                     <!-- End Form Group -->
 
                     <!-- Form Group -->
-                    <div>
-                        <div class="flex justify-between items-center">
-                            <label for="password" class="block text-sm mb-2 dark:text-white">Password</label>
-                        </div>
-                        <div class="relative">
-                            <input type="password" id="password" name="password"
-                                class="py-3 px-4 block w-full glass-input dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 dark:focus:ring-neutral-600"
-                                required aria-describedby="password-error">
-                            <div class="hidden absolute inset-y-0 end-0 flex items-center pointer-events-none pe-3">
-                                <svg class="size-5 text-red-500" width="16" height="16" fill="currentColor"
-                                    viewBox="0 0 16 16" aria-hidden="true">
-                                    <path
-                                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" />
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
+                    <x-admin.input
+                        type="password"
+                        id="password"
+                        name="password"
+                        label="Password"
+                        required
+                        aria-describedby="password-error"
+                    />
                     <!-- End Form Group -->
 
-                    <button type="submit" id="login-btn"
-                        class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-lg font-semibold rounded-lg border glass-button text-white dark:focus:outline-none dark:focus:ring-1 dark:focus:ring-gray-600 cursor-pointer">
-                        <span id="btn-text">M A S U K</span>
+                    <x-admin.button type="submit" id="login-btn" size="lg" class="w-full text-lg">
+                        <span id="btn-text" class="tracking-widest">MASUK</span>
                         <span id="btn-spinner"
                             class="animate-spin size-4 border-[3px] border-current border-t-transparent text-white rounded-full hidden"
                             role="status" aria-label="loading">
                             <span class="sr-only">Loading...</span>
                         </span>
                         <span id="btn-loading-text" class="hidden">Loading...</span>
-                    </button>
+                    </x-admin.button>
                 </div>
             </form>
         </div>

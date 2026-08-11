@@ -60,14 +60,12 @@
                 </div>
 
                 <div class="mt-6 flex items-center gap-3">
-                    <button type="submit"
-                        class="py-3 px-6 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg glass-button text-white">
+                    <x-admin.button type="submit" color="primary" class="px-6 py-3">
                         Simpan Hak Akses
-                    </button>
-                    <a navigate href="{{ route('admin.sidebar_menu.index') }}"
-                        class="py-3 px-6 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-gray-200 bg-white text-gray-800 hover:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700">
+                    </x-admin.button>
+                    <x-admin.button href="{{ route('admin.sidebar_menu.index') }}" color="outline-secondary" class="px-6 py-3">
                         Batal
-                    </a>
+                    </x-admin.button>
                 </div>
             </form>
         </div>

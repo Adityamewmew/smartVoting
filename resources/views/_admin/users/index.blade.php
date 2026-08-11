@@ -117,103 +117,49 @@
         @endif
     </x-admin.table.wrapper>
 
-    <!-- Delete Confirmation Modal -->
-    <div id="delete-modal" class="hs-overlay hidden size-full fixed top-0 start-0 z-80 overflow-x-hidden overflow-y-auto"
-        role="dialog" tabindex="-1" aria-labelledby="delete-modal-label">
-        <div
-            class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
-            <div
-                class="relative flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
-                <div class="absolute top-2 end-2">
-                    <button type="button"
-                        class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full border border-transparent bg-gray-100 text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-700 dark:hover:bg-neutral-600 dark:text-neutral-400 dark:focus:bg-neutral-600"
-                        aria-label="Close" data-hs-overlay="#delete-modal">
-                        <span class="sr-only">Close</span>
-                        @include('_admin._layout.icons.close_modal')
-                    </button>
-                </div>
-
-                <div class="p-4 sm:p-10 text-center overflow-y-auto">
-                    <!-- Icon -->
-                    <span
-                        class="mb-4 inline-flex justify-center items-center size-14 rounded-full border-4 border-red-50 bg-red-100 text-red-500 dark:bg-red-700 dark:border-red-600 dark:text-red-100">
-                        @include('_admin._layout.icons.warning_modal')
-                    </span>
-                    <!-- End Icon -->
-
-                    <h3 id="delete-modal-label" class="mb-2 text-xl font-bold text-gray-800 dark:text-neutral-200">
-                        Hapus Pengguna
-                    </h3>
-                    <p class="text-gray-500 dark:text-neutral-500">
-                        Apakah Anda yakin ingin menghapus <span id="delete-user-name"
-                            class="font-semibold text-gray-800 dark:text-neutral-200"></span>?
-                        <br>Tindakan ini tidak dapat dibatalkan.
-                    </p>
-
-                    <div class="mt-6 flex justify-center gap-x-4">
-                        <button type="button"
-                            class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
-                            data-hs-overlay="#delete-modal">
-                            Batal
-                        </button>
-                        <form id="delete-form" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700 disabled:opacity-50 disabled:pointer-events-none">
-                                Ya, Hapus
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+    <x-admin.modal id="delete-modal" title="Hapus Pengguna" size="sm:max-w-md">
+        <div class="text-center py-4">
+            <span class="mb-4 inline-flex justify-center items-center size-14 rounded-full border-4 border-red-50 bg-red-100 text-red-500">
+                @include('_admin._layout.icons.warning_modal')
+            </span>
+            <p class="text-slate">
+                Apakah Anda yakin ingin menghapus data ini?<br>Tindakan ini tidak dapat dibatalkan.
+            </p>
         </div>
-    </div>
+        <x-slot:footer class="flex justify-end gap-x-2">
+            <x-admin.button color="outline-secondary" data-hs-overlay="#delete-modal">Batal</x-admin.button>
+            <form id="delete-form" method="POST" class="inline">
+                @csrf
+                @method('DELETE')
+                <x-admin.button type="submit" color="danger">Ya, Hapus</x-admin.button>
+            </form>
+        </x-slot:footer>
+    </x-admin.modal>
 
-    <div id="reset-modal" class="hs-overlay hidden size-full fixed top-0 start-0 z-80 overflow-x-hidden overflow-y-auto"
-        role="dialog" tabindex="-1" aria-labelledby="reset-modal-label">
-        <div
-            class="hs-overlay-open:mt-7 hs-overlay-open:opacity-100 hs-overlay-open:duration-500 mt-0 opacity-0 ease-out transition-all sm:max-w-lg sm:w-full m-3 sm:mx-auto">
-            <div
-                class="relative flex flex-col bg-white border shadow-sm rounded-xl dark:bg-neutral-800 dark:border-neutral-700">
-                <div class="p-4 sm:p-10 text-center overflow-y-auto">
-                    <span
-                        class="mb-4 inline-flex justify-center items-center size-14 rounded-full border-4 border-yellow-50 bg-yellow-100 text-yellow-500 dark:bg-yellow-700 dark:border-yellow-600 dark:text-yellow-100">
-                        @include('_admin._layout.icons.sidebar.change-password')
-                    </span>
-
-                    <h3 id="reset-modal-label" class="mb-2 text-xl font-bold text-gray-800 dark:text-neutral-200">
-                        Reset Password
-                    </h3>
-                    <p class="text-gray-500 dark:text-neutral-500">
-                        Reset password untuk pengguna <span id="reset-user-name"
-                            class="font-semibold text-gray-800 dark:text-neutral-200"></span>?
-                        <br>Password akan diubah menjadi: <span
-                            class="font-mono bg-gray-100 px-1 rounded dark:bg-neutral-700">{{ UserConst::DEFAULT_PASSWORD }}</span>
-                    </p>
-
-                    <div class="mt-6 flex justify-center gap-x-4">
-                        <button type="button"
-                            class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50 dark:bg-transparent dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:focus:bg-neutral-800"
-                            data-hs-overlay="#reset-modal">
-                            Batal
-                        </button>
-                        <form id="reset-form" method="POST" class="inline" navigate-form>
-                            @csrf
-                            <button type="submit"
-                                class="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-yellow-500 text-white hover:bg-yellow-600 focus:outline-none focus:bg-yellow-600 disabled:opacity-50 disabled:pointer-events-none">
-                                Ya, Reset
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+    <x-admin.modal id="reset-modal" title="Reset Password" size="sm:max-w-md">
+        <div class="text-center py-4">
+            <span class="mb-4 inline-flex justify-center items-center size-14 rounded-full border-4 border-amber-50 bg-amber-100 text-amber-500">
+                <svg class="shrink-0 size-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 18v3c0 .6.4 1 1 1h4v-3h3v-3h2l1.4-1.4a6.5 6.5 0 1 0-4-4Z"/>
+                    <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/>
+                </svg>
+            </span>
+            <p class="text-slate">
+                Password akan direset menjadi default: <span class="font-bold text-ink">smart123</span><br>
+                Apakah Anda yakin ingin melanjutkan?
+            </p>
         </div>
-    </div>
+        <x-slot:footer class="flex justify-end gap-x-2">
+            <x-admin.button color="outline-secondary" data-hs-overlay="#reset-modal">Batal</x-admin.button>
+            <form id="reset-form" method="POST" class="inline">
+                @csrf
+                <x-admin.button type="submit" color="primary">Ya, Reset Password</x-admin.button>
+            </form>
+        </x-slot:footer>
+    </x-admin.modal>
 
     <script>
         function setDeleteData(id, name) {
-            document.getElementById('delete-user-name').textContent = name;
             document.getElementById('delete-form').action = '{{ url('admin/users/delete') }}/' + id;
         }
 
