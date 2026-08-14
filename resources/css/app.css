@@ -1,9 +1,6 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
 
-/* Enable class-based dark mode for Preline UI compatibility */
-@custom-variant dark (&:where(.dark, .dark *));
-
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
@@ -38,6 +35,22 @@
 
     /* Semantic mapping for backward compatibility (will be phased out in refactor) */
     --color-primary: var(--color-ink);
+
+    /* === Voter-flow tokens (design.md canonical). Additive — admin keeps its palette above. === */
+    --font-geist: 'Geist', 'Poppins', Arial, sans-serif;
+
+    /* Primary blue scale (Tailwind Blue) → enables bg-primary-600, text-primary-500, etc. */
+    --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
+    --color-primary-200: #bfdbfe;
+    --color-primary-300: #93c5fd;
+    --color-primary-400: #60a5fa;
+    --color-primary-500: #3b82f6;
+    --color-primary-600: #2563eb;
+    --color-primary-700: #1d4ed8;
+    --color-primary-800: #1e40af;
+    --color-primary-900: #1e3a8a;
+    --color-primary-950: #172554;
 }
 
 @layer base {
@@ -128,4 +141,108 @@ textarea {
 .dark select,
 .dark textarea {
     border-color: oklch(.371 0 0) !important;
+}
+
+/* ============================================================
+   Voter-flow skeuomorphic utilities
+   design.md tokens (blue primary, amber warning) + skeumorphism.md style.
+   Light + dark first-class. Depth via CSS only — no raster textures.
+   ============================================================ */
+
+@keyframes sk-fade-in-up {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.sk-fade-in-up { animation: sk-fade-in-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+    .sk-fade-in-up { animation: none; }
+}
+
+/* Stagger helpers */
+.sk-delay-100 { animation-delay: .1s; }
+.sk-delay-200 { animation-delay: .2s; }
+.sk-delay-300 { animation-delay: .3s; }
+.sk-delay-400 { animation-delay: .4s; }
+
+/* Layered card surface */
+.sk-surface {
+    background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow:
+        0 10px 30px -12px rgba(37, 99, 235, 0.18),
+        0 4px 10px -6px rgba(15, 23, 42, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* design.md shape scale */
+.sk-card-outer { border-radius: 24px; } /* rounded-3xl */
+.sk-card-inner { border-radius: 16px; } /* rounded-2xl */
+
+/* Primary tactile button — "pressable" affordance */
+.sk-btn-primary {
+    background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow:
+        0 6px 16px -4px rgba(37, 99, 235, 0.45),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -2px 4px rgba(29, 78, 216, 0.4);
+    transition: transform .15s ease, box-shadow .2s ease, filter .2s ease;
+}
+.sk-btn-primary:hover {
+    filter: brightness(1.05);
+    box-shadow: 0 10px 22px -6px rgba(37, 99, 235, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+.sk-btn-primary:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 3px 8px rgba(29, 78, 216, 0.55);
+}
+
+/* Ghost / secondary button */
+.sk-btn-ghost {
+    background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+    color: #1e293b;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 6px -2px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transition: transform .15s ease, box-shadow .2s ease;
+}
+.sk-btn-ghost:hover { box-shadow: 0 4px 10px -2px rgba(37, 99, 235, 0.18); }
+.sk-btn-ghost:active { transform: translateY(1px); box-shadow: inset 0 2px 5px rgba(15, 23, 42, 0.18); }
+
+/* Danger button */
+.sk-btn-danger {
+    background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 16px -4px rgba(220, 38, 38, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: transform .15s ease, filter .2s ease;
+}
+.sk-btn-danger:hover { filter: brightness(1.05); }
+.sk-btn-danger:active { transform: translateY(1px); box-shadow: inset 0 3px 8px rgba(153, 27, 27, 0.5); }
+
+/* PASLON number badge — blue emboss */
+.sk-badge {
+    background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 3px 8px -2px rgba(37, 99, 235, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5), inset 0 -1px 2px rgba(29, 78, 216, 0.4);
+}
+
+/* Date / event ticket */
+.sk-ticket {
+    background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%);
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+    box-shadow: 0 2px 8px -2px rgba(37, 99, 235, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+/* Ambient booth glow */
+.sk-glow::before {
+    content: "";
+    position: absolute;
+    inset: -20% -10% auto -10%;
+    height: 60%;
+    background: radial-gradient(ellipse at 50% 0%, rgba(59, 130, 246, 0.18), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
 }

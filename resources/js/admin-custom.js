@@ -110,7 +110,12 @@ $(document).ready(function () {
         var newSidebar = sidebarEl ? sidebarEl.innerHTML : null;
 
         if (newContent) {
-            $('#main-content').html(newContent);
+            var $mainContent = $('#main-content');
+            $mainContent.html(newContent).removeClass('animate-page-enter');
+            if ($mainContent[0]) {
+                void $mainContent[0].offsetWidth; // Trigger reflow for smooth re-animation
+                $mainContent.addClass('animate-page-enter');
+            }
             console.log('Content updated');
 
             // Extract page-specific scripts from the response body
@@ -448,9 +453,12 @@ $(document).ready(function () {
                 var sidebarEl = doc.querySelector('#hs-application-sidebar');
 
                 if (mainContentEl) {
-                    runSpaCleanup();
-
-                    $('#main-content').html(mainContentEl.innerHTML);
+                    var $mainContent = $('#main-content');
+                    $mainContent.html(mainContentEl.innerHTML).removeClass('animate-page-enter');
+                    if ($mainContent[0]) {
+                        void $mainContent[0].offsetWidth;
+                        $mainContent.addClass('animate-page-enter');
+                    }
 
                     // Re-load page scripts (same logic as handleSpaResponse)
                     var layoutScriptPatterns = ['jquery', 'nprogress', 'vite',

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ env('APP_ENV') == 'local' ? '[LOCAL] ' : '' }}Smart Project Starter Kit</title>
+    <title>{{ env('APP_ENV') == 'local' ? '[LOCAL] ' : '' }}SmartVoting — Login</title>
 
     {{-- Favicon --}}
     @include('_admin._layout.favicon')
@@ -13,20 +13,18 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap"
-        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <!-- Styles / Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/admin-custom.css', 'resources/js/admin-custom.js'])
 
     <!-- NProgress -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
-
 </head>
 
-<body class="">
+<body class="bg-slate-50 text-gray-900 antialiased font-geist selection:bg-blue-500 selection:text-white">
 
-    <div class="min-h-screen flex items-center justify-center">
+    <div class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6">
         @yield('content')
     </div>
 
@@ -37,7 +35,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
 
     @stack('scripts')
-
 </body>
-
 </html>

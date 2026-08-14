@@ -3,175 +3,142 @@
 @section('title', 'Hak Akses per Role')
 
 @section('content')
-    <x-admin.page-header :title="'Hak Akses Menu: ' . $roleName" subtitle="Centang menu yang aktif untuk role ini">
-        <a navigate href="{{ route('admin.sidebar_menu.index') }}"
-            class="py-2 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-700">
-            <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m12 19-7-7 7-7" />
-                <path d="M19 12H5" />
-            </svg>
-            Kembali
-        </a>
-    </x-admin.page-header>
-
-    {{-- Role tabs --}}
-    <div class="mb-6 flex flex-wrap gap-2">
-        @foreach ($accessTypes as $typeValue => $typeLabel)
-            <a navigate href="{{ route('admin.sidebar_menu.role_access', $typeValue) }}"
-                class="py-2 px-4 inline-flex items-center gap-x-1.5 text-sm font-semibold rounded-lg border transition-all
-                {{ $typeValue === $accessType
-                    ? 'border-[var(--color-brand-yellow)] glass-button text-white'
-                    : 'border-gray-200 bg-white text-gray-700 hover:bg-gray-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700' }}">
-                {{ $typeLabel }}
-            </a>
-        @endforeach
-    </div>
-
-    <form navigate-form action="{{ route('admin.sidebar_menu.doRoleAccess', $accessType) }}" method="POST">
-        @csrf
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            @php
-                $colorMap = [
-                    'blue' => [
-                        'badge' => 'bg-amber-100 text-[var(--color-brand-brown)] dark:bg-blue-900/30 dark:text-amber-400',
-                        'header' => 'border-[var(--color-brand-yellow)]/30 dark:border-blue-800',
-                        'check' => 'text-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)]',
-                    ],
-                    'purple' => [
-                        'badge' => 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
-                        'header' => 'border-purple-200 dark:border-purple-800',
-                        'check' => 'text-purple-600 focus:ring-purple-500',
-                    ],
-                    'emerald' => [
-                        'badge' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400',
-                        'header' => 'border-emerald-200 dark:border-emerald-800',
-                        'check' => 'text-emerald-600 focus:ring-emerald-500',
-                    ],
-                    'orange' => [
-                        'badge' => 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400',
-                        'header' => 'border-orange-200 dark:border-orange-800',
-                        'check' => 'text-orange-600 focus:ring-orange-500',
-                    ],
-                ];
-                $groupsKeyed = collect($groups)->keyBy('key');
-            @endphp
-
-            @foreach ($menusByGroup as $groupKey => $menus)
-                @php
-                    $groupObj = $groupsKeyed[$groupKey] ?? null;
-                    $groupLabel = $groupObj ? $groupObj->label : ucfirst($groupKey);
-                    $groupColor = $groupObj ? $groupObj->color : 'blue';
-                    $color = $colorMap[$groupColor] ?? $colorMap['blue'];
-                    $groupId = 'group-' . $groupKey;
-                @endphp
-
-                <div
-                    class="bg-white overflow-hidden shadow-sm rounded-2xl border border-gray-100 dark:bg-neutral-800 dark:border-neutral-700">
-                    {{-- Group header --}}
-                    <div
-                        class="px-5 py-3 border-b {{ $color['header'] }} bg-gray-50 dark:bg-neutral-900 flex items-center justify-between">
-                        <div class="flex items-center gap-x-2">
-                            <span
-                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold {{ $color['badge'] }}">
-                                {{ $groupLabel }}
-                            </span>
-                            <span class="text-sm text-gray-500 dark:text-neutral-400">
-                                {{ count($menus) }} menu
-                            </span>
-                        </div>
-                        {{-- Select all toggle --}}
-                        <label class="flex items-center gap-x-2 cursor-pointer text-xs text-gray-500 dark:text-neutral-400">
-                            <input type="checkbox" class="group-select-all shrink-0 size-4 rounded border-gray-300 {{ $color['check'] }} dark:bg-neutral-800 dark:border-neutral-600 cursor-pointer"
-                                data-group="{{ $groupId }}">
-                            <span>Pilih semua</span>
-                        </label>
-                    </div>
-
-                    <div class="p-4 space-y-2" id="{{ $groupId }}">
-                        @forelse ($menus as $menu)
-                            {{-- Parent menu --}}
-                            <div class="rounded-xl border {{ $menu->is_enabled ? 'border-[var(--color-brand-yellow)]/30 bg-amber-50/50 dark:border-blue-800 dark:bg-blue-900/10' : 'border-gray-100 bg-white dark:border-neutral-700 dark:bg-neutral-900' }}">
-                                <label
-                                    class="flex items-center gap-x-3 px-4 py-2.5 cursor-pointer rounded-xl">
-                                    <input type="checkbox" name="menu_ids[]" value="{{ $menu->id }}"
-                                        class="menu-checkbox shrink-0 size-4 rounded border-gray-300 {{ $color['check'] }} dark:bg-neutral-800 dark:border-neutral-600 cursor-pointer"
-                                        data-group="{{ $groupId }}"
-                                        {{ $menu->is_enabled ? 'checked' : '' }}>
-                                    <div class="flex items-center gap-x-2 flex-1 min-w-0">
-                                        @if ($menu->icon)
-                                            <span class="shrink-0 inline-flex items-center justify-center w-4 h-4 text-gray-400 [&>svg]:w-4 [&>svg]:h-4">
-                                                @include($menu->icon)
-                                            </span>
-                                        @else
-                                            <span class="shrink-0 w-4 h-4"></span>
-                                        @endif
-                                        <span class="text-sm font-semibold text-gray-800 dark:text-neutral-200 truncate">
-                                            {{ $menu->label }}
-                                        </span>
-                                        @if (! $menu->route_name)
-                                            <span
-                                                class="inline-flex shrink-0 items-center px-1.5 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-500 dark:bg-neutral-700 dark:text-neutral-400">
-                                                accordion
-                                            </span>
-                                        @endif
-                                    </div>
-                                    @if ($menu->route_name)
-                                        <span
-                                            class="text-xs font-mono text-gray-400 dark:text-neutral-500 hidden sm:block">
-                                            {{ $menu->route_name }}
-                                        </span>
-                                    @endif
-                                </label>
-
-                                {{-- Children --}}
-                                @if (! empty($menu->children) && count($menu->children) > 0)
-                                    <div class="pb-2 px-4 space-y-1.5 border-t border-dashed border-gray-100 dark:border-neutral-700 pt-2">
-                                        @foreach ($menu->children as $child)
-                                            <label
-                                                class="flex items-center gap-x-3 px-3 py-2 cursor-pointer rounded-lg transition-all
-                                                {{ $child->is_enabled ? 'bg-amber-50 dark:bg-blue-900/10' : 'hover:bg-gray-50 dark:hover:bg-neutral-800' }}">
-                                                <div class="size-4 shrink-0 flex items-center justify-center">
-                                                    <span class="size-1.5 rounded-full bg-gray-300 dark:bg-neutral-500"></span>
-                                                </div>
-                                                <input type="checkbox" name="menu_ids[]" value="{{ $child->id }}"
-                                                    class="menu-checkbox shrink-0 size-4 rounded border-gray-300 {{ $color['check'] }} dark:bg-neutral-800 dark:border-neutral-600 cursor-pointer"
-                                                    data-group="{{ $groupId }}"
-                                                    {{ $child->is_enabled ? 'checked' : '' }}>
-                                                <span class="text-sm text-gray-700 dark:text-neutral-300 flex-1">
-                                                    {{ $child->label }}
-                                                </span>
-                                                @if ($child->route_name)
-                                                    <span
-                                                        class="text-xs font-mono text-gray-400 dark:text-neutral-500 hidden sm:block">
-                                                        {{ $child->route_name }}
-                                                    </span>
-                                                @endif
-                                            </label>
-                                        @endforeach
-                                    </div>
-                                @endif
-                            </div>
-                        @empty
-                            <p class="text-sm text-gray-400 dark:text-neutral-500 py-4 text-center">
-                                Belum ada menu di group ini.
-                            </p>
-                        @endforelse
-                    </div>
+    <div class="space-y-6">
+        {{-- Header Section --}}
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-xs">
+            <div class="flex items-center gap-3">
+                <x-admin.button href="{{ route('admin.sidebar_menu.index') }}" size="icon-md" color="secondary">
+                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </x-admin.button>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900 tracking-tight">Hak Akses Menu: {{ $roleName }}</h1>
+                    <p class="text-xs text-gray-500 mt-0.5">Centang dan sesuaikan menu navigasi yang dapat diakses oleh role ini.</p>
                 </div>
+            </div>
+        </div>
+
+        {{-- Role tabs --}}
+        <div class="flex flex-wrap gap-2 p-1.5 bg-gray-100/80 rounded-xl border border-gray-200/60 inline-flex">
+            @foreach ($accessTypes as $typeValue => $typeLabel)
+                <a navigate href="{{ route('admin.sidebar_menu.role_access', $typeValue) }}"
+                    class="py-2 px-4 inline-flex items-center text-xs font-bold rounded-lg transition-all
+                    {{ $typeValue === $accessType
+                        ? 'bg-blue-600 text-white shadow-xs'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-white/60' }}">
+                    {{ $typeLabel }}
+                </a>
             @endforeach
         </div>
 
-        <div class="mt-6 flex items-center gap-3">
-            <x-admin.button type="submit" color="primary" class="px-8 py-3">
-                Simpan Hak Akses
-            </x-admin.button>
-            <x-admin.button href="{{ route('admin.sidebar_menu.index') }}" color="outline-secondary" class="px-6 py-3">
-                Batal
-            </x-admin.button>
-        </div>
-    </form>
+        <form navigate-form action="{{ route('admin.sidebar_menu.doRoleAccess', $accessType) }}" method="POST" class="space-y-6">
+            @csrf
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                @php
+                    $groupsKeyed = collect($groups)->keyBy('key');
+                @endphp
+
+                @foreach ($menusByGroup as $groupKey => $menus)
+                    @php
+                        $groupObj = $groupsKeyed[$groupKey] ?? null;
+                        $groupLabel = $groupObj ? $groupObj->label : ucfirst($groupKey);
+                        $groupId = 'group-' . $groupKey;
+                    @endphp
+
+                    <div class="bg-white overflow-hidden shadow-xs rounded-2xl border border-gray-100">
+                        {{-- Group header --}}
+                        <div class="px-5 py-3.5 border-b border-gray-100 bg-gray-50/70 flex items-center justify-between">
+                            <div class="flex items-center gap-x-2">
+                                <x-admin.badge color="primary" :text="$groupLabel" />
+                                <span class="text-xs text-gray-500 font-medium">
+                                    {{ count($menus) }} menu
+                                </span>
+                            </div>
+                            {{-- Select all toggle --}}
+                            <label class="flex items-center gap-x-2 cursor-pointer text-xs font-semibold text-gray-600 hover:text-gray-900">
+                                <input type="checkbox" class="group-select-all shrink-0 size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                    data-group="{{ $groupId }}">
+                                <span>Pilih semua</span>
+                            </label>
+                        </div>
+
+                        <div class="p-4 space-y-2.5" id="{{ $groupId }}">
+                            @forelse ($menus as $menu)
+                                {{-- Parent menu --}}
+                                <div class="rounded-xl border transition-colors {{ $menu->is_enabled ? 'border-blue-200 bg-blue-50/40' : 'border-gray-100 bg-white' }}">
+                                    <label class="flex items-center gap-x-3 px-4 py-3 cursor-pointer rounded-xl">
+                                        <input type="checkbox" name="menu_ids[]" value="{{ $menu->id }}"
+                                            class="menu-checkbox shrink-0 size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                            data-group="{{ $groupId }}"
+                                            {{ $menu->is_enabled ? 'checked' : '' }}>
+                                        <div class="flex items-center gap-x-2.5 flex-1 min-w-0">
+                                            @if ($menu->icon)
+                                                <span class="shrink-0 inline-flex items-center justify-center size-4 text-gray-500 [&>svg]:size-4">
+                                                    @include($menu->icon)
+                                                </span>
+                                            @endif
+                                            <span class="text-sm font-bold text-gray-900 truncate">
+                                                {{ $menu->label }}
+                                            </span>
+                                            @if (! $menu->route_name)
+                                                <span class="inline-flex shrink-0 items-center px-1.5 py-0.2 rounded text-[10px] font-semibold bg-gray-100 text-gray-600">
+                                                    accordion
+                                                </span>
+                                            @endif
+                                        </div>
+                                        @if ($menu->route_name)
+                                            <span class="text-xs font-mono text-gray-400 hidden sm:block">
+                                                {{ $menu->route_name }}
+                                            </span>
+                                        @endif
+                                    </label>
+
+                                    {{-- Children --}}
+                                    @if (! empty($menu->children) && count($menu->children) > 0)
+                                        <div class="pb-2.5 px-4 space-y-1 border-t border-dashed border-gray-200/60 pt-2">
+                                            @foreach ($menu->children as $child)
+                                                <label class="flex items-center gap-x-3 px-3 py-2 cursor-pointer rounded-lg transition-all
+                                                    {{ $child->is_enabled ? 'bg-blue-50 text-blue-900 font-medium' : 'hover:bg-gray-50 text-gray-700' }}">
+                                                    <div class="size-4 shrink-0 flex items-center justify-center">
+                                                        <span class="size-1.5 rounded-full {{ $child->is_enabled ? 'bg-blue-600' : 'bg-gray-300' }}"></span>
+                                                    </div>
+                                                    <input type="checkbox" name="menu_ids[]" value="{{ $child->id }}"
+                                                        class="menu-checkbox shrink-0 size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                        data-group="{{ $groupId }}"
+                                                        {{ $child->is_enabled ? 'checked' : '' }}>
+                                                    <span class="text-xs flex-1">
+                                                        {{ $child->label }}
+                                                    </span>
+                                                    @if ($child->route_name)
+                                                        <span class="text-[11px] font-mono text-gray-400 hidden sm:block">
+                                                            {{ $child->route_name }}
+                                                        </span>
+                                                    @endif
+                                                </label>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            @empty
+                                <p class="text-xs text-gray-400 py-4 text-center">
+                                    Belum ada menu di group ini.
+                                </p>
+                            @endforelse
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="flex items-center gap-3 pt-4">
+                <x-admin.button type="submit" color="primary" size="md">
+                    Simpan Hak Akses
+                </x-admin.button>
+                <x-admin.button href="{{ route('admin.sidebar_menu.index') }}" color="secondary" size="md">
+                    Batal
+                </x-admin.button>
+            </div>
+        </form>
+    </div>
 @endsection
 
 @push('scripts')
@@ -204,14 +171,15 @@
         });
 
         function updateRowHighlight(cb) {
-            const label = cb.closest('label');
-            if (!label) return;
-            if (cb.checked) {
-                label.classList.add('bg-amber-50', 'dark:bg-blue-900/10');
-                label.classList.remove('hover:bg-gray-50', 'dark:hover:bg-neutral-800');
-            } else {
-                label.classList.remove('bg-amber-50', 'dark:bg-blue-900/10');
-                label.classList.add('hover:bg-gray-50', 'dark:hover:bg-neutral-800');
+            const container = cb.closest('.rounded-xl');
+            if (container) {
+                if (cb.checked) {
+                    container.classList.add('border-blue-200', 'bg-blue-50/40');
+                    container.classList.remove('border-gray-100', 'bg-white');
+                } else {
+                    container.classList.remove('border-blue-200', 'bg-blue-50/40');
+                    container.classList.add('border-gray-100', 'bg-white');
+                }
             }
         }
 

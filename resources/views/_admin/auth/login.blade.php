@@ -3,64 +3,65 @@
 @section('title', 'Login')
 
 @section('content')
-    <div class="w-full max-w-md">
-        <div class="mb-6 flex justify-center">
-            <img src="{{ asset('images/logo-light.png') }}" alt="Logo" class="w-auto h-15">
-        </div>
-        <div class="glass-card p-6 ">
-            <div class="text-center mb-8">
-                <div>
-                    <h1 class="block text-3xl font-bold text-gray-800 dark:text-white">Login Aplikasi</h1>
-                    <p class="mt-2 text-sm text-gray-400 dark:text-neutral-400">
-                        Silahkan login menggunakan Akun anda
-                    </p>
-                </div>
+    <div class="w-full max-w-md space-y-6">
+        {{-- Brand Logo & Badge --}}
+        <div class="text-center">
+            <div class="inline-flex items-center justify-center size-12 rounded-2xl bg-blue-600 text-white shadow-md shadow-blue-600/25 mb-4">
+                <svg class="size-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/></svg>
             </div>
+            <h1 class="text-2xl font-black tracking-tight text-gray-900">SmartVoting</h1>
+            <p class="text-xs font-medium text-gray-500 mt-1">Masuk ke Panel Administrasi & Pengawasan Suara</p>
+        </div>
 
-            <form id="login-form" action="{{ route('login.post') }}" method="POST">
+        {{-- Login Card --}}
+        <div class="bg-white p-7 sm:p-8 rounded-2xl border border-gray-100 shadow-sm">
+            <form id="login-form" action="{{ route('login.post') }}" method="POST" class="space-y-5">
                 @csrf
-                <div class="grid gap-y-4">
-                    @error('login_error')
-                        <div class="bg-red-50 border border-red-200 text-sm text-red-600 rounded-lg p-4 mb-4 dark:bg-red-800/10 dark:border-red-900 dark:text-red-500"
-                            role="alert" tabindex="-1" aria-labelledby="hs-soft-color-danger-label">
-                            <span id="hs-soft-color-danger-label" class="font-bold"></span> {{ $message }}
-                        </div>
-                    @enderror
 
-                    <!-- Form Group -->
-                    <x-admin.input
-                        type="text"
-                        id="email"
-                        name="email"
-                        label="Akun (Email / NPSN)"
-                        required
-                        aria-describedby="email-error"
-                    />
-                    <!-- End Form Group -->
+                @error('login_error')
+                    <div class="p-4 bg-red-50 border border-red-200 text-xs font-semibold text-red-700 rounded-xl flex items-center gap-2">
+                        <svg class="size-4 shrink-0 text-red-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                        <span>{{ $message }}</span>
+                    </div>
+                @enderror
 
-                    <!-- Form Group -->
-                    <x-admin.input
-                        type="password"
-                        id="password"
-                        name="password"
-                        label="Password"
-                        required
-                        aria-describedby="password-error"
-                    />
-                    <!-- End Form Group -->
+                <!-- Email Input -->
+                <x-admin.input
+                    type="text"
+                    id="email"
+                    name="email"
+                    label="Email Akun"
+                    placeholder="nama@domain.com"
+                    required
+                    aria-describedby="email-error"
+                />
 
-                    <x-admin.button type="submit" id="login-btn" size="lg" class="w-full text-lg">
-                        <span id="btn-text" class="tracking-widest">MASUK</span>
-                        <span id="btn-spinner"
-                            class="animate-spin size-4 border-[3px] border-current border-t-transparent text-white rounded-full hidden"
-                            role="status" aria-label="loading">
-                            <span class="sr-only">Loading...</span>
-                        </span>
-                        <span id="btn-loading-text" class="hidden">Loading...</span>
-                    </x-admin.button>
-                </div>
+                <!-- Password Input -->
+                <x-admin.input
+                    type="password"
+                    id="password"
+                    name="password"
+                    label="Password"
+                    placeholder="••••••••"
+                    required
+                    aria-describedby="password-error"
+                />
+
+                <x-admin.button type="submit" id="login-btn" size="md" color="primary" class="w-full justify-center text-sm font-bold shadow-xs mt-2">
+                    <span id="btn-text">Masuk ke Sistem</span>
+                    <span id="btn-spinner"
+                        class="animate-spin size-4 border-2 border-white border-t-transparent rounded-full hidden"
+                        role="status" aria-label="loading">
+                        <span class="sr-only">Loading...</span>
+                    </span>
+                    <span id="btn-loading-text" class="hidden text-xs">Memverifikasi...</span>
+                </x-admin.button>
             </form>
         </div>
+
+        <p class="text-center text-xs text-gray-400">
+            &copy; {{ date('Y') }} SmartVoting &bull; Aplikasi E-Voting Terpercaya
+        </p>
     </div>
 
     <script>
@@ -71,12 +72,11 @@
             const btnLoadingText = document.getElementById('btn-loading-text');
 
             btn.disabled = true;
-            btn.classList.add('opacity-60', 'cursor-not-allowed');
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
             btnText.classList.add('hidden');
             btnSpinner.classList.remove('hidden');
             btnSpinner.classList.add('inline-block');
             btnLoadingText.classList.remove('hidden');
         });
     </script>
-    </div>
 @endsection

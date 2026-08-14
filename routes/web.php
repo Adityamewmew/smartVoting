@@ -105,5 +105,4 @@ Route::prefix('bilik')->name('kiosk.')->group(function () {
 });
 
 // Landing Page Publik (T-08) - Ditempatkan di bawah agar tidak menimpa route sistem seperti /login, /admin, dll.
-Route::get('/{slug}', [App\Http\Controllers\ElectionLandingController::class, 'show'])->name('landing.election');
-
+Route::get('/{slug}', [ElectionLandingController::class, 'show'])->name('landing.election');

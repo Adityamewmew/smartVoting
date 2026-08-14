@@ -3,46 +3,64 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <div class="space-y-8">
+    <div class="space-y-6">
         
-        {{-- LIVE POLLING SECTION --}}
-        <section>
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-                <h2 class="text-2xl font-semibold text-ink">Dasbor</h2>
-                <form action="{{ route('admin.dashboard') }}" method="GET" navigate-form class="flex items-center gap-3">
-                    <div class="w-full sm:w-64">
-                        <x-admin.select name="election_id" :options="$electionsList->pluck('name', 'id')->toArray()" :value="$selectedElection?->id" size="sm" onchange="this.form.submit()" />
-                    </div>
-                </form>
+        {{-- Header & Election Selector --}}
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/80 shadow-xs">
+            <div>
+                <h1 class="text-lg sm:text-2xl font-bold text-gray-900 tracking-tight">Dasbor Pemantauan</h1>
+                <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Hasil perhitungan suara dan aktivitas bilik suara secara real-time.</p>
             </div>
+            <form action="{{ route('admin.dashboard') }}" method="GET" navigate-form class="w-full sm:w-72">
+                <x-admin.select name="election_id" :options="$electionsList->pluck('name', 'id')->toArray()" :value="$selectedElection?->id" size="sm" onchange="this.form.submit()" />
+            </form>
+        </div>
 
-            @if($selectedElection)
-            <x-admin.card class="p-6 border-graphite-hairline overflow-hidden">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-2">
-                    <h3 class="text-xl font-normal text-ink">{{ $selectedElection->name }}</h3>
-                    <span class="text-sm text-slate mt-2 md:mt-0" id="last-update">Update baru saja</span>
+        @if($selectedElection)
+            {{-- LIVE POLLING CARD --}}
+            <x-admin.card class="p-4 sm:p-6 overflow-hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 pb-4 mb-5 sm:mb-6 border-b border-gray-100">
+                    <div>
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-blue-50 to-blue-100/80 text-blue-700 border border-blue-200/90 shadow-2xs mb-2">
+                            <span class="size-2 rounded-full bg-blue-600 animate-pulse"></span>
+                            LIVE COUNTING
+                        </span>
+                        <h2 class="text-lg sm:text-xl font-bold text-gray-900">{{ $selectedElection->name }}</h2>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-200/80 shadow-2xs" id="last-update">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 text-gray-400" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        <span>Update baru saja</span>
+                    </div>
                 </div>
-                <p class="text-sm text-slate mb-8" id="total-votes-text">Total suara masuk <span class="font-normal text-ink">0</span></p>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8" id="candidates-container">
-                    {{-- Candidate cards will be injected here via JS --}}
+                {{-- Total Votes Counter --}}
+                <div class="mb-5 sm:mb-6 bg-gradient-to-r from-blue-50/70 via-indigo-50/30 to-white p-4 sm:p-5 rounded-2xl border border-blue-100/90 shadow-2xs flex items-center justify-between">
+                    <span class="text-xs sm:text-sm font-semibold text-gray-700">Total Suara Masuk</span>
+                    <span class="text-2xl sm:text-3xl font-black text-blue-600 tracking-tight" id="total-votes-text">0 <span class="text-xs sm:text-sm font-normal text-gray-500">suara</span></span>
                 </div>
 
-                <div class="w-full h-[300px]">
+                {{-- Candidate Poll Cards Container --}}
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 mb-6 sm:mb-8" id="candidates-container">
+                    {{-- Dynamically populated via JS --}}
+                </div>
+
+                {{-- Chart Visualization --}}
+                <div class="w-full h-64 sm:h-72 md:h-80 pt-4 border-t border-gray-100">
                     <canvas id="chart-{{ $selectedElection->id }}"></canvas>
                 </div>
             </x-admin.card>
-            @else
-            <x-admin.card class="text-center p-10 border-dashed border-graphite-hairline">
-                <p class="text-sm text-slate">Tidak ada data pemilihan.</p>
-            </x-admin.card>
-            @endif
-        </section>
+        @else
+            <x-admin.empty-state message="Belum ada data pemilihan yang aktif atau dipilih." />
+        @endif
 
         {{-- Recent Voting Sessions --}}
-        <section>
-            <x-admin.card class="border-graphite-hairline p-0 overflow-hidden shadow-none">
-            <x-admin.table.wrapper class="shadow-none rounded-none border-0">
+        <div class="space-y-3">
+            <div class="flex items-center justify-between px-1">
+                <h3 class="text-base font-bold text-gray-900">Sesi Bilik Suara Terkini</h3>
+                <span class="text-xs text-gray-400">Menampilkan 10 sesi terakhir</span>
+            </div>
+
+            <x-admin.table.wrapper>
                 <x-admin.table>
                     <x-admin.table.thead>
                         <tr>
@@ -56,34 +74,33 @@
                     </x-admin.table.thead>
                     <x-admin.table.tbody>
                         @forelse($recentSessions as $i => $session)
-                            <x-admin.table.tr class="hover:bg-vellum/50 transition">
-                                <x-admin.table.td>{{ ($recentSessions->currentPage() - 1) * $recentSessions->perPage() + $i + 1 }}</x-admin.table.td>
-                                <x-admin.table.td>{{ $session->election_name }}</x-admin.table.td>
+                            <x-admin.table.tr>
+                                <x-admin.table.td class="font-medium text-gray-500">{{ ($recentSessions->currentPage() - 1) * $recentSessions->perPage() + $i + 1 }}</x-admin.table.td>
+                                <x-admin.table.td class="font-semibold text-gray-900">{{ $session->election_name }}</x-admin.table.td>
                                 <x-admin.table.td>{{ $session->operator_name }}</x-admin.table.td>
                                 <x-admin.table.td innerClass="text-center">
-                                    <x-admin.badge :text="ucfirst($session->status)" :status="$session->status" />
+                                    <x-admin.badge :status="$session->status" :text="ucfirst($session->status)" />
                                 </x-admin.table.td>
-                                <x-admin.table.td class="text-slate">{{ \Carbon\Carbon::parse($session->open_time)->format('d M Y, H:i:s') }}</x-admin.table.td>
-                                <x-admin.table.td class="text-slate">
+                                <x-admin.table.td class="text-gray-500 text-xs">{{ \Carbon\Carbon::parse($session->open_time)->format('d M Y, H:i:s') }}</x-admin.table.td>
+                                <x-admin.table.td class="text-gray-500 text-xs">
                                     {{ $session->close_time ? \Carbon\Carbon::parse($session->close_time)->format('d M Y, H:i:s') : '-' }}
                                 </x-admin.table.td>
                             </x-admin.table.tr>
                         @empty
                             <x-admin.table.tr>
-                                <x-admin.table.td colspan="6" innerClass="text-center text-slate py-8">Belum ada aktivitas voting</x-admin.table.td>
+                                <x-admin.table.td colspan="6" innerClass="text-center text-gray-400 py-8">Belum ada aktivitas voting tercatat</x-admin.table.td>
                             </x-admin.table.tr>
                         @endforelse
                     </x-admin.table.tbody>
                 </x-admin.table>
-            </x-admin.table.wrapper>
                 
                 @if (count($recentSessions) > 0 && $recentSessions->hasPages())
-                    <div class="p-4 border-t border-graphite-hairline">
+                    <div class="p-4 border-t border-gray-100">
                         {{ $recentSessions->links() }}
                     </div>
                 @endif
-            </x-admin.card>
-        </section>
+            </x-admin.table.wrapper>
+        </div>
 
     </div>
 
@@ -93,14 +110,12 @@
             (() => {
                 @if($selectedElection)
                     const colors = [
-                        '#FFB22C', // Yellow brand
-                        '#854836', // Brown brand
-                        '#eab308', // yellow-500
-                        '#f59e0b', // amber-500
-                        '#d97706', // amber-600
-                        '#b45309', // amber-700
-                        '#78350f', // amber-900
-                        '#000000'  // black
+                        '#2563EB', // Blue-600
+                        '#059669', // Emerald-600
+                        '#D97706', // Amber-600
+                        '#7C3AED', // Violet-600
+                        '#DC2626', // Red-600
+                        '#0891B2', // Cyan-600
                     ];
 
                     let myChart = null;
@@ -141,12 +156,14 @@
                             .then(res => {
                                 if (isDashboardActive && res.success) {
                                     const totalVotes = res.data.total_votes;
-                                    totalVotesText.innerHTML = `Total suara masuk <span class="font-normal text-ink">${totalVotes}</span>`;
+                                    totalVotesText.innerHTML = `${totalVotes} <span class="text-sm font-normal text-gray-500">suara</span>`;
                                     
                                     const now = new Date();
-                                    lastUpdate.innerText = 'Update ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+                                    lastUpdate.innerHTML = `
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 text-gray-400" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                        <span>Update ${now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} WIB</span>
+                                    `;
                                     
-                                    // Update candidate cards
                                     container.innerHTML = '';
                                     
                                     const labels = [];
@@ -156,21 +173,31 @@
                                     res.data.candidates.forEach((c, index) => {
                                         const color = colors[index % colors.length];
                                         const percentage = formatPercentage(c.vote_count, totalVotes);
+                                        const numericPct = totalVotes > 0 ? (c.vote_count / totalVotes) * 100 : 0;
                                         
                                         labels.push(`Paslon ${c.order_number}`);
                                         dataPoints.push(c.vote_count);
                                         bgColors.push(color);
 
                                         const card = document.createElement('div');
-                                        card.className = `p-4 border border-graphite-hairline rounded-[20px] bg-paper shadow-none flex flex-col relative overflow-hidden`;
+                                        card.className = `p-4 border border-gray-200/80 rounded-2xl bg-white shadow-2xs hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 flex flex-col relative overflow-hidden`;
                                         card.innerHTML = `
-                                            <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color: ${color}"></div>
-                                            <div class="pl-2">
-                                                <p class="text-sm text-slate mb-1">
-                                                    ${c.order_number.toString().padStart(2, '0')} &middot; ${c.chairman_name}
-                                                </p>
-                                                <h4 class="text-3xl font-normal text-ink mb-1">${c.vote_count} <span class="text-xl">suara</span></h4>
-                                                <p class="text-sm font-normal" style="color: ${color}">${percentage}</p>
+                                            <div class="flex items-center justify-between mb-2">
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-bold tracking-wider text-white shadow-2xs" style="background-color: ${color}">
+                                                    PASLON ${c.order_number.toString().padStart(2, '0')}
+                                                </span>
+                                                <span class="text-xs font-black text-gray-800">${percentage}</span>
+                                            </div>
+                                            <h4 class="text-sm font-bold text-gray-900 truncate leading-tight">${c.chairman_name}</h4>
+                                            <p class="text-xs text-gray-500 truncate mb-3">&amp; ${c.vice_chairman_name || '-'}</p>
+                                            <div class="mt-auto">
+                                                <div class="flex items-baseline justify-between mb-1.5">
+                                                    <span class="text-2xl font-black text-gray-900 tracking-tight">${c.vote_count}</span>
+                                                    <span class="text-[11px] font-medium text-gray-400">suara</span>
+                                                </div>
+                                                <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden p-0.5 border border-gray-100">
+                                                    <div class="h-full rounded-full transition-all duration-700 ease-out" style="width: ${numericPct}%; background-color: ${color}"></div>
+                                                </div>
                                             </div>
                                         `;
                                         container.appendChild(card);
@@ -190,9 +217,9 @@
                                                     label: 'Perolehan Suara',
                                                     data: dataPoints,
                                                     backgroundColor: bgColors,
-                                                    borderWidth: 0,
-                                                    borderRadius: 0, 
-                                                    maxBarThickness: 60
+                                                    borderRadius: 8,
+                                                    borderSkipped: false,
+                                                    maxBarThickness: 50
                                                 }]
                                             },
                                             options: {
@@ -201,10 +228,24 @@
                                                 scales: {
                                                     y: {
                                                         beginAtZero: true,
-                                                        ticks: { stepSize: 1, precision: 0 }
+                                                        grid: { color: '#F1F5F9' },
+                                                        ticks: { stepSize: 1, precision: 0, font: { family: 'Geist' } }
+                                                    },
+                                                    x: {
+                                                        grid: { display: false },
+                                                        ticks: { font: { family: 'Geist', weight: 'bold' } }
                                                     }
                                                 },
-                                                plugins: { legend: { display: false } }
+                                                plugins: {
+                                                    legend: { display: false },
+                                                    tooltip: {
+                                                        backgroundColor: '#1E293B',
+                                                        titleFont: { family: 'Geist' },
+                                                        bodyFont: { family: 'Geist' },
+                                                        padding: 10,
+                                                        cornerRadius: 8
+                                                    }
+                                                }
                                             }
                                         });
                                     }
@@ -213,7 +254,7 @@
                     }
 
                     fetchElectionData();
-                    pollingInterval = setInterval(fetchElectionData, 10000); // 10 seconds
+                    pollingInterval = setInterval(fetchElectionData, 10000);
                 @endif
             })();
         </script>

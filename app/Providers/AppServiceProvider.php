@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Usecase\Admin\SidebarMenuUsecase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -31,8 +32,8 @@ class AppServiceProvider extends ServiceProvider
                 return;
             }
 
-            $usecase = app(\App\Usecase\Admin\SidebarMenuUsecase::class);
-            
+            $usecase = app(SidebarMenuUsecase::class);
+
             $sidebarMenus = [
                 'utama' => $usecase->getMenusForSidebar((int) Auth::user()->access_type, 'utama')['data'] ?? [],
                 'pemilihan' => $usecase->getMenusForSidebar((int) Auth::user()->access_type, 'pemilihan')['data'] ?? [],

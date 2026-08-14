@@ -3,97 +3,173 @@
 @section('title', 'Manajemen Bilik Suara')
 
 @section('content')
-    <x-admin.page-header title="Manajemen Bilik Suara" subtitle="Daftar event pemilihan yang sedang aktif" />
+    @php
+        $totalElections = count($data);
+        $totalVotesAll = collect($data)->sum('total_votes');
+        $activeSessionsAll = collect($data)->sum('active_sessions');
+    @endphp
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        @forelse($data as $election)
-            <div class="bg-paper border border-graphite-hairline rounded-[20px] p-5 shadow-none flex flex-col hover:border-ink transition-colors">
-                <h3 class="text-lg font-normal text-ink">{{ $election->name }}</h3>
-                <p class="text-sm text-slate mt-1 mb-4">{{ $election->description ?? 'Tidak ada deskripsi' }}</p>
-                
-                <div class="flex-grow">
-                    <div class="grid grid-cols-2 gap-4 mb-5">
-                        <div class="bg-vellum rounded-xl p-3 text-center border border-graphite-hairline">
-                            <span class="block text-xs text-slate font-normal mb-1">Total Suara</span>
-                            <span class="block text-xl font-normal text-ink">{{ $election->total_votes }}</span>
+    {{-- Top Header Section --}}
+    <div class="px-4 sm:px-8 pt-6 sm:pt-8 max-w-7xl mx-auto">
+        <x-admin.card class="p-6 sm:p-8 relative overflow-hidden">
+            {{-- Ambient radial background glow --}}
+            <div class="absolute -top-24 -right-24 size-96 rounded-full bg-blue-500/5 blur-3xl pointer-events-none"></div>
+
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative z-10">
+                <div class="flex items-center gap-3.5">
+                    <div class="p-3 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl shadow-md shadow-blue-500/20 border-t border-white/30 shrink-0">
+                        <svg class="size-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">Manajemen Bilik Suara</h1>
                         </div>
-                        <div class="bg-vellum rounded-xl p-3 text-center border border-graphite-hairline">
-                            <span class="block text-xs text-slate font-normal mb-1">Sesi Aktif</span>
-                            <span class="block text-xl font-normal {{ $election->active_sessions > 0 ? 'text-ink' : 'text-slate' }}">{{ $election->active_sessions }}</span>
-                        </div>
+                        <p class="text-xs sm:text-sm text-gray-500 mt-0.5 font-medium">Daftar event pemilihan aktif yang siap dibuka di bilik suara.</p>
                     </div>
                 </div>
-                
-                {{-- Tombol lihat paslon --}}
-                <button
-                    type="button"
-                    onclick="showCandidates({{ $election->id }}, '{{ addslashes($election->name) }}')"
-                    class="mb-3 w-full py-2.5 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-normal rounded-full border border-graphite-hairline bg-paper text-ink hover:bg-vellum transition-colors cursor-pointer"
-                >
-                    <svg class="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    Lihat Daftar Paslon
-                </button>
 
-                {{-- Tombol buka bilik --}}
-                <form action="{{ route('operator.kiosk.generate', $election->id) }}" method="POST" target="_blank">
+                <form action="{{ route('logout') }}" method="POST" class="inline">
                     @csrf
-                    <button type="submit" class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-normal rounded-full border border-transparent bg-ink text-paper hover:bg-ink/90 focus:outline-none focus:bg-ink/90 disabled:opacity-50 disabled:pointer-events-none transition-colors cursor-pointer">
-                        <svg class="flex-shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                        Buka Bilik Suara
-                    </button>
+                    <x-admin.button type="submit" color="outline-danger" size="sm">
+                        <svg class="size-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                        <span>Keluar Panel</span>
+                    </x-admin.button>
                 </form>
             </div>
-        @empty
-            <div class="col-span-full">
-                <x-admin.empty-state title="Tidak ada event aktif" message="Saat ini tidak ada event pemilihan yang berstatus aktif." />
+
+            {{-- 3 Summary Stat Cards --}}
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-6 sm:mt-8 relative z-10">
+                <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-blue-50/70 to-blue-100/40 border border-blue-200/80 shadow-2xs">
+                    <p class="text-xs font-bold uppercase tracking-wider text-blue-700 mb-1">Pemilihan Aktif</p>
+                    <p class="text-2xl font-black text-blue-950 tracking-tight">
+                        {{ $totalElections }} <span class="text-xs font-semibold text-blue-600 ml-0.5">Event</span>
+                    </p>
+                </div>
+                <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-emerald-50/70 to-emerald-100/40 border border-emerald-200/80 shadow-2xs">
+                    <p class="text-xs font-bold uppercase tracking-wider text-emerald-700 mb-1">Total Suara Masuk</p>
+                    <p class="text-2xl font-black text-emerald-950 tracking-tight">
+                        {{ $totalVotesAll }} <span class="text-xs font-semibold text-emerald-600 ml-0.5">Suara</span>
+                    </p>
+                </div>
+                <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-indigo-50/70 to-indigo-100/40 border border-indigo-200/80 shadow-2xs">
+                    <p class="text-xs font-bold uppercase tracking-wider text-indigo-700 mb-1">Sesi Bilik Berlangsung</p>
+                    <p class="text-2xl font-black text-indigo-950 tracking-tight">
+                        {{ $activeSessionsAll }} <span class="text-xs font-semibold text-indigo-600 ml-0.5">Sesi</span>
+                    </p>
+                </div>
             </div>
-        @endforelse
+        </x-admin.card>
     </div>
 
-    {{-- Modal Detail Paslon --}}
-    <div id="modal-candidates" class="fixed inset-0 z-50 hidden overflow-y-auto" role="dialog" aria-modal="true">
-        {{-- Backdrop --}}
-        <div id="modal-backdrop" class="fixed inset-0 bg-ink/60 backdrop-blur-sm transition-opacity" onclick="closeCandidatesModal()"></div>
-
-        {{-- Modal Panel --}}
-        <div class="flex min-h-full items-center justify-center p-4">
-            <div class="relative w-full max-w-lg bg-paper rounded-[20px] shadow-2xl overflow-hidden transform transition-all border border-graphite-hairline">
-                {{-- Header --}}
-                <div class="flex items-center justify-between px-6 py-4 border-b border-graphite-hairline">
-                    <div>
-                        <p class="text-xs font-normal text-slate uppercase tracking-wider mb-0.5">Daftar Paslon</p>
-                        <h3 id="modal-election-name" class="text-lg font-normal text-ink"></h3>
-                    </div>
-                    <button onclick="closeCandidatesModal()" class="text-slate hover:text-ink transition-colors p-1 rounded-full hover:bg-vellum cursor-pointer">
-                        <svg class="size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                    </button>
-                </div>
-
-                {{-- Body --}}
-                <div class="px-6 py-4">
-                    {{-- Loading state --}}
-                    <div id="modal-loading" class="flex flex-col items-center justify-center py-10 gap-3">
-                        <div class="size-8 border-2 border-vellum border-t-ink rounded-full animate-spin"></div>
-                        <p class="text-sm text-slate">Memuat data paslon...</p>
-                    </div>
-
-                    {{-- Content --}}
-                    <div id="modal-content" class="hidden divide-y divide-graphite-hairline"></div>
-
-                    {{-- Empty state --}}
-                    <div id="modal-empty" class="hidden text-center py-10">
-                        <div class="mx-auto flex items-center justify-center size-14 rounded-full bg-vellum border border-graphite-hairline mb-3">
-                            <svg class="size-7 text-slate" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+    {{-- Main Content (Event Cards Grid) --}}
+    <main class="px-4 sm:px-8 py-8 pb-16 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            @forelse($data as $election)
+                <x-admin.card class="flex flex-col h-full hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group relative">
+                    
+                    {{-- Card Header --}}
+                    <div class="mb-6 flex-grow">
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <h3 class="text-xl font-bold text-gray-900 tracking-tight leading-snug">{{ $election->name }}</h3>
+                            <x-admin.badge color="success" size="sm">
+                                AKTIF
+                            </x-admin.badge>
                         </div>
-                        <p class="text-sm font-normal text-slate">Belum ada paslon terdaftar pada event ini.</p>
+                        <p class="text-xs sm:text-sm text-gray-500 leading-relaxed">{{ $election->description ?? 'Tidak ada deskripsi event.' }}</p>
+                    </div>
+
+                    {{-- Statistics Container (2 Columns) --}}
+                    <div class="grid grid-cols-2 gap-3 sm:gap-4 mb-6">
+                        <!-- Total Suara -->
+                        <div class="bg-slate-50/80 rounded-2xl p-4 flex flex-col items-center justify-center border border-slate-100/90 shadow-2xs text-center">
+                            <span class="text-xs text-gray-500 font-semibold mb-1">Total Suara</span>
+                            <span class="text-2xl font-black text-gray-900 tracking-tight">{{ $election->total_votes }}</span>
+                        </div>
+                        <!-- Sesi Aktif -->
+                        <div class="bg-slate-50/80 rounded-2xl p-4 flex flex-col items-center justify-center border border-slate-100/90 shadow-2xs text-center">
+                            <span class="text-xs text-gray-500 font-semibold mb-1">Sesi Aktif</span>
+                            <span class="text-2xl font-black {{ $election->active_sessions > 0 ? 'text-blue-600' : 'text-gray-900' }} tracking-tight">{{ $election->active_sessions }}</span>
+                        </div>
+                    </div>
+
+                    {{-- Actions Container --}}
+                    <div class="flex flex-col space-y-3 mt-auto">
+                        {{-- Tombol Lihat Paslon --}}
+                        <x-admin.button
+                            type="button"
+                            color="secondary"
+                            size="md"
+                            class="w-full justify-center"
+                            onclick="showCandidates({{ $election->id }}, '{{ addslashes($election->name) }}')"
+                        >
+                            <svg class="size-4 text-gray-500 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <span>Lihat Daftar Paslon</span>
+                        </x-admin.button>
+
+                        {{-- Tombol Buka Bilik Suara (Primary Skeuomorphic Blue) --}}
+                        <form action="{{ route('operator.kiosk.generate', $election->id) }}" method="POST" target="_blank" class="w-full">
+                            @csrf
+                            <x-admin.button
+                                type="submit"
+                                color="primary"
+                                size="lg"
+                                class="w-full justify-center font-bold tracking-wide uppercase"
+                            >
+                                <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                <span>Buka Bilik Suara</span>
+                            </x-admin.button>
+                        </form>
+                    </div>
+                </x-admin.card>
+            @empty
+                <div class="col-span-full">
+                    <x-admin.empty-state title="Tidak ada event aktif" message="Saat ini tidak ada event pemilihan yang berstatus aktif." />
+                </div>
+            @endforelse
+        </div>
+    </main>
+
+    {{-- Modal Detail Paslon --}}
+    <div id="modal-candidates" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-all" role="dialog" aria-modal="true">
+        
+        {{-- Modal Content Card --}}
+        <div id="modal-card" class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden border border-gray-100 transform transition-all duration-200 scale-95 opacity-0">
+            
+            {{-- Modal Header --}}
+            <div class="px-5 sm:px-8 py-4 sm:py-5 border-b border-gray-100 flex justify-between items-start bg-slate-50/80 shrink-0">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="p-2 bg-blue-50 text-blue-600 rounded-xl border border-blue-100 shrink-0">
+                        <svg class="size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <div class="min-w-0">
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-900 tracking-tight truncate">Daftar Pasangan Calon</h3>
+                        <p id="modal-election-name" class="text-xs sm:text-sm font-medium text-slate-500 mt-0.5 truncate">Informasi lengkap kandidat pemilihan</p>
                     </div>
                 </div>
+                {{-- Tombol Close --}}
+                <button type="button" onclick="closeCandidatesModal()"
+                    class="text-gray-400 hover:text-gray-700 transition-colors p-2 rounded-full hover:bg-slate-200/80 flex items-center justify-center cursor-pointer shrink-0 ml-2">
+                    <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
 
-                {{-- Footer --}}
-                <div class="px-6 py-4 bg-vellum border-t border-graphite-hairline">
-                    <button onclick="closeCandidatesModal()" class="w-full py-2.5 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-normal rounded-full border border-graphite-hairline bg-paper text-ink hover:bg-vellum transition-colors cursor-pointer">
-                        Tutup
-                    </button>
+            {{-- Modal Body --}}
+            <div class="px-5 sm:px-8 py-5 sm:py-6 overflow-y-auto overscroll-contain flex-1">
+                {{-- Loading State --}}
+                <div id="modal-loading" class="flex flex-col items-center justify-center py-12 gap-3">
+                    <div class="size-9 border-3 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
+                    <p class="text-sm font-medium text-gray-500">Memuat data paslon...</p>
+                </div>
+
+                {{-- Paslon Cards Container --}}
+                <div id="modal-content" class="hidden space-y-4"></div>
+
+                {{-- Empty State --}}
+                <div id="modal-empty" class="hidden text-center py-12">
+                    <div class="mx-auto flex items-center justify-center size-14 rounded-full bg-slate-50 border border-slate-200/80 mb-3">
+                        <svg class="size-7 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+                    </div>
+                    <p class="text-sm font-semibold text-gray-700">Belum ada paslon terdaftar pada event ini.</p>
                 </div>
             </div>
         </div>
@@ -103,14 +179,14 @@
 @push('scripts')
 <script>
     const candidatesUrl = '{{ route("operator.kiosk.candidates", ["electionId" => "__ID__"]) }}';
+    const modalBackdrop = document.getElementById('modal-candidates');
+    const modalCard = document.getElementById('modal-card');
+    const modalTitle = document.getElementById('modal-election-name');
+    const loadingEl = document.getElementById('modal-loading');
+    const contentEl = document.getElementById('modal-content');
+    const emptyEl = document.getElementById('modal-empty');
 
     function showCandidates(electionId, electionName) {
-        const modal = document.getElementById('modal-candidates');
-        const modalTitle = document.getElementById('modal-election-name');
-        const loadingEl = document.getElementById('modal-loading');
-        const contentEl = document.getElementById('modal-content');
-        const emptyEl = document.getElementById('modal-empty');
-
         // Reset state
         modalTitle.textContent = electionName;
         loadingEl.classList.remove('hidden');
@@ -118,9 +194,15 @@
         emptyEl.classList.add('hidden');
         contentEl.innerHTML = '';
 
-        // Show modal
-        modal.classList.remove('hidden');
+        // Show modal backdrop
+        modalBackdrop.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
+
+        // Trigger scale & opacity transition
+        setTimeout(() => {
+            modalCard.classList.remove('scale-95', 'opacity-0');
+            modalCard.classList.add('scale-100', 'opacity-100');
+        }, 10);
 
         // Fetch candidates
         const url = candidatesUrl.replace('__ID__', electionId);
@@ -138,33 +220,53 @@
             }
 
             candidates.forEach((c) => {
-                const row = document.createElement('div');
-                row.className = 'flex items-start gap-4 py-4 first:pt-0 last:pb-0';
-                row.innerHTML = `
-                    <div class="flex-shrink-0 flex items-center justify-center size-11 rounded-full bg-paper border border-graphite-hairline text-ink font-normal text-lg">
-                        ${c.order_number}
+                const padOrder = String(c.order_number).padStart(2, '0');
+                const card = document.createElement('div');
+                card.className = 'bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 hover:shadow-md transition-all relative overflow-hidden';
+                
+                const photoHtml = c.photo_path 
+                    ? `<div class="size-14 sm:size-16 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200 mr-3.5"><img src="/storage/${c.photo_path}" alt="Foto ${c.chairman_name}" class="size-full object-cover"></div>`
+                    : '';
+
+                card.innerHTML = `
+                    <div class="absolute top-0 right-0 bg-gradient-to-br from-blue-500 to-blue-600 text-white w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center font-black text-base sm:text-lg rounded-bl-2xl shadow-xs border-b border-l border-white/30">
+                        ${padOrder}
                     </div>
-                    <div class="flex-grow min-w-0">
-                        <p class="text-xs font-normal text-slate uppercase tracking-wider mb-0.5">Paslon No. ${c.order_number}</p>
-                        <p class="font-normal text-ink text-base">${c.chairman_name}</p>
-                        <p class="text-sm text-slate font-normal">Wakil: ${c.vice_chairman_name}</p>
+
+                    <div class="flex items-center pr-10 sm:pr-12">
+                        ${photoHtml}
+                        <div class="min-w-0 flex-1">
+                            <div class="mb-2.5">
+                                <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider block">Calon Ketua</span>
+                                <p class="text-sm sm:text-base font-bold text-gray-900 leading-snug">${c.chairman_name}</p>
+                            </div>
+                            <div>
+                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Calon Wakil Ketua</span>
+                                <p class="text-sm sm:text-base font-bold text-gray-900 leading-snug">${c.vice_chairman_name || '-'}</p>
+                            </div>
+                        </div>
                     </div>
                 `;
-                contentEl.appendChild(row);
+                contentEl.appendChild(card);
             });
 
             contentEl.classList.remove('hidden');
         })
         .catch(() => {
             loadingEl.classList.add('hidden');
-            contentEl.innerHTML = '<p class="text-center text-sm text-red-500 py-6">Gagal memuat data paslon. Coba lagi.</p>';
+            contentEl.innerHTML = '<p class="text-center text-sm font-semibold text-red-500 py-8">Gagal memuat data paslon. Silakan coba lagi.</p>';
             contentEl.classList.remove('hidden');
         });
     }
 
     function closeCandidatesModal() {
-        document.getElementById('modal-candidates').classList.add('hidden');
-        document.body.style.overflow = '';
+        modalCard.classList.remove('scale-100', 'opacity-100');
+        modalCard.classList.add('scale-95', 'opacity-0');
+        
+        setTimeout(() => {
+            modalBackdrop.classList.add('hidden');
+            document.body.style.overflow = '';
+        }, 150);
     }
 
     // Close on Escape key
@@ -173,3 +275,6 @@
     });
 </script>
 @endpush
+
+
+

@@ -14,19 +14,19 @@
     $selectId = $id ?? $name;
 
     $sizeClasses = match ($size) {
-        'sm' => 'py-1.5 px-3 text-sm',
-        'lg' => 'p-3.5 sm:p-5 pe-9 sm:pe-9 sm:text-sm',
-        default => 'py-2.5 sm:py-3 px-4 pe-9 sm:pe-9 sm:text-sm',
+        'sm' => 'py-1.5 px-3 text-xs',
+        'lg' => 'py-3 px-4 text-base',
+        default => 'py-2 px-3.5 text-sm',
     };
 
-    $baseClasses = "{$sizeClasses} block w-full rounded-[8px] focus:ring-2 focus:ring-white/50 dark:text-neutral-400 placeholder-ink/60 font-normal glass-input";
-    $disabledClass = $disabled ? 'opacity-50 cursor-not-allowed' : '';
+    $baseClasses = "{$sizeClasses} block w-full rounded-xl border border-gray-200/90 bg-white text-gray-900 focus:border-blue-500 focus:ring-3 focus:ring-blue-500/15 shadow-2xs transition-all cursor-pointer";
+    $disabledClass = $disabled ? 'opacity-50 cursor-not-allowed bg-gray-50' : '';
     $customClass = $attributes->get('class');
     $selectClass = trim(implode(' ', array_filter([$baseClasses, $disabledClass, $customClass])));
 @endphp
-<div class="space-y-2">
+<div>
     @if ($label)
-        <label for="{{ $selectId }}" class="text-sm text-gray-600 dark:text-neutral-200">
+        <label for="{{ $selectId }}" class="block text-sm font-medium text-gray-700 mb-1.5">
             {{ $label }}
             @if ($required)
                 <span class="text-red-500">*</span>

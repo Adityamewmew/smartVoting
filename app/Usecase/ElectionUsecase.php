@@ -72,14 +72,14 @@ class ElectionUsecase extends Usecase
             'end_time' => 'required|date|after_or_equal:start_time',
             'status' => 'required|in:draft,scheduled,active,closed',
         ], [
-            'slug.alpha_dash' => 'Slug hanya boleh berisi huruf, angka, strip (-), dan underscore (_). Tidak boleh ada spasi.'
+            'slug.alpha_dash' => 'Slug hanya boleh berisi huruf, angka, strip (-), dan underscore (_). Tidak boleh ada spasi.',
         ]);
 
         $validator->validate();
 
         DB::beginTransaction();
         try {
-            $baseSlug = !empty($data['slug']) ? Str::slug($data['slug']) : Str::slug($data['name']);
+            $baseSlug = ! empty($data['slug']) ? Str::slug($data['slug']) : Str::slug($data['name']);
             $slug = $baseSlug;
             $counter = 1;
             while (DB::table(DatabaseConst::ELECTIONS())->where('slug', $slug)->exists()) {
@@ -118,7 +118,7 @@ class ElectionUsecase extends Usecase
             'end_time' => 'required|date|after_or_equal:start_time',
             'status' => 'required|in:draft,scheduled,active,closed',
         ], [
-            'slug.alpha_dash' => 'Slug hanya boleh berisi huruf, angka, strip (-), dan underscore (_). Tidak boleh ada spasi.'
+            'slug.alpha_dash' => 'Slug hanya boleh berisi huruf, angka, strip (-), dan underscore (_). Tidak boleh ada spasi.',
         ]);
 
         $validator->validate();

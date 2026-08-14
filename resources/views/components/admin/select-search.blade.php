@@ -31,24 +31,24 @@
         "searchPlaceholder": "' .
         $searchPlaceholder .
         '",
-        "searchClasses": "block w-full text-sm bg-transparent border-gray-200 rounded-lg text-gray-800 placeholder:text-gray-400 focus:border-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 dark:placeholder-neutral-500 py-2 px-3",
-        "searchWrapperClasses": "bg-white dark:bg-neutral-800 p-2 sticky top-0 border-b border-gray-100 dark:border-neutral-700",
+        "searchClasses": "block w-full text-xs bg-transparent border-gray-200 rounded-lg text-gray-800 placeholder:text-gray-400 focus:border-blue-500 focus:ring-blue-500 py-2 px-3",
+        "searchWrapperClasses": "bg-white p-2 sticky top-0 border-b border-gray-100",
         "placeholder": "' .
         ($placeholder ?: 'Pilih...') .
         '",
-        "toggleTag": "<button type=\"button\" aria-expanded=\"false\"><span class=\"me-2\" data-icon></span><span class=\"text-gray-800 dark:text-neutral-200\" data-title></span></button>",
+        "toggleTag": "<button type=\"button\" aria-expanded=\"false\"><span class=\"me-2\" data-icon></span><span class=\"text-gray-800 font-medium\" data-title></span></button>",
         "toggleClasses": "hs-select-disabled:pointer-events-none hs-select-disabled:opacity-50 relative ' .
         $sizeClasses .
-        ' flex items-center text-nowrap w-full cursor-pointer bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700 text-gray-800 dark:text-neutral-200 rounded-lg text-start hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 dark:hover:bg-neutral-800 shadow-xs",
-        "dropdownClasses": "mt-2 max-h-72 pb-1 px-1 space-y-0.5 z-20 w-full bg-white dark:bg-neutral-800 border border-gray-200 dark:border-neutral-700 rounded-xl shadow-sm overflow-hidden overflow-y-auto [&::-webkit-scrollbar]:size-2 [&::-webkit-scrollbar-thumb]:bg-gray-300 dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500",
-        "optionClasses": "hs-selected:bg-[var(--color-brand-yellow)] hs-selected:text-white dark:hs-selected:bg-blue-900/20 py-2 px-4 w-full text-sm text-gray-800 dark:text-neutral-200 cursor-pointer hover:bg-gray-100 dark:hover:bg-neutral-700 rounded-lg focus:outline-hidden focus:bg-gray-100",
-        "optionTemplate": "<div><div class=\"flex items-center\"><div class=\"me-2\" data-icon></div><div class=\"text-gray-800 dark:text-neutral-200\" data-title></div></div></div>",
-        "extraMarkup": "<div class=\"absolute top-1/2 end-3 -translate-y-1/2\"><svg class=\"shrink-0 size-3.5 text-gray-400 opacity-50\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m7 15 5 5 5-5\"/><path d=\"m7 9 5-5 5 5\"/></svg></div>"
+        ' flex items-center text-nowrap w-full cursor-pointer bg-white border border-gray-200 text-gray-800 rounded-xl text-start hover:bg-gray-50 focus:outline-hidden focus:border-blue-500 shadow-2xs transition-colors",
+        "dropdownClasses": "mt-2 max-h-72 pb-1 px-1 space-y-0.5 z-20 w-full bg-white border border-gray-100 rounded-xl shadow-lg overflow-hidden overflow-y-auto [&::-webkit-scrollbar]:size-2 [&::-webkit-scrollbar-thumb]:bg-gray-200",
+        "optionClasses": "hs-selected:bg-blue-600 hs-selected:text-white py-2 px-4 w-full text-xs text-gray-700 font-medium cursor-pointer hover:bg-gray-100 rounded-lg focus:outline-hidden focus:bg-gray-100 transition-colors",
+        "optionTemplate": "<div><div class=\"flex items-center\"><div class=\"me-2\" data-icon></div><div class=\"text-gray-800 font-medium\" data-title></div></div></div>",
+        "extraMarkup": "<div class=\"absolute top-1/2 end-3 -translate-y-1/2\"><svg class=\"shrink-0 size-3.5 text-gray-400\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m7 15 5 5 5-5\"/><path d=\"m7 9 5-5 5 5\"/></svg></div>"
     }';
 @endphp
-<div class="space-y-2 {{ $class }}">
+<div class="space-y-1.5 {{ $class }}">
     @if ($label)
-        <label for="{{ $selectId }}" class="text-sm text-gray-600 dark:text-neutral-200">
+        <label for="{{ $selectId }}" class="block text-xs font-bold text-gray-700 uppercase tracking-wider">
             {{ $label }}
             @if ($required)
                 <span class="text-red-500">*</span>
@@ -59,7 +59,7 @@
     @if ($isReadonly)
         <input type="hidden" name="{{ $name }}" value="{{ $readonlyValue }}">
         <div
-            class="py-2 px-3 block w-full bg-gray-50 border-gray-200 rounded-lg text-sm dark:bg-neutral-900/50 dark:border-neutral-700 dark:text-neutral-400 font-bold">
+            class="py-2.5 px-3.5 block w-full bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-800">
             {{ $readonlyText }}
             @if ($readonlySubtext)
                 <span class="ms-1 text-xs font-normal text-gray-500 uppercase">{{ $readonlySubtext }}</span>

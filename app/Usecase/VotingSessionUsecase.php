@@ -27,7 +27,7 @@ class VotingSessionUsecase extends Usecase
                 ->whereNull('deleted_at')
                 ->first();
 
-            if (!$election) {
+            if (! $election) {
                 return Response::buildErrorService('Event pemilihan tidak ditemukan atau belum aktif.');
             }
 
@@ -47,6 +47,7 @@ class VotingSessionUsecase extends Usecase
             );
         } catch (Exception $e) {
             Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
+
             return Response::buildErrorService($e->getMessage());
         }
     }
@@ -61,7 +62,7 @@ class VotingSessionUsecase extends Usecase
                 ->where('session_token', $token)
                 ->first();
 
-            if (!$session) {
+            if (! $session) {
                 return Response::buildErrorService('Sesi tidak valid atau tidak ditemukan.');
             }
 
@@ -77,6 +78,7 @@ class VotingSessionUsecase extends Usecase
             return Response::buildSuccess(data: collect($session)->toArray());
         } catch (Exception $e) {
             Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
+
             return Response::buildErrorService($e->getMessage());
         }
     }
@@ -94,7 +96,7 @@ class VotingSessionUsecase extends Usecase
                 ->lockForUpdate()
                 ->first();
 
-            if (!$session) {
+            if (! $session) {
                 throw new Exception('Sesi tidak ditemukan.');
             }
 
@@ -109,7 +111,7 @@ class VotingSessionUsecase extends Usecase
                 ->whereNull('deleted_at')
                 ->first();
 
-            if (!$candidate) {
+            if (! $candidate) {
                 throw new Exception('Kandidat tidak valid.');
             }
 
@@ -137,6 +139,7 @@ class VotingSessionUsecase extends Usecase
         } catch (Exception $e) {
             DB::rollback();
             Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
+
             return Response::buildErrorService($e->getMessage());
         }
     }
@@ -153,9 +156,10 @@ class VotingSessionUsecase extends Usecase
                 ->lockForUpdate()
                 ->first();
 
-            if (!$session || $session->status !== 'open') {
+            if (! $session || $session->status !== 'open') {
                 // Ignore if already submitted or expired
                 DB::rollBack();
+
                 return Response::buildSuccess();
             }
 
@@ -175,6 +179,7 @@ class VotingSessionUsecase extends Usecase
         } catch (Exception $e) {
             DB::rollback();
             Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
+
             return Response::buildErrorService($e->getMessage());
         }
     }

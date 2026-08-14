@@ -1,8 +1,8 @@
 @props(['align' => 'start'])
 
-<th scope="col" {{ $attributes->merge(['class' => 'px-6 py-3 text-' . $align]) }}>
+<th scope="col" {{ $attributes->merge(['class' => 'px-6 py-3.5 text-' . $align]) }}>
     @if ($slot->isNotEmpty())
-        <span class="font-semibold text-sm uppercase text-gray-500 dark:text-neutral-200 tracking-widest">
+        <span class="font-semibold text-xs uppercase text-gray-500 tracking-wider">
             {{ $slot }}
         </span>
     @endif

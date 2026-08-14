@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ env('APP_ENV') == 'local' ? '[LOCAL] ' : '' }}Smart Project Starter Kit</title>
+    <title>{{ env('APP_ENV') == 'local' ? '[LOCAL] ' : '' }}SmartVoting</title>
 
     {{-- Favicon --}}
     @include('_admin._layout.favicon')
@@ -13,7 +13,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
     <!-- Styles / Scripts -->
@@ -24,23 +24,23 @@
 
 </head>
 
-<body>
+<body class="bg-gray-50 text-gray-900 font-geist antialiased selection:bg-blue-500 selection:text-white">
     <!-- ========== HEADER ========== -->
-    <header class="fixed top-0 left-0 right-0 z-[48] w-full bg-white shadow-sm border-b border-gray-100">
+    <header class="fixed top-0 left-0 right-0 z-50 w-full bg-white/95 backdrop-blur-md shadow-xs border-b border-gray-200/80">
         <nav class="flex items-center justify-between px-4 sm:px-6 w-full h-16">
             <div class="flex items-center justify-between w-full lg:w-auto">
                 <!-- Logo -->
-                <a class="flex-none rounded-md inline-block focus:outline-hidden focus:opacity-80" href="#">
-                    <img src="{{ asset('images/logo-light.png') }}" alt="Logo Smart Project Starter Kit" class="h-8 w-auto">
+                <a class="flex items-center gap-2.5 rounded-md focus:outline-hidden" href="{{ route('admin.dashboard') }}">
+                    <img src="{{ asset('images/logo-light.png') }}" alt="Logo" class="h-8 w-auto">
                 </a>
 
                 <!-- Navigation Toggle (Mobile) -->
                 <button type="button"
-                    class="lg:hidden me-0 size-8 px-3 flex justify-center items-center gap-x-2 border border-gray-200 text-gray-800 hover:text-gray-500 rounded-lg focus:outline-hidden focus:text-gray-500 disabled:opacity-50 disabled:pointer-events-none glass-button shadow-none"
+                    class="lg:hidden me-0 size-9.5 px-2.5 flex justify-center items-center gap-x-2 border border-gray-200 text-gray-700 hover:bg-gray-50 active:scale-95 rounded-xl focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-transform"
                     aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-application-sidebar"
                     aria-label="Toggle navigation" data-hs-overlay="#hs-application-sidebar">
                     <span class="sr-only">Toggle Navigation</span>
-                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    <svg class="shrink-0 size-4.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
                         <rect width="18" height="18" x="3" y="3" rx="2" />
@@ -51,11 +51,12 @@
             </div>
 
             <!-- Date Time area (Hidden on mobile) -->
-            <div class="hidden lg:flex items-center gap-3">
-                <div class="bg-blue-50 text-blue-800 text-sm font-semibold px-4 py-1.5 rounded-full border border-blue-100">
-                    {{ \Carbon\Carbon::now()->locale('id')->isoFormat('dddd, D MMMM YYYY') }}
+            <div class="hidden md:flex items-center gap-2.5">
+                <div class="bg-gradient-to-r from-blue-50 to-blue-100/70 text-blue-700 text-xs font-bold px-3.5 py-1.5 rounded-full border border-blue-200/80 shadow-2xs flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                    <span>{{ \Carbon\Carbon::now()->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</span>
                 </div>
-                <div class="bg-[#FFB22C]/10 text-[#FFB22C] text-sm font-bold px-4 py-1.5 rounded-full border border-[#FFB22C]/20">
+                <div class="bg-gradient-to-r from-slate-50 to-gray-100 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-full border border-gray-200/80 shadow-2xs">
                     {{ \Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('H.i') }} WIB
                 </div>
             </div>
@@ -67,8 +68,8 @@
     @include('_admin._layout.sidebar.sidebar')
 
     <!-- Content -->
-    <div class="w-full lg:ps-64 min-h-screen relative z-10">
-        <div id="main-content" class="space-y-6 px-6 py-8 sm:px-8 sm:py-10 max-w-screen-2xl mx-auto w-full">
+    <div class="w-full lg:ps-64 min-h-screen">
+        <div id="main-content" class="animate-page-enter space-y-6 px-4 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-10 max-w-screen-2xl mx-auto w-full">
             @if (session('success'))
                 <div id="spa-flash-success" style="display: none;">{{ session('success') }}</div>
             @endif

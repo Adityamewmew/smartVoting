@@ -3,71 +3,51 @@
 @section('title', 'Kelola Akses Menu')
 
 @section('content')
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div
-            class="bg-white overflow-hidden shadow-lg rounded-2xl dark:bg-neutral-800 border-2 border-gray-100 dark:border-neutral-700">
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-neutral-700 flex items-center">
-                <a href="{{ route('admin.sidebar_menu.index') }}"
-                    class="py-3 px-3 inline-flex items-center gap-x-2 text-xl rounded-xl border border-gray-200 bg-white text-gray-800 shadow-md hover:bg-gray-50 focus:outline-hidden focus:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:text-white dark:hover:bg-neutral-700 dark:focus:bg-neutral-700 cursor-pointer">
-                    <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="m12 19-7-7 7-7" />
-                        <path d="M19 12H5" />
-                    </svg>
-                </a>
-                <div class="ms-3">
-                    <h2 class="text-xl font-semibold text-gray-800 dark:text-neutral-200">
-                        Hak Akses: {{ $data->label }}
-                    </h2>
-                    @php
-                        $groupColors = [
-                            'utama' => 'bg-amber-100 text-[var(--color-brand-brown)]',
-                        ];
-                        $colorClass = $groupColors[$data->group] ?? 'bg-gray-100 text-gray-700';
-                    @endphp
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold mt-1 {{ $colorClass }}">
-                        {{ ucfirst($data->group) }}
-                    </span>
-                </div>
+    <div class="max-w-3xl mx-auto space-y-6">
+        {{-- Top Navigation & Title --}}
+        <div class="flex items-center gap-3">
+            <x-admin.button href="{{ route('admin.sidebar_menu.index') }}" size="icon-md" color="secondary">
+                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </x-admin.button>
+            <div>
+                <h1 class="text-xl font-bold text-gray-900">Hak Akses: {{ $data->label }}</h1>
+                <p class="text-xs text-gray-500">Pilih role pengguna yang dapat melihat menu ini di sidebar.</p>
             </div>
+        </div>
 
-            <form class="p-6" navigate-form action="{{ route('admin.sidebar_menu.doAccess', $data->id) }}" method="POST">
+        {{-- Form Card --}}
+        <x-admin.card class="p-6">
+            <form navigate-form action="{{ route('admin.sidebar_menu.doAccess', $data->id) }}" method="POST" class="space-y-6">
                 @csrf
-
-                <p class="text-sm text-gray-500 dark:text-neutral-400 mb-5">
-                    Pilih role pengguna yang dapat melihat menu ini di sidebar.
-                </p>
 
                 <div class="space-y-3">
                     @foreach ($accessTypes as $typeValue => $typeLabel)
-                        <label
-                            class="flex items-center gap-x-3 p-3 rounded-xl border cursor-pointer transition-all
-                            {{ in_array($typeValue, $accesses) ? 'border-[var(--color-brand-yellow)]/50 bg-amber-50 dark:border-blue-800 dark:bg-blue-900/20' : 'border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50 dark:border-neutral-700 dark:bg-neutral-900 dark:hover:border-neutral-600' }}">
+                        <label class="flex items-center gap-x-3.5 p-4 rounded-xl border cursor-pointer transition-all
+                            {{ in_array($typeValue, $accesses) ? 'border-blue-200 bg-blue-50/40 text-blue-900' : 'border-gray-100 bg-white hover:bg-gray-50 text-gray-700' }}">
                             <input type="checkbox" name="access_types[]" value="{{ $typeValue }}"
-                                class="shrink-0 size-4 rounded border-gray-300 text-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)] dark:bg-neutral-800 dark:border-neutral-600 cursor-pointer"
+                                class="shrink-0 size-4.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                                 {{ in_array($typeValue, $accesses) ? 'checked' : '' }}>
                             <div>
-                                <span class="block text-sm font-semibold text-gray-800 dark:text-neutral-200">
+                                <span class="block text-sm font-bold text-gray-900">
                                     {{ $typeLabel }}
                                 </span>
-                                <span class="block text-xs text-gray-500 dark:text-neutral-400">
-                                    Access type {{ $typeValue }}
+                                <span class="block text-xs text-gray-400 mt-0.5">
+                                    Role Access ID: {{ $typeValue }}
                                 </span>
                             </div>
                         </label>
                     @endforeach
                 </div>
 
-                <div class="mt-6 flex items-center gap-3">
-                    <x-admin.button type="submit" color="primary" class="px-6 py-3">
-                        Simpan Hak Akses
-                    </x-admin.button>
-                    <x-admin.button href="{{ route('admin.sidebar_menu.index') }}" color="outline-secondary" class="px-6 py-3">
+                <div class="pt-5 border-t border-gray-100 flex items-center justify-end gap-3">
+                    <x-admin.button href="{{ route('admin.sidebar_menu.index') }}" color="secondary">
                         Batal
+                    </x-admin.button>
+                    <x-admin.button type="submit" color="primary">
+                        Simpan Hak Akses
                     </x-admin.button>
                 </div>
             </form>
-        </div>
+        </x-admin.card>
     </div>
 @endsection

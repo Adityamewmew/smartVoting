@@ -3,28 +3,26 @@
 @section('title', 'Ubah Password')
 
 @section('content')
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="bg-paper overflow-hidden rounded-2xl border border-graphite-hairline shadow-sm">
-            <div class="px-6 py-4 border-b border-graphite-hairline flex justify-between items-center">
-                <div>
-                    <h2 class="text-xl font-normal text-ink">
-                        Ubah Password
-                    </h2>
-                </div>
-            </div>
+    <div class="max-w-2xl mx-auto space-y-6">
+        {{-- Top Navigation & Title --}}
+        <div>
+            <h1 class="text-xl font-bold text-gray-900">Ubah Password</h1>
+            <p class="text-xs text-gray-500 mt-0.5">Perbarui kata sandi akun administrator Anda secara berkala untuk menjaga keamanan.</p>
+        </div>
 
-            <form id="change-password-form" class="p-6" navigate-form
-                action="{{ route('admin.profile.do_change_password') }}" method="POST">
+        {{-- Form Card --}}
+        <x-admin.card class="p-6">
+            <form id="change-password-form" navigate-form action="{{ route('admin.profile.do_change_password') }}" method="POST" class="space-y-6">
                 @csrf
 
-                <div class="space-y-4">
+                <div class="space-y-5">
                     {{-- Current Password --}}
                     <x-admin.input
                         type="password"
                         id="current_password"
                         name="current_password"
-                        label="Password Lama"
-                        placeholder="Masukkan password lama anda"
+                        label="Password Saat Ini"
+                        placeholder="Masukkan password saat ini"
                         required
                     />
 
@@ -34,7 +32,7 @@
                         id="password"
                         name="password"
                         label="Password Baru"
-                        placeholder="Masukkan password baru anda"
+                        placeholder="Minimal 6 karakter"
                         required
                     />
 
@@ -43,19 +41,20 @@
                         type="password"
                         id="password_confirmation"
                         name="password_confirmation"
-                        label="Ulangi Password Baru"
-                        placeholder="Ulangi password baru anda"
+                        label="Konfirmasi Password Baru"
+                        placeholder="Ulangi password baru"
                         required
                     />
                 </div>
 
-                {{-- Footer --}}
-                <div class="mt-6 flex justify-start gap-x-2">
-                    <x-admin.button type="submit" icon='<svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg>'>
+                {{-- Action Buttons --}}
+                <div class="pt-5 border-t border-gray-100 flex justify-end">
+                    <x-admin.button type="submit" color="primary">
+                        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
                         Simpan Perubahan
                     </x-admin.button>
                 </div>
             </form>
-        </div>
+        </x-admin.card>
     </div>
 @endsection

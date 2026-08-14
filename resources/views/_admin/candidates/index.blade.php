@@ -3,149 +3,168 @@
 @section('title', 'Data ' . $page['title'])
 
 @section('content')
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <h2 class="text-2xl font-semibold text-ink">Data {{ $page['title'] }}</h2>
-        <x-admin.button href="{{ route('admin.candidates.add', ['election_id' => $selectedElectionId]) }}" class="font-bold" size="sm">
-            @include('_admin._layout.icons.add')
-            Tambah Kandidat
-        </x-admin.button>
-    </div>
-
-    <div class="mb-6">
-        <p class="text-xs font-semibold text-slate mb-3 uppercase tracking-wider">Pencarian Data</p>
-        <form action="{{ route('admin.candidates.index') }}" method="GET" navigate-form
-            class="flex flex-col sm:flex-row items-center gap-3">
-            
-            <!-- Select Event -->
-            <div class="w-full sm:w-64">
-                <select name="election_id" class="w-full py-2.5 sm:py-2 px-4 sm:text-sm block border border-gray-200 rounded-lg focus:border-[var(--color-brand-yellow)] focus:ring-[var(--color-brand-yellow)] dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400 placeholder-gray-400 glass-input" onchange="this.form.submit()">
-                    <option value="">-- Semua Event Pemilihan --</option>
-                    @foreach($elections as $election)
-                        <option value="{{ $election->id }}" {{ $selectedElectionId == $election->id ? 'selected' : '' }}>
-                            {{ $election->name }}
-                        </option>
-                    @endforeach
-                </select>
+    <div class="space-y-6">
+        {{-- Header Section --}}
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/80 shadow-xs">
+            <div>
+                <h1 class="text-lg sm:text-2xl font-bold text-gray-900 tracking-tight">Data Pasangan Calon</h1>
+                <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Kelola data kandidat, foto paslon, nomor urut, serta visi & misi pemilihan.</p>
             </div>
-
-            <!-- Search Keyword -->
-            <div class="w-full sm:w-64">
-                <x-admin.input name="keywords" :value="$keywords ?? ''" placeholder="Cari kandidat..." size="sm" />
-            </div>
-
-            <!-- Buttons -->
-            <div class="flex items-center gap-2">
-                <x-admin.button type="submit" size="sm" color="primary">
-                    @include('_admin._layout.icons.search')
-                    Cari
-                </x-admin.button>
-                @if (!empty($keywords) || !empty($selectedElectionId))
-                    <x-admin.button href="{{ route('admin.candidates.index') }}" size="sm" color="outline-secondary">
-                        @include('_admin._layout.icons.reset')
-                        Reset
-                    </x-admin.button>
-                @endif
-            </div>
-        </form>
-    </div>
-
-    <x-admin.table.wrapper>
-        <x-admin.table>
-            <x-admin.table.thead>
-                <tr>
-                    <x-admin.table.th>No. Urut</x-admin.table.th>
-                    <x-admin.table.th>Foto</x-admin.table.th>
-                    <x-admin.table.th>Nama Paslon</x-admin.table.th>
-                    <x-admin.table.th>Event</x-admin.table.th>
-                    <x-admin.table.th>Visi & Misi</x-admin.table.th>
-                    <x-admin.table.th align="end"></x-admin.table.th>
-                </tr>
-            </x-admin.table.thead>
-            <x-admin.table.tbody>
-                @forelse($data as $d)
-                    <x-admin.table.tr class="hover:bg-vellum/50 transition">
-                        <x-admin.table.td>
-                            <span class="block text-2xl font-normal text-ink">{{ $d->order_number }}</span>
-                        </x-admin.table.td>
-                        <x-admin.table.td>
-                            @if($d->photo_path)
-                                <img src="{{ Storage::url($d->photo_path) }}" alt="Foto Paslon" class="w-16 h-16 object-cover rounded-xl shadow-none border border-graphite-hairline">
-                            @else
-                                <div class="w-16 h-16 bg-vellum rounded-xl flex items-center justify-center border border-graphite-hairline">
-                                    <span class="text-slate text-[10px] uppercase font-normal tracking-wider">No Image</span>
-                                </div>
-                            @endif
-                        </x-admin.table.td>
-                        <x-admin.table.td>
-                            <span class="block text-sm font-normal text-ink">K: {{ $d->chairman_name }}</span>
-                            <span class="block text-sm text-slate font-normal mt-1">W: {{ $d->vice_chairman_name }}</span>
-                        </x-admin.table.td>
-                        <x-admin.table.td>
-                            <span class="inline-flex items-center gap-x-1.5 py-1 px-2 rounded-full text-xs font-normal bg-brand-yellow/10 text-yellow-700">
-                                {{ $d->election_name }}
-                            </span>
-                        </x-admin.table.td>
-                        <x-admin.table.td>
-                            <div class="max-w-xs text-xs text-slate space-y-1">
-                                @if($d->vision)
-                                    <p class="truncate"><span class="font-normal text-ink">Visi:</span> {{ $d->vision }}</p>
-                                @endif
-                                @if($d->mission)
-                                    <p class="truncate"><span class="font-normal text-ink">Misi:</span> {{ $d->mission }}</p>
-                                @endif
-                            </div>
-                        </x-admin.table.td>
-                        <x-admin.table.td innerClass="px-6 py-1.5 flex items-center justify-end gap-x-1">
-                            <a navigate
-                                class="inline-flex items-center justify-center size-8 text-sm font-normal rounded-full border border-graphite-hairline bg-paper text-slate hover:bg-vellum hover:text-ink focus:outline-none transition-colors"
-                                href="{{ route('admin.candidates.update', $d->id) }}" title="Edit">
-                                @include('_admin._layout.icons.pencil')
-                            </a>
-                            <button type="button"
-                                class="inline-flex items-center justify-center size-8 text-sm font-normal rounded-full border border-graphite-hairline bg-paper text-slate hover:bg-ink hover:text-paper hover:border-ink focus:outline-none transition-colors cursor-pointer"
-                                title="Delete" data-hs-overlay="#delete-modal"
-                                onclick="setDeleteData('{{ $d->id }}', 'Kandidat Nomor Urut {{ $d->order_number }}')">
-                                @include('_admin._layout.icons.trash')
-                            </button>
-                        </x-admin.table.td>
-                    </x-admin.table.tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-neutral-500">
-                            <x-admin.empty-state title="Belum ada Kandidat" message="Silakan tambahkan kandidat untuk event pemilihan ini." />
-                        </td>
-                    </tr>
-                @endforelse
-            </x-admin.table.tbody>
-        </x-admin.table>
-        
-        @if ($data instanceof \Illuminate\Pagination\LengthAwarePaginator && count($data) > 0 && $data->hasPages())
-            <div class="px-6 py-4 border-t border-gray-200 dark:border-neutral-700">
-                <div class="flex justify-end">
-                    {{ $data->links() }}
-                </div>
-            </div>
-        @endif
-    </x-admin.table.wrapper>
-
-    <x-admin.modal id="delete-modal" title="Hapus Kandidat Paslon" size="sm:max-w-md">
-        <div class="text-center py-4">
-            <span class="mb-4 inline-flex justify-center items-center size-14 rounded-full border-4 border-red-50 bg-red-100 text-red-500">
-                @include('_admin._layout.icons.warning_modal')
-            </span>
-            <p class="text-slate">
-                Apakah Anda yakin ingin menghapus <span id="delete-item-name" class="font-semibold text-ink"></span>?<br>Tindakan ini tidak dapat dibatalkan.
-            </p>
+            <x-admin.button href="{{ route('admin.candidates.add', ['election_id' => $selectedElectionId]) }}" color="primary" size="md" class="w-full sm:w-auto justify-center">
+                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                Tambah Kandidat
+            </x-admin.button>
         </div>
-        <x-slot:footer class="flex justify-end gap-x-2">
-            <x-admin.button color="outline-secondary" data-hs-overlay="#delete-modal">Batal</x-admin.button>
-            <form id="delete-form" method="POST" action="" class="inline m-0 p-0" navigate-form>
-                @csrf
-                @method('DELETE')
-                <x-admin.button type="submit" color="danger">Ya, Hapus</x-admin.button>
+
+        {{-- Search / Filter Card --}}
+        <div class="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-xs">
+            <form action="{{ route('admin.candidates.index') }}" method="GET" navigate-form
+                class="flex flex-col sm:flex-row items-center gap-3">
+                
+                <!-- Select Event -->
+                <div class="w-full sm:w-72">
+                    @php
+                        $electionOptions = [];
+                        foreach ($elections as $election) {
+                            $electionOptions[$election->id] = $election->name;
+                        }
+                    @endphp
+                    <x-admin.select
+                        name="election_id"
+                        placeholder="-- Semua Event Pemilihan --"
+                        :options="$electionOptions"
+                        :value="$selectedElectionId"
+                        onchange="this.form.submit()"
+                        size="sm"
+                    />
+                </div>
+
+                <!-- Search Keyword -->
+                <div class="w-full sm:w-72">
+                    <x-admin.input name="keywords" :value="$keywords ?? ''" placeholder="Cari nama paslon..." size="sm" />
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex items-center gap-2 w-full sm:w-auto">
+                    <x-admin.button type="submit" size="sm" color="primary">
+                        <svg class="shrink-0 size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        Cari
+                    </x-admin.button>
+                    @if (!empty($keywords) || !empty($selectedElectionId))
+                        <x-admin.button href="{{ route('admin.candidates.index') }}" size="sm" color="outline-secondary">
+                            Reset
+                        </x-admin.button>
+                    @endif
+                </div>
             </form>
-        </x-slot:footer>
-    </x-admin.modal>
+        </div>
+
+        {{-- Table List --}}
+        <x-admin.table.wrapper>
+            <x-admin.table>
+                <x-admin.table.thead>
+                    <tr>
+                        <x-admin.table.th align="center">No. Urut</x-admin.table.th>
+                        <x-admin.table.th>Foto Paslon</x-admin.table.th>
+                        <x-admin.table.th>Nama Pasangan Calon</x-admin.table.th>
+                        <x-admin.table.th>Event Pemilihan</x-admin.table.th>
+                        <x-admin.table.th>Visi & Misi</x-admin.table.th>
+                        <x-admin.table.th align="end">Aksi</x-admin.table.th>
+                    </tr>
+                </x-admin.table.thead>
+                <x-admin.table.tbody>
+                    @forelse($data as $d)
+                        <x-admin.table.tr>
+                            <x-admin.table.td innerClass="text-center">
+                                <x-admin.badge color="primary" class="font-black text-xs px-2.5 py-1">
+                                    {{ str_pad($d->order_number, 2, '0', STR_PAD_LEFT) }}
+                                </x-admin.badge>
+                            </x-admin.table.td>
+                            <x-admin.table.td>
+                                @if($d->photo_path)
+                                    <img src="{{ Storage::url($d->photo_path) }}" alt="Foto Paslon" class="w-12 h-16 object-cover object-center rounded-lg shadow-2xs border border-gray-200">
+                                @else
+                                    <div class="w-12 h-16 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200 text-gray-400">
+                                        <svg class="size-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+                                    </div>
+                                @endif
+                            </x-admin.table.td>
+                            <x-admin.table.td>
+                                <span class="block text-sm font-bold text-gray-900">{{ $d->chairman_name }}</span>
+                                <span class="block text-xs text-gray-500 font-medium mt-0.5">&amp; {{ $d->vice_chairman_name ?: '-' }}</span>
+                            </x-admin.table.td>
+                            <x-admin.table.td>
+                                <x-admin.badge color="gray" :text="$d->election_name" />
+                            </x-admin.table.td>
+                            <x-admin.table.td>
+                                <div class="max-w-xs text-xs text-gray-600 space-y-1">
+                                    @if($d->vision)
+                                        <p class="truncate"><span class="font-semibold text-gray-800">Visi:</span> {{ $d->vision }}</p>
+                                    @endif
+                                    @if($d->mission)
+                                        <p class="truncate"><span class="font-semibold text-gray-800">Misi:</span> {{ $d->mission }}</p>
+                                    @endif
+                                </div>
+                            </x-admin.table.td>
+                            <x-admin.table.td innerClass="px-6 py-3 flex items-center justify-end gap-x-1.5">
+                                <x-admin.button
+                                    size="icon-sm"
+                                    color="outline-secondary"
+                                    href="{{ route('admin.candidates.update', $d->id) }}"
+                                    title="Edit Paslon"
+                                    class="hover:bg-amber-50 hover:text-amber-600 hover:border-amber-200">
+                                    @include('_admin._layout.icons.pencil')
+                                </x-admin.button>
+                                <x-admin.button
+                                    size="icon-sm"
+                                    color="outline-secondary"
+                                    title="Hapus Paslon"
+                                    data-hs-overlay="#delete-modal"
+                                    onclick="setDeleteData('{{ $d->id }}', 'Kandidat Nomor Urut {{ $d->order_number }}')"
+                                    class="hover:bg-red-50 hover:text-red-600 hover:border-red-200">
+                                    @include('_admin._layout.icons.trash')
+                                </x-admin.button>
+                            </x-admin.table.td>
+                        </x-admin.table.tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-6 py-8 text-center">
+                                <x-admin.empty-state message="Belum ada kandidat yang terdaftar pada pemilihan ini." />
+                            </td>
+                        </tr>
+                    @endforelse
+                </x-admin.table.tbody>
+            </x-admin.table>
+            
+            @if ($data instanceof \Illuminate\Pagination\LengthAwarePaginator && count($data) > 0 && $data->hasPages())
+                <div class="px-6 py-4 border-t border-gray-100">
+                    <div class="flex justify-end">
+                        {{ $data->links() }}
+                    </div>
+                </div>
+            @endif
+        </x-admin.table.wrapper>
+
+        {{-- Delete Confirmation Modal --}}
+        <x-admin.modal id="delete-modal" title="Hapus Kandidat Paslon" size="sm:max-w-md">
+            <div class="text-center py-4">
+                <span class="mb-4 inline-flex justify-center items-center size-12 rounded-full bg-red-50 text-red-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="size-6" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                </span>
+                <p class="text-sm text-gray-600">
+                    Apakah Anda yakin ingin menghapus <span id="delete-item-name" class="font-bold text-gray-900"></span>?<br>Tindakan ini tidak dapat dibatalkan.
+                </p>
+            </div>
+            <x-slot:footer>
+                <x-admin.button color="secondary" size="md" data-hs-overlay="#delete-modal">Batal</x-admin.button>
+                <form id="delete-form" method="POST" action="" class="inline m-0 p-0" navigate-form>
+                    @csrf
+                    @method('DELETE')
+                    <x-admin.button type="submit" color="danger" size="md">Ya, Hapus</x-admin.button>
+                </form>
+            </x-slot:footer>
+        </x-admin.modal>
+    </div>
 
     <script>
         window.setDeleteData = function (id, name) {

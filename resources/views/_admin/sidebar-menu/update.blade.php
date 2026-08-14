@@ -3,29 +3,24 @@
 @section('title', 'Edit Menu Sidebar')
 
 @section('content')
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="bg-paper overflow-hidden rounded-2xl border border-graphite-hairline shadow-sm">
-            <div class="px-6 py-4 border-b border-graphite-hairline flex items-center">
-                <a href="{{ route('admin.sidebar_menu.index') }}"
-                    class="py-3 px-3 inline-flex items-center gap-x-2 text-xl rounded-full bg-paper text-ink hover:bg-vellum focus:outline-hidden transition-colors cursor-pointer">
-                    <svg class="shrink-0 size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="m12 19-7-7 7-7" />
-                        <path d="M19 12H5" />
-                    </svg>
-                </a>
-                <div class="ms-3">
-                    <h2 class="text-xl font-normal text-ink">
-                        Edit Menu: {{ $data->label }}
-                    </h2>
-                </div>
+    <div class="max-w-3xl mx-auto space-y-6">
+        {{-- Top Navigation & Title --}}
+        <div class="flex items-center gap-3">
+            <x-admin.button href="{{ route('admin.sidebar_menu.index') }}" size="icon-md" color="secondary">
+                <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+            </x-admin.button>
+            <div>
+                <h1 class="text-xl font-bold text-gray-900">Ubah Menu: {{ $data->label }}</h1>
+                <p class="text-xs text-gray-500">Perbarui konfigurasi label, group, route, atau icon menu navigasi.</p>
             </div>
+        </div>
 
-            <form class="p-6" navigate-form action="{{ route('admin.sidebar_menu.doUpdate', $data->id) }}" method="POST">
+        {{-- Form Card --}}
+        <x-admin.card class="p-6">
+            <form navigate-form action="{{ route('admin.sidebar_menu.doUpdate', $data->id) }}" method="POST" class="space-y-6">
                 @csrf
 
-                <div class="space-y-4">
+                <div class="space-y-5">
                     {{-- Label --}}
                     <x-admin.input
                         type="text"
@@ -37,42 +32,43 @@
                         required="true"
                     />
 
-                    {{-- Group --}}
-                    @php
-                        $groupOptions = [];
-                        foreach ($groups as $g) {
-                            $groupOptions[$g->key] = $g->label;
-                        }
-                    @endphp
-                    <x-admin.select
-                        id="group"
-                        name="group"
-                        label="Group"
-                        :options="$groupOptions"
-                        placeholder="-- Pilih Group --"
-                        value="{{ old('group', $data->group) }}"
-                        required="true"
-                    />
-
-                    {{-- Parent --}}
-                    @php
-                        $parentSelectOptions = [];
-                        foreach ($parentOptions as $opt) {
-                            if ($opt->id != $data->id) {
-                                $parentSelectOptions[$opt->id] = '[' . ucfirst($opt->group) . '] ' . $opt->label;
+                    {{-- Group & Parent --}}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        @php
+                            $groupOptions = [];
+                            foreach ($groups as $g) {
+                                $groupOptions[$g->key] = $g->label;
                             }
-                        }
-                    @endphp
-                    <div>
+                        @endphp
                         <x-admin.select
-                            id="parent_id"
-                            name="parent_id"
-                            label="Parent Menu"
-                            :options="$parentSelectOptions"
-                            placeholder="-- Tidak ada (item root) --"
-                            value="{{ old('parent_id', $data->parent_id) }}"
+                            id="group"
+                            name="group"
+                            label="Group Menu"
+                            :options="$groupOptions"
+                            placeholder="-- Pilih Group --"
+                            value="{{ old('group', $data->group) }}"
+                            required="true"
                         />
-                        <p class="text-xs text-slate mt-1">Isi jika menu ini adalah child dari accordion.</p>
+
+                        @php
+                            $parentSelectOptions = [];
+                            foreach ($parentOptions as $opt) {
+                                if ($opt->id != $data->id) {
+                                    $parentSelectOptions[$opt->id] = '[' . ucfirst($opt->group) . '] ' . $opt->label;
+                                }
+                            }
+                        @endphp
+                        <div>
+                            <x-admin.select
+                                id="parent_id"
+                                name="parent_id"
+                                label="Parent Menu (Opsional)"
+                                :options="$parentSelectOptions"
+                                placeholder="-- Tidak ada (Item Root) --"
+                                value="{{ old('parent_id', $data->parent_id) }}"
+                            />
+                            <p class="text-xs text-gray-400 mt-1">Pilih jika menu ini adalah sub-item accordion.</p>
+                        </div>
                     </div>
 
                     {{-- Route Name --}}
@@ -83,10 +79,10 @@
                             name="route_name"
                             label="Route Name"
                             value="{{ old('route_name', $data->route_name) }}"
-                            class="font-mono"
+                            class="font-mono text-xs"
                             placeholder="Contoh: admin.dashboard"
                         />
-                        <p class="text-xs text-slate mt-1">Named route Laravel. Kosongkan jika item ini adalah accordion parent tanpa link.</p>
+                        <p class="text-xs text-gray-400 mt-1">Named route Laravel. Kosongkan jika item ini adalah accordion parent tanpa link.</p>
                     </div>
 
                     {{-- Icon --}}
@@ -94,41 +90,44 @@
                         type="text"
                         id="icon"
                         name="icon"
-                        label="Icon (blade include path)"
+                        label="Icon (Blade include path)"
                         value="{{ old('icon', $data->icon) }}"
-                        class="font-mono"
+                        class="font-mono text-xs"
                         placeholder="Contoh: _admin._layout.icons.sidebar.dashboard"
                     />
 
-                    {{-- Sort Order --}}
-                    <x-admin.input
-                        type="number"
-                        id="sort_order"
-                        name="sort_order"
-                        label="Urutan Tampil"
-                        value="{{ old('sort_order', $data->sort_order) }}"
-                        min="0"
-                    />
+                    {{-- Sort Order & Status --}}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <x-admin.input
+                            type="number"
+                            id="sort_order"
+                            name="sort_order"
+                            label="Urutan Tampil"
+                            value="{{ old('sort_order', $data->sort_order) }}"
+                            min="0"
+                        />
 
-                    {{-- Is Active --}}
-                    <x-admin.select
-                        id="is_active"
-                        name="is_active"
-                        label="Status"
-                        :options="['1' => 'Aktif', '0' => 'Nonaktif']"
-                        value="{{ old('is_active', $data->is_active) }}"
-                    />
+                        <x-admin.select
+                            id="is_active"
+                            name="is_active"
+                            label="Status Menu"
+                            :options="['1' => 'Aktif', '0' => 'Nonaktif']"
+                            value="{{ old('is_active', $data->is_active) }}"
+                        />
+                    </div>
                 </div>
 
-                <div class="mt-6 flex items-center gap-3">
-                    <x-admin.button type="submit" color="primary" class="px-6 py-3">
-                        Simpan Perubahan
-                    </x-admin.button>
-                    <x-admin.button href="{{ route('admin.sidebar_menu.index') }}" color="outline-secondary" class="px-6 py-3">
+                {{-- Action Buttons --}}
+                <div class="pt-5 border-t border-gray-100 flex items-center justify-end gap-3">
+                    <x-admin.button href="{{ route('admin.sidebar_menu.index') }}" color="secondary">
                         Batal
+                    </x-admin.button>
+                    <x-admin.button type="submit" color="primary">
+                        <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        Simpan Perubahan
                     </x-admin.button>
                 </div>
             </form>
-        </div>
+        </x-admin.card>
     </div>
 @endsection

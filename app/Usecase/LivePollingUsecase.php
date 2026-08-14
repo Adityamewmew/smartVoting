@@ -47,7 +47,7 @@ class LivePollingUsecase extends Usecase
                 ->whereIn('status', ['active', 'closed'])
                 ->whereNull('deleted_at')
                 ->when($keywords, function ($query, $keywords) {
-                    return $query->where('name', 'like', '%' . $keywords . '%');
+                    return $query->where('name', 'like', '%'.$keywords.'%');
                 })
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -66,7 +66,7 @@ class LivePollingUsecase extends Usecase
             $candidates = DB::table(DatabaseConst::CANDIDATES())
                 ->where('election_id', $electionId)
                 ->whereNull('deleted_at')
-                ->select('order_number', 'chairman_name', 'vice_chairman_name')
+                ->select('id', 'order_number', 'chairman_name', 'vice_chairman_name', 'photo_path')
                 ->orderBy('order_number', 'asc')
                 ->get();
 
