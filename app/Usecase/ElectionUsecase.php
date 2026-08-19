@@ -68,11 +68,13 @@ class ElectionUsecase extends Usecase
         $validator = Validator::make($data->all(), [
             'name' => 'required|max:255',
             'slug' => 'nullable|string|max:255|alpha_dash|not_in:login,admin,api,pemilihan',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after_or_equal:start_time',
+            'date' => 'required|date',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
             'status' => 'required|in:draft,scheduled,active,closed',
         ], [
             'slug.alpha_dash' => 'Slug hanya boleh berisi huruf, angka, strip (-), dan underscore (_). Tidak boleh ada spasi.',
+            'end_time.after' => 'Waktu selesai harus setelah waktu mulai.',
         ]);
 
         $validator->validate();
@@ -87,12 +89,17 @@ class ElectionUsecase extends Usecase
                 $counter++;
             }
 
+            $dateStr = Carbon::parse($data['date'])->format('Y-m-d');
+            $startDateTime = Carbon::parse($dateStr.' '.$data['start_time'])->format('Y-m-d H:i:s');
+            $endDateTime = Carbon::parse($dateStr.' '.$data['end_time'])->format('Y-m-d H:i:s');
+
             DB::table(DatabaseConst::ELECTIONS())->insert([
                 'name' => $data['name'],
                 'slug' => $slug,
-                'description' => $data['description'],
-                'start_time' => Carbon::parse($data['start_time'])->format('Y-m-d H:i:s'),
-                'end_time' => Carbon::parse($data['end_time'])->format('Y-m-d H:i:s'),
+                'description' => $data['description'] ?? null,
+                'date' => $dateStr,
+                'start_time' => $startDateTime,
+                'end_time' => $endDateTime,
                 'status' => $data['status'],
                 'created_by' => Auth::user()?->id,
                 'created_at' => now(),
@@ -114,24 +121,31 @@ class ElectionUsecase extends Usecase
         $validator = Validator::make($data->all(), [
             'name' => 'required|max:255',
             'slug' => 'required|string|max:255|alpha_dash|not_in:login,admin,api,pemilihan',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after_or_equal:start_time',
+            'date' => 'required|date',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
             'status' => 'required|in:draft,scheduled,active,closed',
         ], [
             'slug.alpha_dash' => 'Slug hanya boleh berisi huruf, angka, strip (-), dan underscore (_). Tidak boleh ada spasi.',
+            'end_time.after' => 'Waktu selesai harus setelah waktu mulai.',
         ]);
 
         $validator->validate();
 
         DB::beginTransaction();
         try {
-            $payload = $data->only([
-                'name',
-                'description',
-                'status',
-            ]);
-            $payload['start_time'] = Carbon::parse($data['start_time'])->format('Y-m-d H:i:s');
-            $payload['end_time'] = Carbon::parse($data['end_time'])->format('Y-m-d H:i:s');
+            $dateStr = Carbon::parse($data['date'])->format('Y-m-d');
+            $startDateTime = Carbon::parse($dateStr.' '.$data['start_time'])->format('Y-m-d H:i:s');
+            $endDateTime = Carbon::parse($dateStr.' '.$data['end_time'])->format('Y-m-d H:i:s');
+
+            $payload = [
+                'name' => $data['name'],
+                'description' => $data['description'] ?? null,
+                'date' => $dateStr,
+                'start_time' => $startDateTime,
+                'end_time' => $endDateTime,
+                'status' => $data['status'],
+            ];
 
             $baseSlug = Str::slug($data['slug']);
             $slug = $baseSlug;

@@ -10,7 +10,7 @@
             {{-- Date Pill Ticket --}}
             <div class="sk-fade-in-up inline-flex items-center gap-2 sk-ticket px-4 py-1 rounded-full text-xs font-bold mb-2">
                 <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
-                <span>{{ strtoupper(\Carbon\Carbon::parse($election->start_time)->translatedFormat('l, d F Y')) }}</span>
+                <span>{{ strtoupper(\Carbon\Carbon::parse($election->date ?? $election->start_time)->translatedFormat('l, d F Y')) }}</span>
             </div>
 
             {{-- Election Title --}}

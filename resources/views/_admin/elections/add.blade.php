@@ -48,22 +48,31 @@
                         placeholder="Penjelasan singkat mengenai pemilihan ini (opsional)" 
                     />
 
+                    <x-admin.input 
+                        label="Tanggal Pemilihan" 
+                        name="date" 
+                        :value="old('date')" 
+                        class="datepicker" 
+                        placeholder="Pilih Tanggal Pemilihan" 
+                        required="true" 
+                    />
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <x-admin.input 
-                            label="Waktu Mulai" 
+                            type="time"
+                            label="Waktu Mulai (WIB)" 
                             name="start_time" 
                             :value="old('start_time')" 
-                            class="datetimepicker" 
-                            placeholder="Pilih Waktu Mulai" 
+                            placeholder="08:00" 
                             required="true" 
                         />
 
                         <x-admin.input 
-                            label="Waktu Selesai" 
+                            type="time"
+                            label="Waktu Selesai (WIB)" 
                             name="end_time" 
                             :value="old('end_time')" 
-                            class="datetimepicker" 
-                            placeholder="Pilih Waktu Selesai" 
+                            placeholder="16:00" 
                             required="true" 
                         />
                     </div>

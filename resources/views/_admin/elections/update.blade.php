@@ -49,22 +49,31 @@
                         placeholder="Penjelasan singkat mengenai pemilihan ini (opsional)" 
                     />
 
+                    <x-admin.input 
+                        label="Tanggal Pemilihan" 
+                        name="date" 
+                        :value="old('date', $data->date ?? \Carbon\Carbon::parse($data->start_time)->format('Y-m-d'))" 
+                        class="datepicker" 
+                        placeholder="Pilih Tanggal Pemilihan" 
+                        required="true" 
+                    />
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <x-admin.input 
-                            label="Waktu Mulai" 
+                            type="time"
+                            label="Waktu Mulai (WIB)" 
                             name="start_time" 
-                            :value="old('start_time', \Carbon\Carbon::parse($data->start_time)->format('Y-m-d H:i'))" 
-                            class="datetimepicker" 
-                            placeholder="Pilih Waktu Mulai" 
+                            :value="old('start_time', \Carbon\Carbon::parse($data->start_time)->format('H:i'))" 
+                            placeholder="08:00" 
                             required="true" 
                         />
 
                         <x-admin.input 
-                            label="Waktu Selesai" 
+                            type="time"
+                            label="Waktu Selesai (WIB)" 
                             name="end_time" 
-                            :value="old('end_time', \Carbon\Carbon::parse($data->end_time)->format('Y-m-d H:i'))" 
-                            class="datetimepicker" 
-                            placeholder="Pilih Waktu Selesai" 
+                            :value="old('end_time', \Carbon\Carbon::parse($data->end_time)->format('H:i'))" 
+                            placeholder="16:00" 
                             required="true" 
                         />
                     </div>

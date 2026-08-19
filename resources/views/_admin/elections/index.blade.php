@@ -64,9 +64,14 @@
                                 @endif
                             </x-admin.table.td>
                             <x-admin.table.td>
-                                <div class="text-xs text-gray-700 space-y-0.5">
-                                    <p><span class="font-medium text-gray-400">Mulai:</span> {{ \Carbon\Carbon::parse($d->start_time)->format('d M Y, H:i') }} WIB</p>
-                                    <p><span class="font-medium text-gray-400">Selesai:</span> {{ \Carbon\Carbon::parse($d->end_time)->format('d M Y, H:i') }} WIB</p>
+                                <div class="text-xs space-y-0.5">
+                                    <p class="font-semibold text-gray-900 flex items-center gap-1.5">
+                                        <svg class="size-3.5 text-blue-600 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                                        {{ \Carbon\Carbon::parse($d->date ?? $d->start_time)->locale('id')->isoFormat('D MMMM Y') }}
+                                    </p>
+                                    <p class="text-gray-500 font-medium pl-5">
+                                        {{ \Carbon\Carbon::parse($d->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($d->end_time)->format('H:i') }} WIB
+                                    </p>
                                 </div>
                             </x-admin.table.td>
                             <x-admin.table.td innerClass="text-center">
