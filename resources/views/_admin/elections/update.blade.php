@@ -42,11 +42,11 @@
                         </p>
                     </div>
 
-                    <x-admin.textarea 
-                        label="Deskripsi" 
+                    <x-admin.markdown-editor 
+                        label="Deskripsi Pemilihan" 
                         name="description" 
                         :value="old('description', $data->description)" 
-                        placeholder="Penjelasan singkat mengenai pemilihan ini (opsional)" 
+                        placeholder="Tuliskan penjelasan mengenai pemilihan ini (format Markdown didukung)..." 
                     />
 
                     <x-admin.input 
@@ -81,16 +81,14 @@
                     @php
                         $statuses = [
                             'draft' => 'Draft',
-                            'scheduled' => 'Terjadwal (Scheduled)',
                             'active' => 'Aktif (Active)',
-                            'closed' => 'Ditutup (Closed)',
                         ];
                     @endphp
                     <x-admin.select 
                         label="Status Pemilihan" 
                         name="status" 
                         :options="$statuses" 
-                        :value="old('status', $data->status)" 
+                        :value="old('status', $data->status === 'inactive' ? 'draft' : $data->status)" 
                         required="true" 
                     />
                 </div>

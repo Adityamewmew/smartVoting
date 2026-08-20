@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Constants\ResponseConst;
 use App\Http\Controllers\Controller;
+use App\Usecase\CandidateUsecase;
 use App\Usecase\ElectionUsecase;
 use App\Usecase\LivePollingUsecase;
 use Illuminate\Contracts\View\View;
@@ -22,7 +23,8 @@ class ElectionController extends Controller
 
     public function __construct(
         protected ElectionUsecase $usecase,
-        protected LivePollingUsecase $livePollingUsecase
+        protected LivePollingUsecase $livePollingUsecase,
+        protected CandidateUsecase $candidateUsecase
     ) {
         $this->baseRedirect = 'admin/'.$this->page['route'];
     }
@@ -102,7 +104,7 @@ class ElectionController extends Controller
             ->with('error', $process['message'] ?? ResponseConst::DEFAULT_ERROR_MESSAGE);
     }
 
-    public function detail(int $id): View|RedirectResponse
+    public function detail(int $id, Request $request): View|RedirectResponse
     {
         $data = $this->usecase->getByID($id);
 
@@ -117,6 +119,13 @@ class ElectionController extends Controller
             return redirect()->route('admin.elections.index')->with('error', 'Gagal memuat data laporan.');
         }
 
+        // Fetch Candidate list for Paslon CRUD tab
+        $candidatesListResponse = $this->candidateUsecase->getAll([
+            'election_id' => $id,
+            'no_pagination' => true,
+        ]);
+        $candidatesList = $candidatesListResponse['data']['list'] ?? [];
+
         // Fetch recent voting sessions (T-07)
         $processSessions = $this->livePollingUsecase->getRecentSessions(20, $id);
         $recentSessions = $processSessions['data']['sessions'] ?? [];
@@ -124,6 +133,8 @@ class ElectionController extends Controller
         return view('_admin.elections.detail', [
             'election' => (object) $data['data'],
             'page' => $this->page,
+            'activeTab' => $request->get('tab', 'paslon'),
+            'candidatesList' => $candidatesList,
             'totalVotes' => $process['data']['total_votes'],
             'candidates' => $process['data']['candidates'],
             'recentSessions' => $recentSessions,

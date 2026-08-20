@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
 
             $sidebarMenus = [
                 'utama' => $usecase->getMenusForSidebar((int) Auth::user()->access_type, 'utama')['data'] ?? [],
-                'pemilihan' => $usecase->getMenusForSidebar((int) Auth::user()->access_type, 'pemilihan')['data'] ?? [],
+                'pengaturan' => $usecase->getMenusForSidebar((int) Auth::user()->access_type, 'pengaturan')['data'] ?? [],
             ];
 
             $view->with('sidebarMenus', $sidebarMenus);

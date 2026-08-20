@@ -50,7 +50,7 @@
                 </div>
             </x-admin.card>
         @else
-            <x-admin.empty-state message="Belum ada data pemilihan yang aktif atau dipilih." />
+            <x-admin.empty-state message="Belum ada event pemilihan yang berstatus aktif saat ini." />
         @endif
 
         {{-- Recent Voting Sessions --}}

@@ -2,11 +2,11 @@
 
 @section('title', 'Ubah Kandidat')
 
-@@section('content')
+@section('content')
     <div class="max-w-4xl mx-auto space-y-6">
         {{-- Top Navigation & Title --}}
         <div class="flex items-center gap-3">
-            <x-admin.button href="{{ route('admin.candidates.index') }}" size="icon-md" color="secondary">
+            <x-admin.button href="{{ route('admin.elections.detail', ['id' => $data->election_id, 'tab' => 'paslon']) }}" size="icon-md" color="secondary">
                 <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             </x-admin.button>
             <div>
@@ -17,7 +17,7 @@
         
         {{-- Form Card --}}
         <x-admin.card class="p-6">
-            <form action="{{ route('admin.candidates.do_update', $data->id) }}" method="POST" enctype="multipart/form-data" navigate-form class="space-y-6">
+            <form action="{{ route('admin.candidates.doUpdate', $data->id) }}" method="POST" enctype="multipart/form-data" navigate-form class="space-y-6">
                 @csrf
                 
                 <div class="space-y-5">
@@ -46,32 +46,7 @@
                             placeholder="Contoh: 1" 
                             required="true" 
                         />
-
-                        <div>
-                            <label for="photo" class="block text-sm font-medium text-gray-700 mb-1.5">Ganti Foto Paslon</label>
-                            <input 
-                                type="file"
-                                id="photo"
-                                name="photo" 
-                                accept="image/png, image/jpeg, image/jpg"
-                                class="block w-full text-xs text-gray-500 file:me-4 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-200 rounded-lg cursor-pointer bg-white"
-                            />
-                            <p class="text-xs text-gray-400 mt-1">Kosongkan jika tidak ingin mengubah foto saat ini.</p>
-                            @error('photo')
-                                <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
                     </div>
-                    
-                    @if($data->photo_path)
-                        <div class="p-4 bg-gray-50 rounded-xl border border-gray-100 flex items-center gap-4">
-                            <img src="{{ Storage::url($data->photo_path) }}" alt="Foto Paslon" class="w-16 h-20 object-cover object-center rounded-lg border border-gray-200 shadow-2xs">
-                            <div>
-                                <p class="text-xs font-bold text-gray-700">Foto Paslon Saat Ini</p>
-                                <p class="text-[11px] text-gray-400">File tersimpan di storage lokal aplikasi.</p>
-                            </div>
-                        </div>
-                    @endif
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <x-admin.input 
@@ -91,26 +66,76 @@
                         />
                     </div>
 
-                    <x-admin.textarea 
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div class="space-y-2">
+                            <label for="photo" class="block text-sm font-medium text-gray-700">Ganti Foto Calon Ketua</label>
+                            <input 
+                                type="file"
+                                id="photo"
+                                name="photo" 
+                                accept="image/png, image/jpeg, image/jpg, image/webp"
+                                class="block w-full text-xs text-gray-500 file:me-4 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-200 rounded-lg cursor-pointer bg-white"
+                            />
+                            <p class="text-xs text-gray-400">Portrait, maks 700px (auto-convert ke 354x472 px). Kosongkan jika tidak diubah.</p>
+                            @error('photo')
+                                <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
+
+                            @if($data->photo_path)
+                                <div class="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center gap-3 mt-2">
+                                    <img src="{{ Storage::url($data->photo_path) }}" alt="Foto Calon Ketua" class="w-12 h-16 object-cover object-center rounded-lg border border-gray-200 shadow-2xs">
+                                    <div>
+                                        <p class="text-xs font-bold text-gray-700">Foto Ketua Saat Ini</p>
+                                        <p class="text-[11px] text-gray-400">Tersimpan di storage aplikasi.</p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="space-y-2">
+                            <label for="vice_chairman_photo" class="block text-sm font-medium text-gray-700">Ganti Foto Calon Wakil</label>
+                            <input 
+                                type="file"
+                                id="vice_chairman_photo"
+                                name="vice_chairman_photo" 
+                                accept="image/png, image/jpeg, image/jpg, image/webp"
+                                class="block w-full text-xs text-gray-500 file:me-4 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-200 rounded-lg cursor-pointer bg-white"
+                            />
+                            <p class="text-xs text-gray-400">Portrait, maks 700px (auto-convert ke 354x472 px). Kosongkan jika tidak diubah.</p>
+                            @error('vice_chairman_photo')
+                                <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
+
+                            @if(!empty($data->vice_chairman_photo_path))
+                                <div class="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center gap-3 mt-2">
+                                    <img src="{{ Storage::url($data->vice_chairman_photo_path) }}" alt="Foto Calon Wakil" class="w-12 h-16 object-cover object-center rounded-lg border border-gray-200 shadow-2xs">
+                                    <div>
+                                        <p class="text-xs font-bold text-gray-700">Foto Wakil Saat Ini</p>
+                                        <p class="text-[11px] text-gray-400">Tersimpan di storage aplikasi.</p>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <x-admin.markdown-editor 
                         label="Visi Paslon" 
                         name="vision" 
-                        rows="3"
-                        :value="old('vision') ?? $data->vision" 
-                        placeholder="Tuliskan visi pasangan calon..." 
+                        :value="old('vision', $data->vision)" 
+                        placeholder="Tuliskan visi pasangan calon (format Markdown didukung)..." 
                     />
 
-                    <x-admin.textarea 
+                    <x-admin.markdown-editor 
                         label="Misi Paslon" 
                         name="mission" 
-                        rows="4"
-                        :value="old('mission') ?? $data->mission" 
-                        placeholder="Tuliskan butir-butir misi (gunakan baris baru untuk setiap poin)..." 
+                        :value="old('mission', $data->mission)" 
+                        placeholder="Tuliskan butir-butir misi (format Markdown didukung, gunakan * atau 1. untuk poin)..." 
                     />
                 </div>
 
                 {{-- Action Buttons --}}
                 <div class="pt-5 border-t border-gray-100 flex items-center justify-end gap-3">
-                    <x-admin.button href="{{ route('admin.candidates.index') }}" color="secondary">
+                    <x-admin.button href="{{ route('admin.elections.detail', ['id' => $data->election_id, 'tab' => 'paslon']) }}" color="secondary">
                         Batal
                     </x-admin.button>
                     <x-admin.button type="submit" color="primary">

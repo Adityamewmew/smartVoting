@@ -84,18 +84,39 @@ class CandidateUsecase extends Usecase
             'vice_chairman_name' => 'required|string|max:255',
             'vision' => 'nullable|string',
             'mission' => 'nullable|string',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'vice_chairman_photo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         if ($validator->fails()) {
             return Response::buildError(ResponseConst::HTTP_BAD_REQUEST, $validator->errors()->first());
         }
 
+        // Custom validation for photo dimensions & orientation
+        if ($data->hasFile('photo')) {
+            $photoError = $this->validatePhotoDimensions($data->file('photo'), 'Foto Calon Ketua');
+            if ($photoError) {
+                return Response::buildError(ResponseConst::HTTP_BAD_REQUEST, $photoError);
+            }
+        }
+
+        if ($data->hasFile('vice_chairman_photo')) {
+            $photoError = $this->validatePhotoDimensions($data->file('vice_chairman_photo'), 'Foto Calon Wakil Ketua');
+            if ($photoError) {
+                return Response::buildError(ResponseConst::HTTP_BAD_REQUEST, $photoError);
+            }
+        }
+
         DB::beginTransaction();
         try {
             $photoPath = null;
             if ($data->hasFile('photo')) {
-                $photoPath = $data->file('photo')->store('candidates', 'public');
+                $photoPath = $this->processAndStorePhoto($data->file('photo'));
+            }
+
+            $viceChairmanPhotoPath = null;
+            if ($data->hasFile('vice_chairman_photo')) {
+                $viceChairmanPhotoPath = $this->processAndStorePhoto($data->file('vice_chairman_photo'));
             }
 
             DB::table(DatabaseConst::CANDIDATES())->insert([
@@ -106,6 +127,7 @@ class CandidateUsecase extends Usecase
                 'vision' => $data->input('vision'),
                 'mission' => $data->input('mission'),
                 'photo_path' => $photoPath,
+                'vice_chairman_photo_path' => $viceChairmanPhotoPath,
                 'created_by' => Auth::user()?->id,
                 'created_at' => now(),
             ]);
@@ -130,11 +152,27 @@ class CandidateUsecase extends Usecase
             'vice_chairman_name' => 'required|string|max:255',
             'vision' => 'nullable|string',
             'mission' => 'nullable|string',
-            'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'vice_chairman_photo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         if ($validator->fails()) {
             return Response::buildError(ResponseConst::HTTP_BAD_REQUEST, $validator->errors()->first());
+        }
+
+        // Custom validation for photo dimensions & orientation
+        if ($data->hasFile('photo')) {
+            $photoError = $this->validatePhotoDimensions($data->file('photo'), 'Foto Calon Ketua');
+            if ($photoError) {
+                return Response::buildError(ResponseConst::HTTP_BAD_REQUEST, $photoError);
+            }
+        }
+
+        if ($data->hasFile('vice_chairman_photo')) {
+            $photoError = $this->validatePhotoDimensions($data->file('vice_chairman_photo'), 'Foto Calon Wakil Ketua');
+            if ($photoError) {
+                return Response::buildError(ResponseConst::HTTP_BAD_REQUEST, $photoError);
+            }
         }
 
         DB::beginTransaction();
@@ -162,12 +200,19 @@ class CandidateUsecase extends Usecase
             ];
 
             if ($data->hasFile('photo')) {
-                // Delete old photo if exists
                 if ($candidate->photo_path && Storage::disk('public')->exists($candidate->photo_path)) {
                     Storage::disk('public')->delete($candidate->photo_path);
                 }
 
-                $payload['photo_path'] = $data->file('photo')->store('candidates', 'public');
+                $payload['photo_path'] = $this->processAndStorePhoto($data->file('photo'));
+            }
+
+            if ($data->hasFile('vice_chairman_photo')) {
+                if (! empty($candidate->vice_chairman_photo_path) && Storage::disk('public')->exists($candidate->vice_chairman_photo_path)) {
+                    Storage::disk('public')->delete($candidate->vice_chairman_photo_path);
+                }
+
+                $payload['vice_chairman_photo_path'] = $this->processAndStorePhoto($data->file('vice_chairman_photo'));
             }
 
             DB::table(DatabaseConst::CANDIDATES())->where('id', $id)->update($payload);
@@ -209,5 +254,102 @@ class CandidateUsecase extends Usecase
 
             return Response::buildErrorService($e->getMessage());
         }
+    }
+
+    /**
+     * Validate that photo is not landscape and does not exceed 700px.
+     */
+    private function validatePhotoDimensions($file, string $fieldLabel = 'Foto'): ?string
+    {
+        $imageInfo = @getimagesize($file->getRealPath());
+        if (! $imageInfo) {
+            return "File {$fieldLabel} tidak valid sebagai gambar.";
+        }
+
+        $width = $imageInfo[0];
+        $height = $imageInfo[1];
+
+        // Must not be landscape (width cannot be greater than height)
+        if ($width > $height) {
+            return "{$fieldLabel} tidak boleh berformat landscape (harus berorientasi portrait atau persegi).";
+        }
+
+        // Must not exceed 700px in either dimension
+        if ($width > 700 || $height > 700) {
+            return "Ukuran dimensi {$fieldLabel} tidak boleh lebih dari 700px (terdeteksi {$width}x{$height} px).";
+        }
+
+        return null;
+    }
+
+    /**
+     * Resize and convert photo to standard 354 x 472 px (ratio 3:4) via PHP GD.
+     */
+    private function processAndStorePhoto($file): string
+    {
+        $imageData = file_get_contents($file->getRealPath());
+        $srcImage = @imagecreatefromstring($imageData);
+
+        if (! $srcImage) {
+            // Fallback store directly if GD cannot parse
+            return $file->store('candidates', 'public');
+        }
+
+        $srcWidth = imagesx($srcImage);
+        $srcHeight = imagesy($srcImage);
+
+        $targetWidth = 354;
+        $targetHeight = 472;
+        $targetRatio = $targetWidth / $targetHeight;
+        $srcRatio = $srcWidth / $srcHeight;
+
+        if ($srcRatio > $targetRatio) {
+            $cropHeight = $srcHeight;
+            $cropWidth = (int) round($srcHeight * $targetRatio);
+            $cropX = (int) round(($srcWidth - $cropWidth) / 2);
+            $cropY = 0;
+        } else {
+            $cropWidth = $srcWidth;
+            $cropHeight = (int) round($srcWidth / $targetRatio);
+            $cropX = 0;
+            $cropY = (int) round(($srcHeight - $cropHeight) / 2);
+        }
+
+        $dstImage = imagecreatetruecolor($targetWidth, $targetHeight);
+
+        imagealphablending($dstImage, false);
+        imagesavealpha($dstImage, true);
+        $transparent = imagecolorallocatealpha($dstImage, 255, 255, 255, 127);
+        imagefilledrectangle($dstImage, 0, 0, $targetWidth, $targetHeight, $transparent);
+
+        imagecopyresampled(
+            $dstImage,
+            $srcImage,
+            0,
+            0,
+            $cropX,
+            $cropY,
+            $targetWidth,
+            $targetHeight,
+            $cropWidth,
+            $cropHeight
+        );
+
+        Storage::disk('public')->makeDirectory('candidates');
+
+        if (function_exists('imagewebp')) {
+            $filename = 'candidates/'.uniqid('cand_', true).'.webp';
+            $fullPath = Storage::disk('public')->path($filename);
+            imagewebp($dstImage, $fullPath, 90);
+        } else {
+            $filename = 'candidates/'.uniqid('cand_', true).'.jpg';
+            $fullPath = Storage::disk('public')->path($filename);
+            imagejpeg($dstImage, $fullPath, 90);
+        }
+
+        imagedestroy($srcImage);
+        imagedestroy($dstImage);
+
+        return $filename;
     }
 }

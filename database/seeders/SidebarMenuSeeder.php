@@ -24,7 +24,8 @@ class SidebarMenuSeeder extends Seeder
         // GROUPS
         // =====================================================================
         DB::table(DatabaseConst::SIDEBAR_MENU_GROUP())->insert([
-            ['key' => 'utama',     'label' => 'Utama',     'color' => 'blue',    'sort_order' => 10, 'created_at' => $now, 'updated_at' => $now],
+            ['key' => 'utama',      'label' => 'Menu Utama', 'color' => 'blue', 'sort_order' => 10, 'created_at' => $now, 'updated_at' => $now],
+            ['key' => 'pengaturan', 'label' => 'Pengaturan', 'color' => 'gray', 'sort_order' => 20, 'created_at' => $now, 'updated_at' => $now],
         ]);
 
         $superadmin = UserConst::SUPERADMIN;
@@ -33,10 +34,10 @@ class SidebarMenuSeeder extends Seeder
         $allRoles = [$superadmin, $operator];
 
         // =====================================================================
-        // GROUP: utama
+        // GROUP: utama (Dasbor & Pemilihan)
         // =====================================================================
         $dashboardId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
-            'label' => 'Dashboard',
+            'label' => 'Dasbor',
             'route_name' => 'admin.dashboard',
             'icon' => '_admin._layout.icons.sidebar.dashboard',
             'group' => 'utama',
@@ -47,60 +48,32 @@ class SidebarMenuSeeder extends Seeder
         ]);
         $this->assignAccess($dashboardId, $allRoles, $now);
 
-        $penggunaId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
-            'label' => 'Pengguna Aplikasi',
-            'route_name' => 'admin.users.index',
-            'icon' => '_admin._layout.icons.sidebar.user',
-            'group' => 'utama',
-            'sort_order' => 40,
-            'is_active' => 1,
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
-        $this->assignAccess($penggunaId, $allRoles, $now);
-
-        $sidebarMgmtId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
-            'label' => 'Manajemen Sidebar',
-            'route_name' => 'admin.sidebar_menu.index',
-            'icon' => '_admin._layout.icons.sidebar.data_master',
-            'group' => 'utama',
-            'sort_order' => 50,
-            'is_active' => 1,
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
-        $this->assignAccess($sidebarMgmtId, $superadminOnly, $now);
-
-        // =====================================================================
-        // GROUP: pemilihan
-        // =====================================================================
-        DB::table(DatabaseConst::SIDEBAR_MENU_GROUP())->insert([
-            ['key' => 'pemilihan', 'label' => 'Pemilihan', 'color' => 'green', 'sort_order' => 20, 'created_at' => $now, 'updated_at' => $now],
-        ]);
-
         $electionsId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
-            'label' => 'Elections',
+            'label' => 'Pemilihan',
             'route_name' => 'admin.elections.index',
             'icon' => '_admin._layout.icons.sidebar.data_master',
-            'group' => 'pemilihan',
-            'sort_order' => 10,
+            'group' => 'utama',
+            'sort_order' => 20,
             'is_active' => 1,
             'created_at' => $now,
             'updated_at' => $now,
         ]);
         $this->assignAccess($electionsId, $allRoles, $now);
 
-        $candidatesId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
-            'label' => 'Candidates',
-            'route_name' => 'admin.candidates.index',
+        // =====================================================================
+        // GROUP: pengaturan (Pengguna)
+        // =====================================================================
+        $penggunaId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
+            'label' => 'Pengguna',
+            'route_name' => 'admin.users.index',
             'icon' => '_admin._layout.icons.sidebar.user',
-            'group' => 'pemilihan',
-            'sort_order' => 20,
+            'group' => 'pengaturan',
+            'sort_order' => 10,
             'is_active' => 1,
             'created_at' => $now,
             'updated_at' => $now,
         ]);
-        $this->assignAccess($candidatesId, $allRoles, $now);
+        $this->assignAccess($penggunaId, $superadminOnly, $now);
 
     }
 

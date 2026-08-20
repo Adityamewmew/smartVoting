@@ -1,86 +1,106 @@
 @extends('kiosk.layout')
 
-@section('title', 'Bilik Suara - Pilih Kandidat')
+@section('title', 'Bilik Suara — ' . $election->name)
 
 @section('content')
-<div class="flex-grow flex flex-col p-4 md:p-8 relative">
+<div class="flex-grow flex flex-col p-4 sm:p-8 relative min-h-screen">
 
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8 sk-surface sk-card-outer p-4 sm:p-6 w-full max-w-7xl mx-auto">
+    {{-- Header Bilik Suara --}}
+    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 bg-white p-5 sm:p-6 rounded-3xl border border-gray-100 shadow-md w-full max-w-6xl mx-auto">
         <div>
-            <h2 class="text-lg sm:text-2xl font-bold text-slate-900 leading-tight">{{ $election->name }}</h2>
-            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Silakan pilih Paslon pilihan Anda</p>
+            <h1 class="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 leading-tight">{{ $election->name }}</h1>
+            <p class="text-xs sm:text-sm text-gray-500 mt-1">Gunakan hak suara Anda dengan bijak. Tentukan pasangan calon pilihan Anda.</p>
         </div>
-        <div class="flex items-center sm:items-end justify-between w-full sm:w-auto sm:flex-col pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest sm:mb-1">Waktu Tersisa</span>
-            <div id="timer" class="text-2xl sm:text-4xl font-black text-primary-600 tabular-nums">01:00</div>
+        <div class="flex items-center sm:items-end justify-between w-full sm:w-auto sm:flex-col pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-100">
+            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest sm:mb-1">Waktu Tersisa</span>
+            <div id="timer" class="text-2xl sm:text-4xl font-black text-blue-600 tabular-nums">01:00</div>
         </div>
-    </div>
+    </header>
 
-    <!-- Candidate Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 flex-grow content-start justify-items-center w-full max-w-7xl mx-auto">
-        @foreach($candidates as $candidate)
-            <div class="w-full max-w-sm sm:max-w-xs md:max-w-sm">
-                <x-voter.candidate-card :candidate="$candidate" variant="booth" :index="$loop->index" />
+    {{-- Candidate Grid --}}
+    <main class="w-full max-w-6xl mx-auto flex-grow flex flex-col justify-start">
+        <ol class="flex flex-wrap justify-center gap-7 w-full pb-16 list-none m-0 p-0" role="list">
+            @foreach($candidates as $candidate)
+                <li class="flex justify-center h-full w-full max-w-[380px]">
+                    <x-voter.candidate-card :candidate="$candidate" variant="booth" :index="$loop->index" />
+                </li>
+            @endforeach
+        </ol>
+    </main>
+
+    {{-- Overlay Loading & Success Modal --}}
+    <div id="loading-overlay" class="modal-overlay fixed inset-0 z-50 hidden items-center justify-center p-4 transition-opacity opacity-0 duration-300">
+        <div id="loading-spinner" class="bg-white rounded-3xl p-8 flex flex-col items-center shadow-2xl border border-gray-100">
+            <div class="animate-spin inline-block size-14 border-4 border-slate-200 border-t-blue-600 rounded-full mb-4" role="status" aria-label="loading">
+                <span class="sr-only">Menyimpan suara...</span>
             </div>
-        @endforeach
-    </div>
-
-    <!-- Visi & Misi modals -->
-    @foreach($candidates as $candidate)
-        <x-voter.visi-misi-modal :candidate="$candidate" />
-    @endforeach
-
-    <!-- Overlay Loading & Success -->
-    <div id="loading-overlay" class="fixed inset-0 bg-slate-50/90 backdrop-blur-sm z-50 hidden flex-col items-center justify-center">
-        <div id="loading-spinner" class="animate-spin inline-block size-16 border-4 border-slate-200 border-t-primary-600 rounded-full" role="status" aria-label="loading">
-            <span class="sr-only">Loading...</span>
+            <p class="text-sm font-bold text-gray-700">Merekam suara Anda...</p>
         </div>
-        <div id="success-message" class="hidden flex-col items-center">
-            <div class="size-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6">
-                <svg class="size-14" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </div>
-            <h2 class="text-2xl md:text-3xl font-bold text-slate-900">Terima Kasih!</h2>
-            <p class="text-lg md:text-xl text-slate-500 mt-2">Suara Anda telah berhasil disimpan.</p>
-        </div>
-    </div>
 
-    <!-- Modal Confirm -->
-    <div id="confirm-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 hidden flex-col items-center justify-center p-4 opacity-0 transition-opacity duration-300">
-        <div class="sk-surface sk-card-outer max-w-lg w-full p-7 md:p-9 transform scale-95 transition-transform duration-300" id="confirm-modal-content">
-
-            <div class="flex flex-col items-center text-center mb-6">
-                <span class="sk-badge inline-flex items-center justify-center size-14 rounded-full mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="size-7" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
-                </span>
-                <h3 class="text-xl md:text-2xl font-bold text-slate-900">Konfirmasi Pilihan</h3>
+        <article id="modal-success" class="hidden bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 text-center transform scale-95 transition-transform duration-300 flex-col items-center border border-gray-100" role="dialog" aria-modal="true" aria-labelledby="success-modal-title">
+            <div class="size-20 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-3xl flex items-center justify-center text-3xl mb-5 shadow-xs">
+                <svg class="size-10 text-emerald-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
             </div>
 
-            <div class="text-center mb-6">
-                <p class="text-base text-slate-600 leading-relaxed">
-                    Apakah Anda yakin ingin memberikan suara untuk
-                </p>
-                <div class="mt-2 text-lg font-bold text-primary-600">
-                    Paslon <span id="confirm-nomor"></span>
-                    <span id="confirm-candidate-names" class="block text-base font-semibold text-slate-800 mt-0.5"></span>
+            <h2 id="success-modal-title" class="text-2xl font-black text-gray-900 mb-2">Terima Kasih!</h2>
+
+            <p class="text-sm text-gray-600 mb-6 max-w-xs mx-auto leading-relaxed">
+                Hak suara Anda telah berhasil disimpan dan direkam secara aman ke dalam sistem SmartVoting.
+            </p>
+
+            {{-- Auto Countdown Timer --}}
+            <div class="w-full flex items-center justify-center bg-gray-50 border border-gray-200/70 py-3.5 px-4 rounded-2xl mb-5" aria-live="polite">
+                <div class="flex items-center gap-3 text-xs sm:text-sm text-gray-600 font-medium">
+                    <svg class="animate-spin size-4 text-blue-600 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Sesi akan kembali otomatis dalam <output id="reset-countdown" class="text-gray-900 font-bold mx-0.5">5</output> detik</span>
                 </div>
             </div>
 
-            <div class="mb-7 text-sm font-medium text-red-700 bg-red-50 border border-red-200 rounded-xl p-3.5 flex items-start gap-2.5">
-                <svg xmlns="http://www.w3.org/2000/svg" class="size-5 flex-shrink-0 mt-0.5 text-red-600" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-                <span class="leading-snug">Perhatian: Pilihan yang sudah dikonfirmasi tidak dapat diubah kembali.</span>
+            <p class="text-xs text-gray-400 max-w-[260px] mx-auto leading-relaxed">
+                Silakan tinggalkan bilik suara agar dapat digunakan oleh pemilih berikutnya.
+            </p>
+        </article>
+    </div>
+
+    {{-- Confirmation Modal --}}
+    <aside id="confirm-modal" class="modal-overlay fixed inset-0 z-40 hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
+        <article class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-7 sm:p-8 transform scale-95 transition-transform duration-300 flex flex-col items-center border border-gray-100 text-center" id="confirm-modal-content">
+
+            <div class="size-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-4 shadow-xs border border-blue-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-8 text-blue-600" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
             </div>
 
-            <div class="flex gap-3">
-                <button type="button" onclick="closeConfirm()" class="sk-btn-ghost flex-1 py-3.5 px-4 inline-flex justify-center items-center gap-x-2 text-base font-semibold rounded-xl cursor-pointer">
+            <h2 id="confirm-modal-title" class="text-xl font-bold text-gray-900 text-center mb-2">Konfirmasi Pilihan Suara</h2>
+
+            <p class="text-gray-600 text-center mb-4 text-sm leading-relaxed">
+                Apakah Anda yakin ingin memberikan suara untuk:
+            </p>
+
+            <div class="bg-blue-50/80 border border-blue-100 rounded-2xl p-4 mb-5 w-full text-center">
+                <div id="confirm-candidate-pad" class="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1"></div>
+                <div id="confirm-candidate-name" class="text-gray-900 font-extrabold text-base sm:text-lg leading-snug"></div>
+            </div>
+
+            <div class="bg-amber-50 border border-amber-200/80 w-full p-3.5 rounded-xl mb-6 text-center" role="alert">
+                <p class="text-xs text-amber-800 font-semibold flex items-center justify-center gap-2 m-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="size-4 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                    Pilihan yang sudah dikonfirmasi bersifat final dan tidak dapat diubah.
+                </p>
+            </div>
+
+            <footer class="flex gap-3 w-full">
+                <button type="button" onclick="closeConfirm()" class="btn-secondary flex-1 py-3 text-sm font-bold">
                     Batal
                 </button>
-                <button type="button" id="btn-submit-vote" class="sk-btn-primary flex-1 py-3.5 px-4 inline-flex justify-center items-center gap-x-2 text-base font-bold rounded-xl cursor-pointer">
-                    Ya, Yakin
+                <button type="button" id="btn-submit-vote" class="btn-primary flex-1 py-3 text-sm font-bold">
+                    Ya, Konfirmasi
                 </button>
-            </div>
-        </div>
-    </div>
+            </footer>
+        </article>
+    </aside>
 </div>
 @endsection
 
@@ -97,9 +117,11 @@
             timeLeft--;
 
             if (timeLeft <= 10) {
-                timerEl.classList.remove('text-primary-600');
-                timerEl.classList.remove('text-red-600');
-                timerEl.classList.add('text-red-700', 'animate-pulse');
+                timerEl.className = 'text-2xl sm:text-4xl font-black text-red-600 animate-pulse tabular-nums';
+            } else if (timeLeft <= 20) {
+                timerEl.className = 'text-2xl sm:text-4xl font-black text-amber-500 tabular-nums';
+            } else {
+                timerEl.className = 'text-2xl sm:text-4xl font-black text-blue-600 tabular-nums';
             }
 
             if (timeLeft <= 0) {
@@ -134,10 +156,10 @@
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(1200, audioCtx.currentTime); // High pitch
+            osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
             gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(1, audioCtx.currentTime + 0.05); // Attack
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5); // Decay
+            gain.gain.linearRampToValueAtTime(1, audioCtx.currentTime + 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
             osc.start(audioCtx.currentTime);
             osc.stop(audioCtx.currentTime + 1.5);
         } catch(e) {}
@@ -145,16 +167,16 @@
 
     function confirmVote(candidateId, orderNumber, chairmanName = '', viceChairmanName = '') {
         selectedCandidateId = candidateId;
-        document.getElementById('confirm-nomor').textContent = orderNumber;
-        
-        const namesEl = document.getElementById('confirm-candidate-names');
-        if (namesEl) {
-            if (chairmanName || viceChairmanName) {
-                namesEl.textContent = chairmanName + (viceChairmanName ? ' & ' + viceChairmanName : '');
-            } else {
-                namesEl.textContent = '';
-            }
+        const pad = String(orderNumber).padStart(2, '0');
+        const padEl = document.getElementById('confirm-candidate-pad');
+        const nameEl = document.getElementById('confirm-candidate-name');
+
+        if (padEl) padEl.textContent = 'Pasangan Calon ' + pad;
+        let displayName = chairmanName || `Paslon ${pad}`;
+        if (viceChairmanName) {
+            displayName += ' & ' + viceChairmanName;
         }
+        if (nameEl) nameEl.textContent = displayName;
 
         const modal = document.getElementById('confirm-modal');
         const modalContent = document.getElementById('confirm-modal-content');
@@ -162,11 +184,10 @@
         modal.classList.remove('hidden');
         modal.classList.add('flex');
 
-        // Trigger animation
-        setTimeout(() => {
+        requestAnimationFrame(() => {
             modal.classList.remove('opacity-0');
             modalContent.classList.remove('scale-95');
-        }, 10);
+        });
     }
 
     function closeConfirm() {
@@ -187,7 +208,7 @@
     document.getElementById('btn-submit-vote').addEventListener('click', function() {
         if (!selectedCandidateId) return;
 
-        clearInterval(timerInterval); // Stop timer
+        clearInterval(timerInterval);
 
         const candidateIdToSubmit = selectedCandidateId;
         closeConfirm();
@@ -195,6 +216,9 @@
         const overlay = document.getElementById('loading-overlay');
         overlay.classList.remove('hidden');
         overlay.classList.add('flex');
+        setTimeout(() => {
+            overlay.classList.remove('opacity-0');
+        }, 10);
 
         fetch(`/bilik/${token}/submit`, {
             method: 'POST',
@@ -210,16 +234,27 @@
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Show success message
                 document.getElementById('loading-spinner').classList.add('hidden');
-                document.getElementById('success-message').classList.remove('hidden');
-                document.getElementById('success-message').classList.add('flex');
+                const successModal = document.getElementById('modal-success');
+                successModal.classList.remove('hidden');
+                successModal.classList.add('flex');
+                setTimeout(() => {
+                    successModal.classList.remove('scale-95');
+                }, 10);
 
                 playTingSound();
 
-                setTimeout(() => {
-                    window.location.href = '/bilik/start/{{ $session['election_id'] }}';
-                }, 3000);
+                let secondsLeft = 5;
+                const countdownEl = document.getElementById('reset-countdown');
+                countdownEl.textContent = secondsLeft;
+                const cdInterval = setInterval(() => {
+                    secondsLeft--;
+                    countdownEl.textContent = secondsLeft;
+                    if (secondsLeft <= 0) {
+                        clearInterval(cdInterval);
+                        window.location.href = '/bilik/start/{{ $session['election_id'] }}';
+                    }
+                }, 1000);
             } else {
                 alert('Terjadi kesalahan: ' + data.message);
                 window.location.reload();
@@ -231,7 +266,6 @@
         });
     });
 
-    // Start timer on load
     startTimer();
 </script>
 @endpush

@@ -13,14 +13,31 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class ElectionUsecase extends Usecase
 {
-    public function __construct() {}
+    public function syncExpiredElections(): void
+    {
+        try {
+            DB::table(DatabaseConst::ELECTIONS())
+                ->where('status', 'active')
+                ->where('end_time', '<=', now())
+                ->whereNull('deleted_at')
+                ->update([
+                    'status' => 'inactive',
+                    'updated_at' => now(),
+                ]);
+        } catch (Exception $e) {
+            Log::warning('Failed syncing expired elections: '.$e->getMessage());
+        }
+    }
 
     public function getAll(array $filterData = []): array
     {
         try {
+            $this->syncExpiredElections();
+
             $query = DB::table(DatabaseConst::ELECTIONS())
                 ->whereNull('deleted_at')
                 ->when($filterData['keywords'] ?? false, function ($query, $keywords) {
@@ -28,12 +45,13 @@ class ElectionUsecase extends Usecase
                 })
                 ->orderBy('created_at', 'desc');
 
-            $data = empty($filterData['no_pagination'])
-                ? $query->paginate(20)
-                : $query->get();
-
-            if (! empty($filterData) && method_exists($data, 'appends')) {
-                $data->appends($filterData);
+            if (! empty($filterData['no_pagination'])) {
+                $data = $query->get();
+            } else {
+                $data = $query->paginate(20);
+                if (! empty($filterData)) {
+                    $data->appends($filterData);
+                }
             }
 
             return Response::buildSuccess(
@@ -50,6 +68,8 @@ class ElectionUsecase extends Usecase
     public function getByID(int $id): array
     {
         try {
+            $this->syncExpiredElections();
+
             $data = DB::table(DatabaseConst::ELECTIONS())
                 ->whereNull('deleted_at')
                 ->where('id', $id)
@@ -71,13 +91,23 @@ class ElectionUsecase extends Usecase
             'date' => 'required|date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
-            'status' => 'required|in:draft,scheduled,active,closed',
+            'status' => 'required|in:draft,active',
         ], [
             'slug.alpha_dash' => 'Slug hanya boleh berisi huruf, angka, strip (-), dan underscore (_). Tidak boleh ada spasi.',
             'end_time.after' => 'Waktu selesai harus setelah waktu mulai.',
         ]);
 
         $validator->validate();
+
+        $dateStr = Carbon::parse($data['date'])->format('Y-m-d');
+        $startDateTime = Carbon::parse($dateStr.' '.$data['start_time'])->format('Y-m-d H:i:s');
+        $endDateTime = Carbon::parse($dateStr.' '.$data['end_time'])->format('Y-m-d H:i:s');
+
+        if ($data['status'] === 'active' && Carbon::parse($endDateTime)->isPast()) {
+            throw ValidationException::withMessages([
+                'status' => 'Pemilihan tidak dapat diaktifkan karena jadwal waktu selesai telah berakhir.',
+            ]);
+        }
 
         DB::beginTransaction();
         try {
@@ -88,10 +118,6 @@ class ElectionUsecase extends Usecase
                 $slug = $baseSlug.'-'.$counter;
                 $counter++;
             }
-
-            $dateStr = Carbon::parse($data['date'])->format('Y-m-d');
-            $startDateTime = Carbon::parse($dateStr.' '.$data['start_time'])->format('Y-m-d H:i:s');
-            $endDateTime = Carbon::parse($dateStr.' '.$data['end_time'])->format('Y-m-d H:i:s');
 
             DB::table(DatabaseConst::ELECTIONS())->insert([
                 'name' => $data['name'],
@@ -124,7 +150,7 @@ class ElectionUsecase extends Usecase
             'date' => 'required|date',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
-            'status' => 'required|in:draft,scheduled,active,closed',
+            'status' => 'required|in:draft,active',
         ], [
             'slug.alpha_dash' => 'Slug hanya boleh berisi huruf, angka, strip (-), dan underscore (_). Tidak boleh ada spasi.',
             'end_time.after' => 'Waktu selesai harus setelah waktu mulai.',
@@ -132,12 +158,18 @@ class ElectionUsecase extends Usecase
 
         $validator->validate();
 
+        $dateStr = Carbon::parse($data['date'])->format('Y-m-d');
+        $startDateTime = Carbon::parse($dateStr.' '.$data['start_time'])->format('Y-m-d H:i:s');
+        $endDateTime = Carbon::parse($dateStr.' '.$data['end_time'])->format('Y-m-d H:i:s');
+
+        if ($data['status'] === 'active' && Carbon::parse($endDateTime)->isPast()) {
+            throw ValidationException::withMessages([
+                'status' => 'Pemilihan tidak dapat diaktifkan karena jadwal waktu selesai telah berakhir.',
+            ]);
+        }
+
         DB::beginTransaction();
         try {
-            $dateStr = Carbon::parse($data['date'])->format('Y-m-d');
-            $startDateTime = Carbon::parse($dateStr.' '.$data['start_time'])->format('Y-m-d H:i:s');
-            $endDateTime = Carbon::parse($dateStr.' '.$data['end_time'])->format('Y-m-d H:i:s');
-
             $payload = [
                 'name' => $data['name'],
                 'description' => $data['description'] ?? null,

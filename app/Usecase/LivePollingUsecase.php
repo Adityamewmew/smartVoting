@@ -11,9 +11,27 @@ use Illuminate\Support\Facades\Log;
 
 class LivePollingUsecase extends Usecase
 {
+    public function syncExpiredElections(): void
+    {
+        try {
+            DB::table(DatabaseConst::ELECTIONS())
+                ->where('status', 'active')
+                ->where('end_time', '<=', now())
+                ->whereNull('deleted_at')
+                ->update([
+                    'status' => 'inactive',
+                    'updated_at' => now(),
+                ]);
+        } catch (Exception $e) {
+            Log::warning('Failed syncing expired elections: '.$e->getMessage());
+        }
+    }
+
     public function getActiveElectionsWithStats(): array
     {
         try {
+            $this->syncExpiredElections();
+
             $elections = DB::table(DatabaseConst::ELECTIONS())
                 ->where('status', 'active')
                 ->whereNull('deleted_at')
@@ -43,8 +61,10 @@ class LivePollingUsecase extends Usecase
     public function getDashboardElections(?string $keywords = null): array
     {
         try {
+            $this->syncExpiredElections();
+
             $elections = DB::table(DatabaseConst::ELECTIONS())
-                ->whereIn('status', ['active', 'closed'])
+                ->where('status', 'active')
                 ->whereNull('deleted_at')
                 ->when($keywords, function ($query, $keywords) {
                     return $query->where('name', 'like', '%'.$keywords.'%');

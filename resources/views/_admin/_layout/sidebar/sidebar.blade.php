@@ -31,11 +31,11 @@
 
                     @include('_admin._layout.sidebar.sidebar_utama')
 
-                    @if(!empty($sidebarMenus['pemilihan']))
+                    @if(!empty($sidebarMenus['pengaturan']))
                         <li class="pt-4 pb-1.5 px-3 mt-1">
-                            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Pemilihan</span>
+                            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Pengaturan</span>
                         </li>
-                        @foreach ($sidebarMenus['pemilihan'] as $menu)
+                        @foreach ($sidebarMenus['pengaturan'] as $menu)
                             @include('_admin._layout.sidebar._menu_item', ['menu' => $menu])
                         @endforeach
                     @endif
