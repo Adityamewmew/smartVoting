@@ -136,6 +136,8 @@ class ElectionController extends Controller
             'activeTab' => $request->get('tab', 'paslon'),
             'candidatesList' => $candidatesList,
             'totalVotes' => $process['data']['total_votes'],
+            'activeSessions' => $process['data']['active_sessions'] ?? 0,
+            'totalSessions' => $process['data']['total_sessions'] ?? 0,
             'candidates' => $process['data']['candidates'],
             'recentSessions' => $recentSessions,
         ]);

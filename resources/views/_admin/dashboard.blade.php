@@ -49,59 +49,58 @@
                     <canvas id="chart-{{ $selectedElection->id }}"></canvas>
                 </div>
             </x-admin.card>
+
+            {{-- Recent Voting Sessions (Only when election is active) --}}
+            <div class="space-y-3">
+                <div class="flex items-center justify-between px-1">
+                    <h3 class="text-base font-bold text-gray-900">Sesi Bilik Suara Terkini</h3>
+                    <span class="text-xs text-gray-400">Menampilkan 10 sesi terakhir</span>
+                </div>
+
+                <x-admin.table.wrapper>
+                    <x-admin.table>
+                        <x-admin.table.thead>
+                            <tr>
+                                <x-admin.table.th>No.</x-admin.table.th>
+                                <x-admin.table.th>Nama Event</x-admin.table.th>
+                                <x-admin.table.th>Operator</x-admin.table.th>
+                                <x-admin.table.th align="center">Status</x-admin.table.th>
+                                <x-admin.table.th>Waktu Dibuka</x-admin.table.th>
+                                <x-admin.table.th>Waktu Ditutup</x-admin.table.th>
+                            </tr>
+                        </x-admin.table.thead>
+                        <x-admin.table.tbody>
+                            @forelse($recentSessions as $i => $session)
+                                <x-admin.table.tr>
+                                    <x-admin.table.td class="font-medium text-gray-500">{{ ($recentSessions->currentPage() - 1) * $recentSessions->perPage() + $i + 1 }}</x-admin.table.td>
+                                    <x-admin.table.td class="font-semibold text-gray-900">{{ $session->election_name }}</x-admin.table.td>
+                                    <x-admin.table.td>{{ $session->operator_name }}</x-admin.table.td>
+                                    <x-admin.table.td innerClass="text-center">
+                                        <x-admin.badge :status="$session->status" :text="ucfirst($session->status)" />
+                                    </x-admin.table.td>
+                                    <x-admin.table.td class="text-gray-500 text-xs">{{ \Carbon\Carbon::parse($session->open_time)->format('d M Y, H:i:s') }}</x-admin.table.td>
+                                    <x-admin.table.td class="text-gray-500 text-xs">
+                                        {{ $session->close_time ? \Carbon\Carbon::parse($session->close_time)->format('d M Y, H:i:s') : '-' }}
+                                    </x-admin.table.td>
+                                </x-admin.table.tr>
+                            @empty
+                                <x-admin.table.tr>
+                                    <x-admin.table.td colspan="6" innerClass="text-center text-gray-400 py-8">Belum ada aktivitas voting tercatat</x-admin.table.td>
+                                </x-admin.table.tr>
+                            @endforelse
+                        </x-admin.table.tbody>
+                    </x-admin.table>
+                    
+                    @if (count($recentSessions) > 0 && $recentSessions->hasPages())
+                        <div class="p-4 border-t border-gray-100">
+                            {{ $recentSessions->links() }}
+                        </div>
+                    @endif
+                </x-admin.table.wrapper>
+            </div>
         @else
             <x-admin.empty-state message="Belum ada event pemilihan yang berstatus aktif saat ini." />
         @endif
-
-        {{-- Recent Voting Sessions --}}
-        <div class="space-y-3">
-            <div class="flex items-center justify-between px-1">
-                <h3 class="text-base font-bold text-gray-900">Sesi Bilik Suara Terkini</h3>
-                <span class="text-xs text-gray-400">Menampilkan 10 sesi terakhir</span>
-            </div>
-
-            <x-admin.table.wrapper>
-                <x-admin.table>
-                    <x-admin.table.thead>
-                        <tr>
-                            <x-admin.table.th>No.</x-admin.table.th>
-                            <x-admin.table.th>Nama Event</x-admin.table.th>
-                            <x-admin.table.th>Operator</x-admin.table.th>
-                            <x-admin.table.th align="center">Status</x-admin.table.th>
-                            <x-admin.table.th>Waktu Dibuka</x-admin.table.th>
-                            <x-admin.table.th>Waktu Ditutup</x-admin.table.th>
-                        </tr>
-                    </x-admin.table.thead>
-                    <x-admin.table.tbody>
-                        @forelse($recentSessions as $i => $session)
-                            <x-admin.table.tr>
-                                <x-admin.table.td class="font-medium text-gray-500">{{ ($recentSessions->currentPage() - 1) * $recentSessions->perPage() + $i + 1 }}</x-admin.table.td>
-                                <x-admin.table.td class="font-semibold text-gray-900">{{ $session->election_name }}</x-admin.table.td>
-                                <x-admin.table.td>{{ $session->operator_name }}</x-admin.table.td>
-                                <x-admin.table.td innerClass="text-center">
-                                    <x-admin.badge :status="$session->status" :text="ucfirst($session->status)" />
-                                </x-admin.table.td>
-                                <x-admin.table.td class="text-gray-500 text-xs">{{ \Carbon\Carbon::parse($session->open_time)->format('d M Y, H:i:s') }}</x-admin.table.td>
-                                <x-admin.table.td class="text-gray-500 text-xs">
-                                    {{ $session->close_time ? \Carbon\Carbon::parse($session->close_time)->format('d M Y, H:i:s') : '-' }}
-                                </x-admin.table.td>
-                            </x-admin.table.tr>
-                        @empty
-                            <x-admin.table.tr>
-                                <x-admin.table.td colspan="6" innerClass="text-center text-gray-400 py-8">Belum ada aktivitas voting tercatat</x-admin.table.td>
-                            </x-admin.table.tr>
-                        @endforelse
-                    </x-admin.table.tbody>
-                </x-admin.table>
-                
-                @if (count($recentSessions) > 0 && $recentSessions->hasPages())
-                    <div class="p-4 border-t border-gray-100">
-                        {{ $recentSessions->links() }}
-                    </div>
-                @endif
-            </x-admin.table.wrapper>
-        </div>
-
     </div>
 
     @push('scripts')

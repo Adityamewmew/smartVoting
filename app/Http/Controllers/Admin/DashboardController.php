@@ -53,9 +53,12 @@ class DashboardController extends Controller
             $selectedElection = $electionsList->firstWhere('status', 'active') ?? $electionsList->first();
         }
 
-        // Fetch recent voting sessions (T-07)
-        $processSessions = $this->livePollingUsecase->getRecentSessions();
-        $recentSessions = $processSessions['data']['sessions'] ?? [];
+        // Fetch recent voting sessions (T-07) only if there is an active/selected election
+        $recentSessions = [];
+        if ($selectedElection) {
+            $processSessions = $this->livePollingUsecase->getRecentSessions(10, $selectedElection->id);
+            $recentSessions = $processSessions['data']['sessions'] ?? [];
+        }
 
         return view('_admin.dashboard', [
             'electionsList' => $electionsList,

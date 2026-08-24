@@ -106,6 +106,15 @@ class LivePollingUsecase extends Usecase
                 ->where('election_id', $electionId)
                 ->count();
 
+            $activeSessions = DB::table(DatabaseConst::VOTING_SESSIONS())
+                ->where('election_id', $electionId)
+                ->where('status', 'open')
+                ->count();
+
+            $totalSessions = DB::table(DatabaseConst::VOTING_SESSIONS())
+                ->where('election_id', $electionId)
+                ->count();
+
             // Get vote count per candidate
             $candidates = DB::table(DatabaseConst::CANDIDATES().' as c')
                 ->leftJoin(DatabaseConst::VOTES().' as v', 'c.id', '=', 'v.candidate_id')
@@ -116,14 +125,18 @@ class LivePollingUsecase extends Usecase
                     'c.order_number',
                     'c.chairman_name',
                     'c.vice_chairman_name',
+                    'c.photo_path',
+                    'c.vice_chairman_photo_path',
                     DB::raw('COUNT(v.id) as vote_count')
                 )
-                ->groupBy('c.id', 'c.order_number', 'c.chairman_name', 'c.vice_chairman_name')
+                ->groupBy('c.id', 'c.order_number', 'c.chairman_name', 'c.vice_chairman_name', 'c.photo_path', 'c.vice_chairman_photo_path')
                 ->orderBy('c.order_number', 'asc')
                 ->get();
 
             return Response::buildSuccess([
                 'total_votes' => $totalVotes,
+                'active_sessions' => $activeSessions,
+                'total_sessions' => $totalSessions,
                 'candidates' => $candidates,
             ], ResponseConst::HTTP_SUCCESS);
         } catch (Exception $e) {
