@@ -26,6 +26,7 @@ beforeEach(function () {
             $table->id();
             $table->string('name');
             $table->string('slug')->nullable()->unique();
+            $table->string('logo_path')->nullable();
             $table->text('description')->nullable();
             $table->date('date')->nullable();
             $table->dateTime('start_time')->nullable();
@@ -61,7 +62,7 @@ test('admin dashboard renders empty state without sessions table when no active 
     $this->actingAs($user)
         ->get(route('admin.dashboard'))
         ->assertSuccessful()
-        ->assertSee('Dasbor Pemantauan')
+        ->assertSee('Dashboard')
         ->assertSee('Belum ada event pemilihan yang berstatus aktif saat ini.')
         ->assertDontSee('Sesi Bilik Suara Terkini');
 });
@@ -83,7 +84,7 @@ test('admin dashboard renders live polling and sessions table when active electi
     $this->actingAs($user)
         ->get(route('admin.dashboard'))
         ->assertSuccessful()
-        ->assertSee('Dasbor Pemantauan')
+        ->assertSee('Dashboard')
         ->assertSee('Sesi Bilik Suara Terkini')
         ->assertSee('Pemilihan Aktif Test');
 

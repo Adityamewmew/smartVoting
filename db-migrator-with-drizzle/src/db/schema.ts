@@ -1,5 +1,6 @@
 import {
     bigint,
+    date,
     datetime,
     index,
     int,
@@ -161,13 +162,15 @@ export const sidebarMenusTable = mysqlTable('sidebar_menus', {
     index('sidebar_menus_group_sort_order_index').on(t.group, t.sort_order),
 ]);
 
-export const electionStatusEnum = mysqlEnum('status', ['draft', 'scheduled', 'active', 'closed']);
+export const electionStatusEnum = mysqlEnum('status', ['draft', 'active', 'inactive']);
 
 export const electionsTable = mysqlTable('elections', {
     id: bigint({ mode: 'number', unsigned: true }).primaryKey().autoincrement(),
     name: varchar({ length: 255 }).notNull(),
     slug: varchar({ length: 255 }).unique(),
+    logo_path: varchar({ length: 255 }),
     description: text(),
+    date: date(),
     start_time: datetime().notNull(),
     end_time: datetime().notNull(),
     status: electionStatusEnum.default('draft').notNull(),
@@ -188,6 +191,7 @@ export const candidatesTable = mysqlTable('candidates', {
     vision: text(),
     mission: text(),
     photo_path: varchar({ length: 255 }),
+    vice_chairman_photo_path: varchar({ length: 255 }),
     created_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
     updated_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
     deleted_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),

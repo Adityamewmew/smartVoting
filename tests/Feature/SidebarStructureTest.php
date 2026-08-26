@@ -60,7 +60,7 @@ beforeEach(function () {
     }
 });
 
-test('sidebar has 2 groups: utama (dasbor, pemilihan) and pengaturan (pengguna)', function () {
+test('sidebar has 2 groups: utama (dashboard, pemilihan) and pengaturan (pengguna)', function () {
     $this->seed(SidebarMenuSeeder::class);
 
     $usecase = app(SidebarMenuUsecase::class);
@@ -71,7 +71,7 @@ test('sidebar has 2 groups: utama (dasbor, pemilihan) and pengaturan (pengguna)'
 
     expect($utama['success'])->toBeTrue();
     $utamaLabels = collect($utama['data'])->pluck('label')->all();
-    expect($utamaLabels)->toContain('Dasbor')
+    expect($utamaLabels)->toContain('Dashboard')
         ->and($utamaLabels)->toContain('Pemilihan')
         ->and($utamaLabels)->not->toContain('Paslon');
 

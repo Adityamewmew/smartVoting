@@ -8,9 +8,11 @@ use App\Http\Presenter\Response;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -92,6 +94,7 @@ class ElectionUsecase extends Usecase
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'status' => 'required|in:draft,active',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ], [
             'slug.alpha_dash' => 'Slug hanya boleh berisi huruf, angka, strip (-), dan underscore (_). Tidak boleh ada spasi.',
             'end_time.after' => 'Waktu selesai harus setelah waktu mulai.',
@@ -119,9 +122,15 @@ class ElectionUsecase extends Usecase
                 $counter++;
             }
 
+            $logoPath = null;
+            if ($data->hasFile('logo')) {
+                $logoPath = $this->processAndStoreLogo($data->file('logo'));
+            }
+
             DB::table(DatabaseConst::ELECTIONS())->insert([
                 'name' => $data['name'],
                 'slug' => $slug,
+                'logo_path' => $logoPath,
                 'description' => $data['description'] ?? null,
                 'date' => $dateStr,
                 'start_time' => $startDateTime,
@@ -151,6 +160,7 @@ class ElectionUsecase extends Usecase
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'status' => 'required|in:draft,active',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ], [
             'slug.alpha_dash' => 'Slug hanya boleh berisi huruf, angka, strip (-), dan underscore (_). Tidak boleh ada spasi.',
             'end_time.after' => 'Waktu selesai harus setelah waktu mulai.',
@@ -170,6 +180,17 @@ class ElectionUsecase extends Usecase
 
         DB::beginTransaction();
         try {
+            $election = DB::table(DatabaseConst::ELECTIONS())
+                ->where('id', $id)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if (! $election) {
+                DB::rollback();
+
+                return Response::buildErrorNotFound();
+            }
+
             $payload = [
                 'name' => $data['name'],
                 'description' => $data['description'] ?? null,
@@ -187,6 +208,13 @@ class ElectionUsecase extends Usecase
                 $counter++;
             }
             $payload['slug'] = $slug;
+
+            if ($data->hasFile('logo')) {
+                if (! empty($election->logo_path) && Storage::disk('public')->exists($election->logo_path)) {
+                    Storage::disk('public')->delete($election->logo_path);
+                }
+                $payload['logo_path'] = $this->processAndStoreLogo($data->file('logo'));
+            }
 
             $payload['updated_by'] = Auth::user()?->id;
             $payload['updated_at'] = now();
@@ -226,5 +254,14 @@ class ElectionUsecase extends Usecase
 
             return Response::buildErrorService($e->getMessage());
         }
+    }
+
+    protected function processAndStoreLogo(UploadedFile $file): string
+    {
+        Storage::disk('public')->makeDirectory('elections/logos');
+        $filename = 'elections/logos/'.uniqid('logo_', true).'.'.$file->getClientOriginalExtension();
+        Storage::disk('public')->put($filename, file_get_contents($file->getRealPath()));
+
+        return $filename;
     }
 }

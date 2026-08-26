@@ -34,10 +34,10 @@ class SidebarMenuSeeder extends Seeder
         $allRoles = [$superadmin, $operator];
 
         // =====================================================================
-        // GROUP: utama (Dasbor & Pemilihan)
+        // GROUP: utama (Dashboard & Pemilihan)
         // =====================================================================
         $dashboardId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
-            'label' => 'Dasbor',
+            'label' => 'Dashboard',
             'route_name' => 'admin.dashboard',
             'icon' => '_admin._layout.icons.sidebar.dashboard',
             'group' => 'utama',

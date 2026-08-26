@@ -130,13 +130,13 @@
     </main>
 
     {{-- Modal Detail Paslon --}}
-    <div id="modal-candidates" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-all" role="dialog" aria-modal="true">
+    <div id="modal-candidates" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 sm:p-6 transition-all" role="dialog" aria-modal="true" onclick="if(event.target === this) closeCandidatesModal()">
         
         {{-- Modal Content Card --}}
-        <div id="modal-card" class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden border border-gray-100 transform transition-all duration-200 scale-95 opacity-0">
+        <div id="modal-card" class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col min-h-0 overflow-hidden border border-gray-100 transform transition-all duration-200 scale-95 opacity-0">
             
             {{-- Modal Header --}}
-            <div class="px-5 sm:px-8 py-4 sm:py-5 border-b border-gray-100 flex justify-between items-start bg-slate-50/80 shrink-0">
+            <div class="px-5 sm:px-8 py-4 sm:py-5 border-b border-gray-100 flex justify-between items-center bg-slate-50/80 shrink-0">
                 <div class="flex items-center gap-3 min-w-0">
                     <div class="p-2 bg-blue-50 text-blue-600 rounded-xl border border-blue-100 shrink-0">
                         <svg class="size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -148,13 +148,14 @@
                 </div>
                 {{-- Tombol Close --}}
                 <button type="button" onclick="closeCandidatesModal()"
-                    class="text-gray-400 hover:text-gray-700 transition-colors p-2 rounded-full hover:bg-slate-200/80 flex items-center justify-center cursor-pointer shrink-0 ml-2">
+                    class="text-gray-400 hover:text-gray-700 transition-colors p-2 rounded-full hover:bg-slate-200/80 flex items-center justify-center cursor-pointer shrink-0 ml-2"
+                    title="Tutup Modal">
                     <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
                 </button>
             </div>
 
             {{-- Modal Body --}}
-            <div class="px-5 sm:px-8 py-5 sm:py-6 overflow-y-auto overscroll-contain flex-1">
+            <div class="px-5 sm:px-8 py-5 sm:py-6 overflow-y-auto overscroll-contain flex-1 min-h-0">
                 {{-- Loading State --}}
                 <div id="modal-loading" class="flex flex-col items-center justify-center py-12 gap-3">
                     <div class="size-9 border-3 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>

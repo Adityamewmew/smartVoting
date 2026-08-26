@@ -8,7 +8,7 @@
         {{-- Header & Election Selector --}}
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/80 shadow-xs">
             <div>
-                <h1 class="text-lg sm:text-2xl font-bold text-gray-900 tracking-tight">Dasbor Pemantauan</h1>
+                <h1 class="text-lg sm:text-2xl font-bold text-gray-900 tracking-tight">Dashboard</h1>
                 <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Hasil perhitungan suara dan aktivitas bilik suara secara real-time.</p>
             </div>
             <form action="{{ route('admin.dashboard') }}" method="GET" navigate-form class="w-full sm:w-72">

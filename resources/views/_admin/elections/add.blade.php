@@ -17,7 +17,7 @@
 
         {{-- Form Card --}}
         <x-admin.card class="p-6">
-            <form id="add-form" navigate-form action="{{ route('admin.elections.create') }}" method="POST" class="space-y-6">
+            <form id="add-form" navigate-form action="{{ route('admin.elections.create') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 <div class="space-y-5">
                     <x-admin.input 
@@ -40,6 +40,14 @@
                             Kosongkan untuk otomatis dari nama event. Spasi otomatis dikonversi menjadi tanda strip (-).
                         </p>
                     </div>
+
+                    <x-admin.image-cropper 
+                        name="logo" 
+                        label="Logo Pemilihan" 
+                        outputWidth="500" 
+                        outputHeight="500" 
+                        help="Format JPG, PNG, atau WEBP. Maksimal 2MB. Logo akan tampil di landing slug dan bilik pemilihan."
+                    />
 
                     <x-admin.markdown-editor 
                         label="Deskripsi Pemilihan" 

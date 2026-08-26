@@ -66,35 +66,17 @@
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <div>
-                            <label for="photo" class="block text-sm font-medium text-gray-700 mb-1.5">Foto Calon Ketua</label>
-                            <input 
-                                type="file"
-                                id="photo"
-                                name="photo" 
-                                accept="image/png, image/jpeg, image/jpg, image/webp"
-                                class="block w-full text-xs text-gray-500 file:me-4 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-200 rounded-lg cursor-pointer bg-white"
-                            />
-                            <p class="text-xs text-gray-400 mt-1">Portrait (bukan landscape), maks 700px (auto-convert ke 354x472 px).</p>
-                            @error('photo')
-                                <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        <x-admin.image-cropper 
+                            name="photo" 
+                            label="Foto Calon Ketua" 
+                            help="Portrait 3:4, maks 2MB (potong & sesuaikan langsung)" 
+                        />
 
-                        <div>
-                            <label for="vice_chairman_photo" class="block text-sm font-medium text-gray-700 mb-1.5">Foto Calon Wakil Ketua</label>
-                            <input 
-                                type="file"
-                                id="vice_chairman_photo"
-                                name="vice_chairman_photo" 
-                                accept="image/png, image/jpeg, image/jpg, image/webp"
-                                class="block w-full text-xs text-gray-500 file:me-4 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-200 rounded-lg cursor-pointer bg-white"
-                            />
-                            <p class="text-xs text-gray-400 mt-1">Portrait (bukan landscape), maks 700px (auto-convert ke 354x472 px).</p>
-                            @error('vice_chairman_photo')
-                                <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        <x-admin.image-cropper 
+                            name="vice_chairman_photo" 
+                            label="Foto Calon Wakil Ketua" 
+                            help="Portrait 3:4, maks 2MB (opsional)" 
+                        />
                     </div>
 
                     <x-admin.markdown-editor 

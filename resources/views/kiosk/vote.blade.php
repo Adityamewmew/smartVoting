@@ -5,23 +5,22 @@
 @section('content')
 <div class="flex-grow flex flex-col p-4 sm:p-8 relative min-h-screen">
 
-    {{-- Header Bilik Suara --}}
-    <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 bg-white p-5 sm:p-6 rounded-3xl border border-gray-100 shadow-md w-full max-w-6xl mx-auto">
-        <div>
-            <h1 class="text-xl sm:text-2xl lg:text-3xl font-black text-gray-900 leading-tight">{{ $election->name }}</h1>
-            <p class="text-xs sm:text-sm text-gray-500 mt-1">Gunakan hak suara Anda dengan bijak. Tentukan pasangan calon pilihan Anda.</p>
+    {{-- Floating Countdown Timer Card (Fixed Top Right) --}}
+    <aside class="fixed top-5 right-5 sm:top-6 sm:right-6 z-40 flex items-center gap-3 bg-white/95 backdrop-blur-md border border-gray-200/90 py-2.5 px-4 sm:px-5 rounded-2xl shadow-lg shadow-slate-900/5" style="top: 1.5rem; right: 1.5rem;" aria-label="Waktu Tersisa">
+        <div class="flex flex-col items-end text-right">
+            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-tight">Sisa Waktu</span>
+            <div id="timer" class="text-xl sm:text-2xl font-black text-blue-600 tabular-nums leading-none mt-0.5">01:00</div>
         </div>
-        <div class="flex items-center sm:items-end justify-between w-full sm:w-auto sm:flex-col pt-3 sm:pt-0 border-t sm:border-t-0 border-gray-100">
-            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest sm:mb-1">Waktu Tersisa</span>
-            <div id="timer" class="text-2xl sm:text-4xl font-black text-blue-600 tabular-nums">01:00</div>
+        <div class="size-8 sm:size-9 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-4 sm:size-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         </div>
-    </header>
+    </aside>
 
-    {{-- Candidate Grid --}}
-    <main class="w-full max-w-6xl mx-auto flex-grow flex flex-col justify-start">
-        <ol class="flex flex-wrap justify-center gap-7 w-full pb-16 list-none m-0 p-0" role="list">
+    {{-- Candidate Grid (Strict 3 columns on desktop) --}}
+    <main class="w-full max-w-6xl mx-auto flex-grow flex flex-col justify-center pt-16 sm:pt-20 pb-16">
+        <ol class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 w-full list-none m-0 p-0 justify-items-center" role="list">
             @foreach($candidates as $candidate)
-                <li class="flex justify-center h-full w-full max-w-[380px]">
+                <li class="flex justify-center h-full w-full max-w-[360px]">
                     <x-voter.candidate-card :candidate="$candidate" variant="booth" :index="$loop->index" />
                 </li>
             @endforeach
@@ -117,11 +116,11 @@
             timeLeft--;
 
             if (timeLeft <= 10) {
-                timerEl.className = 'text-2xl sm:text-4xl font-black text-red-600 animate-pulse tabular-nums';
+                timerEl.className = 'text-xl sm:text-2xl font-black text-red-600 animate-pulse tabular-nums leading-none mt-0.5';
             } else if (timeLeft <= 20) {
-                timerEl.className = 'text-2xl sm:text-4xl font-black text-amber-500 tabular-nums';
+                timerEl.className = 'text-xl sm:text-2xl font-black text-amber-500 tabular-nums leading-none mt-0.5';
             } else {
-                timerEl.className = 'text-2xl sm:text-4xl font-black text-blue-600 tabular-nums';
+                timerEl.className = 'text-xl sm:text-2xl font-black text-blue-600 tabular-nums leading-none mt-0.5';
             }
 
             if (timeLeft <= 0) {

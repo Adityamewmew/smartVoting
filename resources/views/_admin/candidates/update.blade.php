@@ -67,55 +67,19 @@
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <div class="space-y-2">
-                            <label for="photo" class="block text-sm font-medium text-gray-700">Ganti Foto Calon Ketua</label>
-                            <input 
-                                type="file"
-                                id="photo"
-                                name="photo" 
-                                accept="image/png, image/jpeg, image/jpg, image/webp"
-                                class="block w-full text-xs text-gray-500 file:me-4 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-200 rounded-lg cursor-pointer bg-white"
-                            />
-                            <p class="text-xs text-gray-400">Portrait, maks 700px (auto-convert ke 354x472 px). Kosongkan jika tidak diubah.</p>
-                            @error('photo')
-                                <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
-                            @enderror
+                        <x-admin.image-cropper 
+                            name="photo" 
+                            label="Foto Calon Ketua" 
+                            :value="$data->photo_path ?? null"
+                            help="Portrait 3:4, maks 2MB (kosongkan jika tidak diubah)" 
+                        />
 
-                            @if($data->photo_path)
-                                <div class="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center gap-3 mt-2">
-                                    <img src="{{ Storage::url($data->photo_path) }}" alt="Foto Calon Ketua" class="w-12 h-16 object-cover object-center rounded-lg border border-gray-200 shadow-2xs">
-                                    <div>
-                                        <p class="text-xs font-bold text-gray-700">Foto Ketua Saat Ini</p>
-                                        <p class="text-[11px] text-gray-400">Tersimpan di storage aplikasi.</p>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-
-                        <div class="space-y-2">
-                            <label for="vice_chairman_photo" class="block text-sm font-medium text-gray-700">Ganti Foto Calon Wakil</label>
-                            <input 
-                                type="file"
-                                id="vice_chairman_photo"
-                                name="vice_chairman_photo" 
-                                accept="image/png, image/jpeg, image/jpg, image/webp"
-                                class="block w-full text-xs text-gray-500 file:me-4 file:py-2 file:px-3.5 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 border border-gray-200 rounded-lg cursor-pointer bg-white"
-                            />
-                            <p class="text-xs text-gray-400">Portrait, maks 700px (auto-convert ke 354x472 px). Kosongkan jika tidak diubah.</p>
-                            @error('vice_chairman_photo')
-                                <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
-                            @enderror
-
-                            @if(!empty($data->vice_chairman_photo_path))
-                                <div class="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center gap-3 mt-2">
-                                    <img src="{{ Storage::url($data->vice_chairman_photo_path) }}" alt="Foto Calon Wakil" class="w-12 h-16 object-cover object-center rounded-lg border border-gray-200 shadow-2xs">
-                                    <div>
-                                        <p class="text-xs font-bold text-gray-700">Foto Wakil Saat Ini</p>
-                                        <p class="text-[11px] text-gray-400">Tersimpan di storage aplikasi.</p>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
+                        <x-admin.image-cropper 
+                            name="vice_chairman_photo" 
+                            label="Foto Calon Wakil Ketua" 
+                            :value="$data->vice_chairman_photo_path ?? null"
+                            help="Portrait 3:4, maks 2MB (kosongkan jika tidak diubah)" 
+                        />
                     </div>
 
                     <x-admin.markdown-editor 

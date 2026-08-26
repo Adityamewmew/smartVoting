@@ -68,6 +68,7 @@ beforeEach(function () {
             $table->id();
             $table->string('name');
             $table->string('slug')->unique();
+            $table->string('logo_path')->nullable();
             $table->text('description')->nullable();
             $table->date('date')->nullable();
             $table->time('start_time')->nullable();

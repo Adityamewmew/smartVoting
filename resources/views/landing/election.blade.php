@@ -6,7 +6,16 @@
     <div class="min-h-screen w-full flex flex-col items-center justify-start overflow-x-hidden">
         
         {{-- Header Section --}}
-        <header class="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 pt-16 pb-8 text-center w-full flex flex-col items-center">
+        <header class="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 pt-14 pb-8 text-center w-full flex flex-col items-center">
+            {{-- Logo Brand / Election Logo --}}
+            <div class="mb-5 fade-up flex justify-center items-center">
+                @if(!empty($election->logo_path))
+                    <img src="{{ Storage::url($election->logo_path) }}" alt="Logo {{ $election->name }}" class="h-16 sm:h-20 w-auto max-w-[200px] object-contain rounded-2xl shadow-xs">
+                @else
+                    <img src="{{ asset('images/logo-light.png') }}" alt="Logo SmartVoting" class="h-9 sm:h-10 w-auto object-contain">
+                @endif
+            </div>
+
             {{-- Election Title --}}
             <h1 class="text-4xl sm:text-5xl lg:text-[52px] font-extrabold text-gray-900 tracking-tight leading-tight mb-4 max-w-4xl fade-up">
                 {{ $election->name }}
