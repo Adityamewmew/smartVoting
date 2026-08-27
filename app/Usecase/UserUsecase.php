@@ -22,6 +22,7 @@ class UserUsecase extends Usecase
     {
         try {
             $query = DB::table(DatabaseConst::USER())
+                ->where('institution_id', $this->tenantId())
                 ->whereNull('deleted_at')
                 ->whereIn('access_type', array_keys(UserConst::getAppAccessTypes()))
                 ->when($filterData['keywords'] ?? false, function ($query, $keywords) {
@@ -67,6 +68,7 @@ class UserUsecase extends Usecase
     {
         try {
             $data = DB::table(DatabaseConst::USER())
+                ->where('institution_id', $this->tenantId())
                 ->whereNull('deleted_at')
                 ->where('id', $id)
                 ->first();
@@ -92,18 +94,24 @@ class UserUsecase extends Usecase
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'access_type' => 'required|in:'.implode(',', array_keys(UserConst::getAppAccessTypes())),
+            'password' => 'nullable|string|min:6|confirmed',
         ]);
 
         $validator->validate();
 
         DB::beginTransaction();
         try {
+            $password = ! empty($data['password'])
+                ? Hash::make($data['password'])
+                : UserConst::DEFAULT_PASSWORD;
+
             DB::table(DatabaseConst::USER())
                 ->insert([
+                    'institution_id' => $this->tenantId(),
                     'name' => $data['name'],
                     'email' => $data['email'],
                     'access_type' => $data['access_type'],
-                    'password' => UserConst::DEFAULT_PASSWORD,
+                    'password' => $password,
                     'is_active' => 1,
                     'created_by' => Auth::user()?->id,
                     'created_at' => now(),
@@ -132,6 +140,7 @@ class UserUsecase extends Usecase
             'name' => 'required|min:4',
             'email' => 'required|email|unique:users,email,'.$id,
             'access_type' => 'required|in:'.implode(',', array_keys(UserConst::getAppAccessTypes())),
+            'password' => 'nullable|string|min:6|confirmed',
         ]);
 
         $validator->validate();
@@ -144,10 +153,15 @@ class UserUsecase extends Usecase
             'updated_at' => now(),
         ];
 
+        if (! empty($data['password'])) {
+            $update['password'] = Hash::make($data['password']);
+        }
+
         DB::beginTransaction();
 
         try {
             DB::table(DatabaseConst::USER())
+                ->where('institution_id', $this->tenantId())
                 ->where('id', $id)
                 ->update($update);
 
@@ -176,6 +190,7 @@ class UserUsecase extends Usecase
 
         try {
             $delete = DB::table(DatabaseConst::USER())
+                ->where('institution_id', $this->tenantId())
                 ->where('id', $id)
                 ->update([
                     'deleted_by' => Auth::user()?->id,

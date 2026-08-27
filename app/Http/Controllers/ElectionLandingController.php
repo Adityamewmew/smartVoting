@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Constants\DatabaseConst;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class ElectionLandingController extends Controller
 {
@@ -16,6 +17,17 @@ class ElectionLandingController extends Controller
 
         if (! $election) {
             abort(404, 'Event pemilihan tidak ditemukan.');
+        }
+
+        if (Schema::hasTable('institutions')) {
+            $institution = DB::table(DatabaseConst::INSTITUTION())
+                ->where('id', $election->institution_id)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if (! $institution || $institution->status !== 'active') {
+                abort(403, 'Layanan institusi penyelenggara pemilihan ini sedang ditangguhkan atau tidak aktif.');
+            }
         }
 
         $candidates = [];

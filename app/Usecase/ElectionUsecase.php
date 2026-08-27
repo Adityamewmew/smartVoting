@@ -41,6 +41,7 @@ class ElectionUsecase extends Usecase
             $this->syncExpiredElections();
 
             $query = DB::table(DatabaseConst::ELECTIONS())
+                ->where('institution_id', $this->tenantId())
                 ->whereNull('deleted_at')
                 ->when($filterData['keywords'] ?? false, function ($query, $keywords) {
                     return $query->where('name', 'like', '%'.$keywords.'%');
@@ -73,6 +74,7 @@ class ElectionUsecase extends Usecase
             $this->syncExpiredElections();
 
             $data = DB::table(DatabaseConst::ELECTIONS())
+                ->where('institution_id', $this->tenantId())
                 ->whereNull('deleted_at')
                 ->where('id', $id)
                 ->first();
@@ -114,10 +116,11 @@ class ElectionUsecase extends Usecase
 
         DB::beginTransaction();
         try {
+            $tenantId = $this->tenantId();
             $baseSlug = ! empty($data['slug']) ? Str::slug($data['slug']) : Str::slug($data['name']);
             $slug = $baseSlug;
             $counter = 1;
-            while (DB::table(DatabaseConst::ELECTIONS())->where('slug', $slug)->exists()) {
+            while (DB::table(DatabaseConst::ELECTIONS())->where('slug', $slug)->where('institution_id', $tenantId)->exists()) {
                 $slug = $baseSlug.'-'.$counter;
                 $counter++;
             }
@@ -128,6 +131,7 @@ class ElectionUsecase extends Usecase
             }
 
             DB::table(DatabaseConst::ELECTIONS())->insert([
+                'institution_id' => $tenantId,
                 'name' => $data['name'],
                 'slug' => $slug,
                 'logo_path' => $logoPath,
@@ -180,7 +184,9 @@ class ElectionUsecase extends Usecase
 
         DB::beginTransaction();
         try {
+            $tenantId = $this->tenantId();
             $election = DB::table(DatabaseConst::ELECTIONS())
+                ->where('institution_id', $tenantId)
                 ->where('id', $id)
                 ->whereNull('deleted_at')
                 ->first();
@@ -203,7 +209,7 @@ class ElectionUsecase extends Usecase
             $baseSlug = Str::slug($data['slug']);
             $slug = $baseSlug;
             $counter = 1;
-            while (DB::table(DatabaseConst::ELECTIONS())->where('slug', $slug)->where('id', '!=', $id)->exists()) {
+            while (DB::table(DatabaseConst::ELECTIONS())->where('slug', $slug)->where('institution_id', $tenantId)->where('id', '!=', $id)->exists()) {
                 $slug = $baseSlug.'-'.$counter;
                 $counter++;
             }
@@ -219,7 +225,10 @@ class ElectionUsecase extends Usecase
             $payload['updated_by'] = Auth::user()?->id;
             $payload['updated_at'] = now();
 
-            DB::table(DatabaseConst::ELECTIONS())->where('id', $id)->update($payload);
+            DB::table(DatabaseConst::ELECTIONS())
+                ->where('institution_id', $tenantId)
+                ->where('id', $id)
+                ->update($payload);
             DB::commit();
 
             return Response::buildSuccess(message: ResponseConst::SUCCESS_MESSAGE_UPDATED);
@@ -235,10 +244,13 @@ class ElectionUsecase extends Usecase
     {
         DB::beginTransaction();
         try {
-            $delete = DB::table(DatabaseConst::ELECTIONS())->where('id', $id)->update([
-                'deleted_by' => Auth::user()?->id,
-                'deleted_at' => now(),
-            ]);
+            $delete = DB::table(DatabaseConst::ELECTIONS())
+                ->where('institution_id', $this->tenantId())
+                ->where('id', $id)
+                ->update([
+                    'deleted_by' => Auth::user()?->id,
+                    'deleted_at' => now(),
+                ]);
 
             if (! $delete) {
                 DB::rollback();

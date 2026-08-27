@@ -4,22 +4,28 @@ namespace App\Constants;
 
 class UserConst
 {
-    const SUPERADMIN = 1;
+    const PLATFORM_SUPERADMIN = 0; // Superadmin Platform (Kelola Semua Institusi)
 
-    const OPERATOR = 2;
+    const SUPERADMIN = 1; // Admin Institusi / Sekolah
+
+    const OPERATOR = 2; // Operator Bilik Suara
 
     const DEFAULT_PASSWORD = '$2y$12$2pV4WiD9nLczb381xpk20uGq4NnaVhUocp5aciksw5BhcgxkiKDh2';
 
     public static function getAccessTypes(): array
     {
         return [
-            self::SUPERADMIN => 'Super Admin',
+            self::PLATFORM_SUPERADMIN => 'Superadmin Platform',
+            self::SUPERADMIN => 'Admin Sekolah',
             self::OPERATOR => 'Operator',
         ];
     }
 
     public static function getAppAccessTypes(): array
     {
-        return self::getAccessTypes();
+        return [
+            self::SUPERADMIN => 'Admin Sekolah',
+            self::OPERATOR => 'Operator',
+        ];
     }
 }

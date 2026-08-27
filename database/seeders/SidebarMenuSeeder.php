@@ -28,13 +28,15 @@ class SidebarMenuSeeder extends Seeder
             ['key' => 'pengaturan', 'label' => 'Pengaturan', 'color' => 'gray', 'sort_order' => 20, 'created_at' => $now, 'updated_at' => $now],
         ]);
 
+        $platformSuperadmin = UserConst::PLATFORM_SUPERADMIN;
         $superadmin = UserConst::SUPERADMIN;
         $operator = UserConst::OPERATOR;
         $superadminOnly = [$superadmin];
         $allRoles = [$superadmin, $operator];
+        $platformOnly = [$platformSuperadmin];
 
         // =====================================================================
-        // GROUP: utama (Dashboard & Pemilihan)
+        // GROUP: utama (Dashboard & Pemilihan & Institusi)
         // =====================================================================
         $dashboardId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
             'label' => 'Dashboard',
@@ -47,6 +49,30 @@ class SidebarMenuSeeder extends Seeder
             'updated_at' => $now,
         ]);
         $this->assignAccess($dashboardId, $allRoles, $now);
+
+        $institutionsId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
+            'label' => 'Institusi / Sekolah',
+            'route_name' => 'admin.institutions.index',
+            'icon' => '_admin._layout.icons.sidebar.data_master',
+            'group' => 'utama',
+            'sort_order' => 15,
+            'is_active' => 1,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+        $this->assignAccess($institutionsId, $platformOnly, $now);
+
+        $paymentsId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
+            'label' => 'Pembayaran & Billing',
+            'route_name' => 'admin.payments.index',
+            'icon' => '_admin._layout.icons.sidebar.data_master',
+            'group' => 'utama',
+            'sort_order' => 16,
+            'is_active' => 1,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ]);
+        $this->assignAccess($paymentsId, $platformOnly, $now);
 
         $electionsId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
             'label' => 'Pemilihan',

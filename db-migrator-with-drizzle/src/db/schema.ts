@@ -23,14 +23,29 @@ export const migrationsTable = mysqlTable('migrations', {
     batch: int().notNull(),
 });
 
+export const institutionTypeEnum = mysqlEnum('type', ['school', 'university', 'organization']);
+export const institutionStatusEnum = mysqlEnum('status', ['active', 'inactive']);
+
+export const institutionsTable = mysqlTable('institutions', {
+    id: bigint({ mode: 'number', unsigned: true }).autoincrement().primaryKey(),
+    name: varchar({ length: 255 }).notNull(),
+    logo_path: varchar({ length: 255 }),
+    type: institutionTypeEnum.notNull().default('school'),
+    status: institutionStatusEnum.notNull().default('active'),
+    created_at: timestamp().defaultNow(),
+    updated_at: timestamp().onUpdateNow(),
+    deleted_at: timestamp(),
+});
+
 export const usersTable = mysqlTable('users', {
     id: bigint({ mode: 'number', unsigned: true }).autoincrement().primaryKey(),
+    institution_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => institutionsTable.id),
     name: varchar({ length: 255 }).notNull(),
     email: varchar({ length: 255 }).notNull(),
     email_verified_at: timestamp(),
     password: varchar({ length: 255 }).notNull(),
     remember_token: varchar({ length: 100 }),
-    access_type: tinyint(), // 1: Super Admin
+    access_type: tinyint(), // 0: Superadmin, 1: Admin Sekolah, 2: Operator
     is_active: tinyint().notNull().default(1),
     created_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
     created_at: timestamp(),
@@ -40,6 +55,7 @@ export const usersTable = mysqlTable('users', {
     deleted_at: timestamp(),
 }, (t) => [
     uniqueIndex('users_email_unique').on(t.email),
+    index('users_institution_id_index').on(t.institution_id),
 ]);
 
 export const passwordResetTokensTable = mysqlTable('password_reset_tokens', {
@@ -166,6 +182,7 @@ export const electionStatusEnum = mysqlEnum('status', ['draft', 'active', 'inact
 
 export const electionsTable = mysqlTable('elections', {
     id: bigint({ mode: 'number', unsigned: true }).primaryKey().autoincrement(),
+    institution_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => institutionsTable.id).notNull(),
     name: varchar({ length: 255 }).notNull(),
     slug: varchar({ length: 255 }).unique(),
     logo_path: varchar({ length: 255 }),
@@ -180,10 +197,13 @@ export const electionsTable = mysqlTable('elections', {
     created_at: timestamp().defaultNow(),
     updated_at: timestamp().onUpdateNow(),
     deleted_at: timestamp(),
-});
+}, (t) => [
+    index('elections_institution_id_index').on(t.institution_id),
+]);
 
 export const candidatesTable = mysqlTable('candidates', {
     id: bigint({ mode: 'number', unsigned: true }).primaryKey().autoincrement(),
+    institution_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => institutionsTable.id).notNull(),
     election_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => electionsTable.id).notNull(),
     order_number: int().notNull(),
     chairman_name: varchar({ length: 255 }).notNull(),
@@ -198,23 +218,57 @@ export const candidatesTable = mysqlTable('candidates', {
     created_at: timestamp().defaultNow(),
     updated_at: timestamp().onUpdateNow(),
     deleted_at: timestamp(),
-});
+}, (t) => [
+    index('candidates_institution_id_index').on(t.institution_id),
+]);
 
 export const votingSessionStatusEnum = mysqlEnum('status', ['open', 'submitted', 'expired']);
 
 export const votingSessionsTable = mysqlTable('voting_sessions', {
     id: bigint({ mode: 'number', unsigned: true }).primaryKey().autoincrement(),
+    institution_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => institutionsTable.id).notNull(),
     election_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => electionsTable.id).notNull(),
     operator_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id).notNull(),
     session_token: varchar({ length: 36 }).notNull().unique(),
     status: votingSessionStatusEnum.default('open').notNull(),
     created_at: timestamp().defaultNow(),
     updated_at: timestamp().onUpdateNow(),
-});
+}, (t) => [
+    index('voting_sessions_institution_id_index').on(t.institution_id),
+]);
 
 export const votesTable = mysqlTable('votes', {
     id: bigint({ mode: 'number', unsigned: true }).primaryKey().autoincrement(),
+    institution_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => institutionsTable.id).notNull(),
     election_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => electionsTable.id).notNull(),
     candidate_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => candidatesTable.id).notNull(),
     created_at: timestamp().defaultNow(),
-});
+}, (t) => [
+    index('votes_institution_id_index').on(t.institution_id),
+]);
+
+export const paymentStatusEnum = mysqlEnum('status', ['pending', 'paid', 'failed', 'expired']);
+
+export const paymentsTable = mysqlTable('payments', {
+    id: bigint({ mode: 'number', unsigned: true }).primaryKey().autoincrement(),
+    institution_id: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => institutionsTable.id).notNull(),
+    invoice_number: varchar({ length: 50 }).notNull().unique(),
+    package_name: varchar({ length: 100 }).notNull(),
+    amount: int({ unsigned: true }).notNull(),
+    payment_method: varchar({ length: 50 }).default('mayar'),
+    mayar_payment_id: varchar({ length: 100 }),
+    payment_url: varchar({ length: 500 }),
+    status: paymentStatusEnum.default('pending').notNull(),
+    paid_at: timestamp(),
+    notes: text(),
+    created_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
+    updated_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
+    deleted_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
+    created_at: timestamp().defaultNow(),
+    updated_at: timestamp().onUpdateNow(),
+    deleted_at: timestamp(),
+}, (t) => [
+    index('payments_institution_id_index').on(t.institution_id),
+    index('payments_status_index').on(t.status),
+]);
+

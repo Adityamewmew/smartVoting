@@ -1,29 +1,40 @@
 <?php
 
+use App\Constants\UserConst;
 use App\Http\Controllers\Admin\CandidateController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ElectionController;
+use App\Http\Controllers\Admin\InstitutionController;
+use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\SidebarMenuController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ElectionLandingController;
 use App\Http\Controllers\KioskController;
 use App\Http\Controllers\Operator\KioskManagerController;
+use App\Http\Controllers\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (auth()->check()) {
-        if (auth()->user()->access_type == 2) {
+        if (auth()->user()->access_type == UserConst::PLATFORM_SUPERADMIN) {
+            return redirect()->route('admin.institutions.index');
+        }
+
+        if (auth()->user()->access_type == UserConst::OPERATOR) {
             return redirect()->route('operator.kiosk.index');
         }
 
         return redirect()->route('admin.dashboard');
     }
 
-    return redirect()->route('login');
-});
+    return view('landing.main');
+})->name('landing.home');
 
-// Landing Page Publik (T-08) moved to bottom
+// Subscription & Self-Service Onboarding Routes
+Route::get('/subscribe', [SubscriptionController::class, 'showForm'])->name('subscribe');
+Route::post('/subscribe', [SubscriptionController::class, 'doSubscribe'])->name('subscribe.post');
+Route::get('/payment/{invoice_number}', [SubscriptionController::class, 'showPayment'])->name('payment.invoice');
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'doLogin'])->name('login.post');
@@ -34,6 +45,29 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/data', [AdminDashboardController::class, 'data'])->name('dashboard.data');
     Route::get('/dashboard/print/{electionId}', [AdminDashboardController::class, 'print'])->name('dashboard.print');
+
+    // Superadmin Platform - Multi Tenant Institutions Management
+    Route::middleware('access_type:0')->prefix('institutions')->name('institutions.')->group(function () {
+        Route::get('/', [InstitutionController::class, 'index'])->name('index');
+        Route::get('/add', [InstitutionController::class, 'add'])->name('add');
+        Route::post('/create', [InstitutionController::class, 'doCreate'])->name('create');
+        Route::get('/detail/{id}', [InstitutionController::class, 'detail'])->name('detail');
+        Route::get('/update/{id}', [InstitutionController::class, 'update'])->name('update');
+        Route::post('/update/{id}', [InstitutionController::class, 'doUpdate'])->name('doUpdate');
+        Route::delete('/delete/{id}', [InstitutionController::class, 'delete'])->name('delete');
+    });
+
+    // Superadmin Platform - Payments & Billing Management
+    Route::middleware('access_type:0')->prefix('payments')->name('payments.')->group(function () {
+        Route::get('/', [PaymentController::class, 'index'])->name('index');
+        Route::get('/add', [PaymentController::class, 'add'])->name('add');
+        Route::post('/create', [PaymentController::class, 'doCreate'])->name('create');
+        Route::get('/detail/{id}', [PaymentController::class, 'detail'])->name('detail');
+        Route::get('/update/{id}', [PaymentController::class, 'update'])->name('update');
+        Route::post('/update/{id}', [PaymentController::class, 'doUpdate'])->name('doUpdate');
+        Route::delete('/delete/{id}', [PaymentController::class, 'delete'])->name('delete');
+        Route::post('/{id}/confirm', [PaymentController::class, 'confirmPayment'])->name('confirm');
+    });
 
     Route::middleware('access_type:1')->prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
@@ -104,5 +138,7 @@ Route::prefix('bilik')->name('kiosk.')->group(function () {
     Route::post('/{token}/expire', [KioskController::class, 'expire'])->name('expire');
 });
 
-// Landing Page Publik (T-08) - Ditempatkan di bawah agar tidak menimpa route sistem seperti /login, /admin, dll.
-Route::get('/{slug}', [ElectionLandingController::class, 'show'])->name('landing.election');
+// Landing Page Publik (T-08) - Ditempatkan di paling bawah dengan regex guard
+Route::get('/{slug}', [ElectionLandingController::class, 'show'])
+    ->where('slug', '^(?!login|subscribe|payment|admin|operator|bilik|up|storage)[a-zA-Z0-9_-]+$')
+    ->name('landing.election');

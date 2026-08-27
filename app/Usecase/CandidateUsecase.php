@@ -26,6 +26,7 @@ class CandidateUsecase extends Usecase
             $query = DB::table(DatabaseConst::CANDIDATES().' as c')
                 ->leftJoin(DatabaseConst::ELECTIONS().' as e', 'c.election_id', '=', 'e.id')
                 ->select('c.*', 'e.name as election_name')
+                ->where('c.institution_id', $this->tenantId())
                 ->whereNull('c.deleted_at')
                 ->when(! empty($filterData['election_id']), function ($query) use ($filterData) {
                     return $query->where('c.election_id', $filterData['election_id']);
@@ -59,6 +60,7 @@ class CandidateUsecase extends Usecase
     {
         try {
             $data = DB::table(DatabaseConst::CANDIDATES())
+                ->where('institution_id', $this->tenantId())
                 ->whereNull('deleted_at')
                 ->where('id', $id)
                 ->first();
@@ -120,6 +122,7 @@ class CandidateUsecase extends Usecase
             }
 
             DB::table(DatabaseConst::CANDIDATES())->insert([
+                'institution_id' => $this->tenantId(),
                 'election_id' => $data->input('election_id'),
                 'order_number' => $data->input('order_number'),
                 'chairman_name' => $data->input('chairman_name'),
@@ -177,7 +180,9 @@ class CandidateUsecase extends Usecase
 
         DB::beginTransaction();
         try {
+            $tenantId = $this->tenantId();
             $candidate = DB::table(DatabaseConst::CANDIDATES())
+                ->where('institution_id', $tenantId)
                 ->where('id', $id)
                 ->whereNull('deleted_at')
                 ->first();
@@ -215,7 +220,10 @@ class CandidateUsecase extends Usecase
                 $payload['vice_chairman_photo_path'] = $this->processAndStorePhoto($data->file('vice_chairman_photo'));
             }
 
-            DB::table(DatabaseConst::CANDIDATES())->where('id', $id)->update($payload);
+            DB::table(DatabaseConst::CANDIDATES())
+                ->where('institution_id', $tenantId)
+                ->where('id', $id)
+                ->update($payload);
             DB::commit();
 
             return Response::buildSuccess(message: ResponseConst::SUCCESS_MESSAGE_UPDATED);
@@ -231,14 +239,13 @@ class CandidateUsecase extends Usecase
     {
         DB::beginTransaction();
         try {
-            $candidate = DB::table(DatabaseConst::CANDIDATES())
+            $delete = DB::table(DatabaseConst::CANDIDATES())
+                ->where('institution_id', $this->tenantId())
                 ->where('id', $id)
-                ->first();
-
-            $delete = DB::table(DatabaseConst::CANDIDATES())->where('id', $id)->update([
-                'deleted_by' => Auth::user()?->id,
-                'deleted_at' => now(),
-            ]);
+                ->update([
+                    'deleted_by' => Auth::user()?->id,
+                    'deleted_at' => now(),
+                ]);
 
             if (! $delete) {
                 DB::rollback();

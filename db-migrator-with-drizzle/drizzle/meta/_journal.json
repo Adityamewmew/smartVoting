@@ -29,6 +29,13 @@
       "when": 1787640000000,
       "tag": "0003_add_logo_path_to_elections",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1787750000000,
+      "tag": "0004_create_institutions_and_add_institution_id",
+      "breakpoints": true
     }
   ]
 }

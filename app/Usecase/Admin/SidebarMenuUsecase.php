@@ -478,7 +478,9 @@ class SidebarMenuUsecase extends Usecase
 
         $groupKeys = DB::table(DatabaseConst::SIDEBAR_MENU_GROUP())->pluck('key')->toArray();
         $accessTypes = [
+            UserConst::PLATFORM_SUPERADMIN,
             UserConst::SUPERADMIN,
+            UserConst::OPERATOR,
         ];
 
         foreach ($accessTypes as $accessType) {
@@ -499,7 +501,9 @@ class SidebarMenuUsecase extends Usecase
             $this->flushSidebarCache();
 
             $accessTypes = [
+                UserConst::PLATFORM_SUPERADMIN,
                 UserConst::SUPERADMIN,
+                UserConst::OPERATOR,
             ];
 
             $groups = $this->getGroupKeys();

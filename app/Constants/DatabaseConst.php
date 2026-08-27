@@ -13,6 +13,11 @@ class DatabaseConst
         return $prefix ? $prefix.'.'.$table : $table;
     }
 
+    public static function INSTITUTION(): string
+    {
+        return self::table('institutions');
+    }
+
     public static function USER(): string
     {
         return self::table('users');
@@ -51,6 +56,11 @@ class DatabaseConst
     public static function VOTES(): string
     {
         return self::table('votes');
+    }
+
+    public static function PAYMENTS(): string
+    {
+        return self::table('payments');
     }
 
     public static function DB_CORE(): string

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Constants\DatabaseConst;
+use App\Constants\UserConst;
 use App\Http\Controllers\Controller;
 use App\Usecase\Admin\SidebarMenuUsecase;
 use App\Usecase\LivePollingUsecase;
@@ -22,7 +23,11 @@ class DashboardController extends Controller
 
     public function index(Request $request): View|RedirectResponse|Response
     {
-        if (Auth::user()->access_type == 2) {
+        if (Auth::user()->access_type == UserConst::PLATFORM_SUPERADMIN) {
+            return redirect()->route('admin.institutions.index');
+        }
+
+        if (Auth::user()->access_type == UserConst::OPERATOR) {
             return redirect()->route('operator.kiosk.index');
         }
         $modules = $this->sidebarMenuUsecase->getDashboardModules(

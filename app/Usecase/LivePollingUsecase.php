@@ -32,17 +32,21 @@ class LivePollingUsecase extends Usecase
         try {
             $this->syncExpiredElections();
 
+            $tenantId = $this->tenantId();
             $elections = DB::table(DatabaseConst::ELECTIONS())
+                ->where('institution_id', $tenantId)
                 ->where('status', 'active')
                 ->whereNull('deleted_at')
                 ->get();
 
-            $data = collect($elections)->map(function ($election) {
+            $data = collect($elections)->map(function ($election) use ($tenantId) {
                 $election->total_votes = DB::table(DatabaseConst::VOTES())
+                    ->where('institution_id', $tenantId)
                     ->where('election_id', $election->id)
                     ->count();
 
                 $election->active_sessions = DB::table(DatabaseConst::VOTING_SESSIONS())
+                    ->where('institution_id', $tenantId)
                     ->where('election_id', $election->id)
                     ->where('status', 'open')
                     ->count();
@@ -64,6 +68,7 @@ class LivePollingUsecase extends Usecase
             $this->syncExpiredElections();
 
             $elections = DB::table(DatabaseConst::ELECTIONS())
+                ->where('institution_id', $this->tenantId())
                 ->where('status', 'active')
                 ->whereNull('deleted_at')
                 ->when($keywords, function ($query, $keywords) {
@@ -84,6 +89,7 @@ class LivePollingUsecase extends Usecase
     {
         try {
             $candidates = DB::table(DatabaseConst::CANDIDATES())
+                ->where('institution_id', $this->tenantId())
                 ->where('election_id', $electionId)
                 ->whereNull('deleted_at')
                 ->select('id', 'order_number', 'chairman_name', 'vice_chairman_name', 'photo_path')
@@ -101,23 +107,28 @@ class LivePollingUsecase extends Usecase
     public function getLiveResults(int $electionId): array
     {
         try {
+            $tenantId = $this->tenantId();
             // Get total votes
             $totalVotes = DB::table(DatabaseConst::VOTES())
+                ->where('institution_id', $tenantId)
                 ->where('election_id', $electionId)
                 ->count();
 
             $activeSessions = DB::table(DatabaseConst::VOTING_SESSIONS())
+                ->where('institution_id', $tenantId)
                 ->where('election_id', $electionId)
                 ->where('status', 'open')
                 ->count();
 
             $totalSessions = DB::table(DatabaseConst::VOTING_SESSIONS())
+                ->where('institution_id', $tenantId)
                 ->where('election_id', $electionId)
                 ->count();
 
             // Get vote count per candidate
             $candidates = DB::table(DatabaseConst::CANDIDATES().' as c')
                 ->leftJoin(DatabaseConst::VOTES().' as v', 'c.id', '=', 'v.candidate_id')
+                ->where('c.institution_id', $tenantId)
                 ->where('c.election_id', $electionId)
                 ->whereNull('c.deleted_at')
                 ->select(
@@ -159,7 +170,8 @@ class LivePollingUsecase extends Usecase
                     'vs.updated_at as close_time',
                     'e.name as election_name',
                     'u.name as operator_name'
-                );
+                )
+                ->where('vs.institution_id', $this->tenantId());
 
             if ($electionId) {
                 $query->where('vs.election_id', $electionId);

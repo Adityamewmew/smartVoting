@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Constants\UserConst;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -13,12 +14,14 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // 1. Platform Superadmin Only
         User::updateOrCreate(
-            ['email' => 'asd@asd.asd'],
+            ['email' => 'superadmin@smartvoting.id'],
             [
-                'name' => 'Test User',
-                'password' => Hash::make('asdasd'),
-                'access_type' => 1, // Super Admin
+                'name' => 'Platform Superadmin',
+                'password' => Hash::make('password'),
+                'access_type' => UserConst::PLATFORM_SUPERADMIN, // 0
+                'institution_id' => null,
                 'is_active' => 1,
             ]
         );

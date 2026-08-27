@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class KioskController extends Controller
 {
@@ -23,6 +24,17 @@ class KioskController extends Controller
         $election = DB::table(DatabaseConst::ELECTIONS())->where('id', $electionId)->first();
         if (! $election) {
             return abort(404);
+        }
+
+        if (Schema::hasTable('institutions')) {
+            $institution = DB::table(DatabaseConst::INSTITUTION())
+                ->where('id', $election->institution_id)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if (! $institution || $institution->status !== 'active') {
+                abort(403, 'Layanan institusi penyelenggara bilik pemilihan sedang ditangguhkan atau tidak aktif.');
+            }
         }
 
         if ($election->status !== 'active') {

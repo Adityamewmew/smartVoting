@@ -20,8 +20,10 @@ class VotingSessionUsecase extends Usecase
     public function generateSession(int $electionId, int $operatorId): array
     {
         try {
+            $tenantId = $this->tenantId();
             // First check if the election is active
             $election = DB::table(DatabaseConst::ELECTIONS())
+                ->where('institution_id', $tenantId)
                 ->where('id', $electionId)
                 ->where('status', 'active')
                 ->whereNull('deleted_at')
@@ -34,6 +36,7 @@ class VotingSessionUsecase extends Usecase
             $token = Str::uuid()->toString();
 
             DB::table(DatabaseConst::VOTING_SESSIONS())->insert([
+                'institution_id' => $tenantId,
                 'election_id' => $electionId,
                 'operator_id' => $operatorId,
                 'session_token' => $token,
@@ -58,9 +61,14 @@ class VotingSessionUsecase extends Usecase
     public function verifySession(string $token): array
     {
         try {
-            $session = DB::table(DatabaseConst::VOTING_SESSIONS())
-                ->where('session_token', $token)
-                ->first();
+            $query = DB::table(DatabaseConst::VOTING_SESSIONS())
+                ->where('session_token', $token);
+
+            if (app()->bound('current_tenant')) {
+                $query->where('institution_id', $this->tenantId());
+            }
+
+            $session = $query->first();
 
             if (! $session) {
                 return Response::buildErrorService('Sesi tidak valid atau tidak ditemukan.');
@@ -108,6 +116,7 @@ class VotingSessionUsecase extends Usecase
             $candidate = DB::table(DatabaseConst::CANDIDATES())
                 ->where('id', $candidateId)
                 ->where('election_id', $session->election_id)
+                ->where('institution_id', $session->institution_id)
                 ->whereNull('deleted_at')
                 ->first();
 
@@ -117,6 +126,7 @@ class VotingSessionUsecase extends Usecase
 
             // Insert the vote
             DB::table(DatabaseConst::VOTES())->insert([
+                'institution_id' => $session->institution_id,
                 'election_id' => $session->election_id,
                 'candidate_id' => $candidateId,
                 'created_at' => now(),
