@@ -36,6 +36,9 @@
         <x-admin.card class="p-6 sm:p-10 rounded-3xl space-y-8">
             <form action="{{ route('subscribe.post') }}" method="POST" class="space-y-6">
                 @csrf
+                <div style="display:none;" aria-hidden="true">
+                    <input type="text" name="_hp_url" tabindex="-1" autocomplete="off" value="" />
+                </div>
 
                 {{-- 1. Pilihan Paket --}}
                 <div>

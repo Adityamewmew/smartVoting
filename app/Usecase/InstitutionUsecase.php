@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class InstitutionUsecase extends Usecase
 {
@@ -41,7 +42,7 @@ class InstitutionUsecase extends Usecase
             if (! empty($filterData['no_pagination'])) {
                 $data = $query->get();
             } else {
-                $data = $query->paginate(15);
+                $data = $query->paginate(20);
                 if (! empty($filterData)) {
                     $data->appends($filterData);
                 }
@@ -69,7 +70,7 @@ class InstitutionUsecase extends Usecase
                 ->first();
 
             if (! $data) {
-                return Response::buildErrorNotFound('Data institusi tidak ditemukan.');
+                return Response::buildErrorNotFound('Institusi tidak ditemukan.');
             }
 
             $users = DB::table(DatabaseConst::USER())
@@ -77,10 +78,14 @@ class InstitutionUsecase extends Usecase
                 ->whereNull('deleted_at')
                 ->get();
 
-            $result = collect($data)->toArray();
-            $result['users'] = $users;
+            $adminUser = $users->firstWhere('access_type', UserConst::SUPERADMIN);
 
-            return Response::buildSuccess(data: $result);
+            $res = collect($data)->toArray();
+            $res['admin_name'] = $adminUser?->name;
+            $res['admin_email'] = $adminUser?->email;
+            $res['users'] = $users;
+
+            return Response::buildSuccess(data: $res);
         } catch (Exception $e) {
             Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
 
@@ -96,7 +101,7 @@ class InstitutionUsecase extends Usecase
             'status' => 'nullable|string|in:active,suspended,pending',
             'admin_name' => 'required|string|max:255',
             'admin_email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->whereNull('deleted_at')],
-            'admin_password' => 'required|string|min:6',
+            'admin_password' => ['required', 'string', Password::min(6)],
         ], [
             'admin_email.unique' => 'Email admin ini sudah digunakan oleh akun lain.',
         ]);

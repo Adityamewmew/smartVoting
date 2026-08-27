@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\Password;
 
 class UserUsecase extends Usecase
 {
@@ -94,7 +95,7 @@ class UserUsecase extends Usecase
             'name' => 'required',
             'email' => 'required|email|unique:users,email',
             'access_type' => 'required|in:'.implode(',', array_keys(UserConst::getAppAccessTypes())),
-            'password' => 'nullable|string|min:6|confirmed',
+            'password' => ['nullable', 'string', 'confirmed', Password::min(6)],
         ]);
 
         $validator->validate();
@@ -227,7 +228,7 @@ class UserUsecase extends Usecase
 
         $validator = Validator::make($data, [
             'current_password' => ['required', 'current_password'],
-            'password' => ['required', 'confirmed', 'min:6', 'different:current_password'],
+            'password' => ['required', 'confirmed', 'different:current_password', Password::min(6)],
         ]);
 
         $customAttributes = [

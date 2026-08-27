@@ -5,6 +5,7 @@ namespace App\Usecase;
 use App\Constants\DatabaseConst;
 use App\Constants\ResponseConst;
 use App\Http\Presenter\Response;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -31,6 +32,14 @@ class VotingSessionUsecase extends Usecase
 
             if (! $election) {
                 return Response::buildErrorService('Event pemilihan tidak ditemukan atau belum aktif.');
+            }
+
+            if (! empty($election->start_time) && now()->lt(Carbon::parse($election->start_time))) {
+                return Response::buildErrorService('Waktu pemungutan suara belum dimulai.');
+            }
+
+            if (! empty($election->end_time) && now()->gt(Carbon::parse($election->end_time))) {
+                return Response::buildErrorService('Waktu pemungutan suara telah berakhir.');
             }
 
             $token = Str::uuid()->toString();
@@ -110,6 +119,25 @@ class VotingSessionUsecase extends Usecase
 
             if ($session->status !== 'open') {
                 throw new Exception('Sesi tidak valid untuk digunakan.');
+            }
+
+            // Verify election status & time window
+            $election = DB::table(DatabaseConst::ELECTIONS())
+                ->where('id', $session->election_id)
+                ->where('institution_id', $session->institution_id)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if (! $election || $election->status !== 'active') {
+                throw new Exception('Event pemilihan tidak aktif atau tidak ditemukan.');
+            }
+
+            if (! empty($election->start_time) && now()->lt(Carbon::parse($election->start_time))) {
+                throw new Exception('Waktu pemungutan suara belum dimulai.');
+            }
+
+            if (! empty($election->end_time) && now()->gt(Carbon::parse($election->end_time))) {
+                throw new Exception('Waktu pemungutan suara telah berakhir.');
             }
 
             // Verify candidate

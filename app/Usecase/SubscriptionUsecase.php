@@ -12,18 +12,23 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 
 class SubscriptionUsecase extends Usecase
 {
     public function subscribe(Request $data): array
     {
+        if (! empty($data->input('_hp_url'))) {
+            return Response::buildError(422, 'Permintaan pendaftaran tidak valid.');
+        }
+
         $validator = Validator::make($data->all(), [
             'institution_name' => 'required|string|max:150',
             'type' => 'nullable|string|in:school,campus,organization',
             'admin_name' => 'required|string|max:100',
             'email' => 'required|email|max:150|unique:users,email',
             'phone' => 'nullable|string|max:25',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => ['required', 'string', 'confirmed', Password::min(8)->letters()->numbers()],
             'package' => 'nullable|string|in:starter,pro,enterprise',
         ], [
             'email.unique' => 'Email ini sudah terdaftar. Silakan gunakan email lain atau langsung masuk.',
