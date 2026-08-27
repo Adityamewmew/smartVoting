@@ -75,12 +75,8 @@
                         <x-admin.table.tr>
                             <x-admin.table.td>
                                 <div class="flex items-center gap-3">
-                                    <div class="size-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0 overflow-hidden p-1 shadow-2xs">
-                                        @if(!empty($item->logo_path))
-                                            <img src="{{ \Illuminate\Support\Facades\Storage::url($item->logo_path) }}" alt="{{ $item->name }}" class="size-full object-contain">
-                                        @else
-                                            <svg class="size-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16"/><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
-                                        @endif
+                                    <div class="size-9 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0 text-blue-600 shadow-2xs">
+                                        <svg class="size-4.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16"/><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
                                     </div>
                                     <div>
                                         <div class="font-bold text-gray-900">{{ $item->name }}</div>

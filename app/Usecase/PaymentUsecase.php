@@ -24,7 +24,6 @@ class PaymentUsecase extends Usecase
                 ->select([
                     'p.*',
                     'i.name as institution_name',
-                    'i.logo_path as institution_logo',
                 ])
                 ->whereNull('p.deleted_at')
                 ->when($filterData['keywords'] ?? false, function ($query, $keywords) {
@@ -67,7 +66,6 @@ class PaymentUsecase extends Usecase
                 ->select([
                     'p.*',
                     'i.name as institution_name',
-                    'i.logo_path as institution_logo',
                 ])
                 ->where('p.id', $id)
                 ->whereNull('p.deleted_at')

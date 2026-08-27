@@ -17,20 +17,20 @@
 
         {{-- Form Card --}}
         <x-admin.card class="p-6 sm:p-8">
-            <form id="add-institution-form" navigate-form action="{{ route('admin.institutions.create') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <form id="add-institution-form" navigate-form action="{{ route('admin.institutions.create') }}" method="POST" class="space-y-6">
                 @csrf
 
                 {{-- Bagian 1: Data Institusi --}}
                 <div class="space-y-5">
-                    <x-admin.input 
-                        label="Nama Institusi / Sekolah" 
-                        name="name" 
-                        :value="old('name')" 
-                        placeholder="Contoh: SMK Negeri 1 Jakarta" 
-                        required="true" 
-                    />
-
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 items-start">
+                        <x-admin.input 
+                            label="Nama Institusi / Sekolah" 
+                            name="name" 
+                            :value="old('name')" 
+                            placeholder="Contoh: SMK Negeri 1 Jakarta" 
+                            required="true" 
+                        />
+
                         @php
                             $types = [
                                 'school' => 'Sekolah (SMA/SMK/SMP)',
@@ -45,22 +45,6 @@
                             :value="old('type', 'school')" 
                             required="true" 
                         />
-
-                        <div>
-                            <label for="logo" class="block text-sm font-medium text-gray-700 mb-1.5">
-                                Logo Institusi (Opsional)
-                            </label>
-                            <input 
-                                type="file" 
-                                name="logo" 
-                                id="logo" 
-                                accept="image/*"
-                                class="py-1.5 px-3 block w-full text-sm text-gray-500 rounded-xl border border-gray-200/90 bg-white shadow-2xs file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer focus:border-blue-500 focus:ring-3 focus:ring-blue-500/15 transition-all"
-                            />
-                            @error('logo')
-                                <p class="text-xs text-red-500 mt-1 font-medium">{{ $message }}</p>
-                            @enderror
-                        </div>
                     </div>
                 </div>
 
@@ -79,7 +63,7 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                         <x-admin.input 
-                            type="email"
+                            type="email" 
                             label="Email Login Admin" 
                             name="admin_email" 
                             :value="old('admin_email')" 
@@ -88,7 +72,7 @@
                         />
 
                         <x-admin.input 
-                            type="password"
+                            type="password" 
                             label="Password Admin" 
                             name="admin_password" 
                             placeholder="Minimal 6 karakter" 
@@ -98,13 +82,13 @@
                 </div>
 
                 {{-- Tombol Aksi --}}
-                <div class="pt-6 border-t border-gray-100 flex items-center justify-end gap-3">
+                <div class="pt-4 border-t border-gray-100 flex items-center justify-end gap-3">
                     <x-admin.button href="{{ route('admin.institutions.index') }}" color="outline-secondary">
                         Batal
                     </x-admin.button>
                     <x-admin.button type="submit" color="primary" class="font-bold">
-                        <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                        Simpan & Daftarkan Institusi
+                        <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                        <span>Simpan & Daftarkan Institusi</span>
                     </x-admin.button>
                 </div>
             </form>

@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -95,7 +94,6 @@ class InstitutionUsecase extends Usecase
             'name' => 'required|string|max:255',
             'type' => 'nullable|string|in:school,campus,organization',
             'status' => 'nullable|string|in:active,suspended,pending',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:2048',
             'admin_name' => 'required|string|max:255',
             'admin_email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->whereNull('deleted_at')],
             'admin_password' => 'required|string|min:6',
@@ -105,16 +103,10 @@ class InstitutionUsecase extends Usecase
 
         $validator->validate();
 
-        $logoPath = null;
-        if ($data->hasFile('logo') && $data->file('logo')->isValid()) {
-            $logoPath = $data->file('logo')->store('institutions', 'public');
-        }
-
         DB::beginTransaction();
         try {
             $institutionId = DB::table(DatabaseConst::INSTITUTION())->insertGetId([
                 'name' => $data['name'],
-                'logo_path' => $logoPath,
                 'type' => $data['type'] ?? 'school',
                 'status' => $data['status'] ?? 'active',
                 'created_at' => now(),
@@ -138,9 +130,6 @@ class InstitutionUsecase extends Usecase
             return Response::buildSuccessCreated(['id' => $institutionId]);
         } catch (Exception $e) {
             DB::rollback();
-            if ($logoPath && Storage::disk('public')->exists($logoPath)) {
-                Storage::disk('public')->delete($logoPath);
-            }
             Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
 
             return Response::buildErrorService($e->getMessage());

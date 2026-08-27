@@ -29,7 +29,6 @@ export const institutionStatusEnum = mysqlEnum('status', ['active', 'inactive'])
 export const institutionsTable = mysqlTable('institutions', {
     id: bigint({ mode: 'number', unsigned: true }).autoincrement().primaryKey(),
     name: varchar({ length: 255 }).notNull(),
-    logo_path: varchar({ length: 255 }),
     type: institutionTypeEnum.notNull().default('school'),
     status: institutionStatusEnum.notNull().default('active'),
     created_at: timestamp().defaultNow(),

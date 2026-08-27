@@ -28,12 +28,8 @@
             {{-- Profile Card --}}
             <x-admin.card class="p-6 md:col-span-1 space-y-4">
                 <div class="flex flex-col items-center text-center p-4">
-                    <div class="size-20 rounded-2xl bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden p-2 shadow-sm mb-3">
-                        @if(!empty($data->logo_path))
-                            <img src="{{ \Illuminate\Support\Facades\Storage::url($data->logo_path) }}" alt="{{ $data->name }}" class="size-full object-contain">
-                        @else
-                            <svg class="size-10 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16"/><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
-                        @endif
+                    <div class="size-16 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shadow-sm mb-3">
+                        <svg class="size-8" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h16"/><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
                     </div>
                     <h2 class="text-base font-bold text-gray-900">{{ $data->name }}</h2>
                     <span class="text-xs font-medium text-gray-500 capitalize mt-0.5">{{ $data->type ?? 'School' }}</span>

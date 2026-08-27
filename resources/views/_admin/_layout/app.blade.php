@@ -36,11 +36,7 @@
             <div class="flex items-center justify-between w-full lg:w-auto">
                 <!-- Logo -->
                 <a class="flex items-center gap-2.5 rounded-md focus:outline-hidden" href="{{ route('admin.dashboard') }}">
-                    @if(!empty($current_tenant?->logo_path))
-                        <img src="{{ \Illuminate\Support\Facades\Storage::url($current_tenant->logo_path) }}" alt="{{ $current_tenant->name }}" class="h-8 w-auto object-contain">
-                    @else
-                        <img src="{{ asset('images/logo-light.png') }}" alt="Logo" class="h-8 w-auto">
-                    @endif
+                    <img src="{{ asset('images/logo-light.png') }}" alt="Logo" class="h-8 w-auto">
                     @if(!empty($current_tenant?->name))
                         <span class="hidden sm:inline-block text-xs font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200 truncate max-w-[200px]">
                             {{ $current_tenant->name }}

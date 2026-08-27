@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
         $middleware->web(append: [
             ResolveTenant::class,
+            'throttle:global-web',
         ]);
         $middleware->alias([
             'access_type' => EnsureAccessType::class,

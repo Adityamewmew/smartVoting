@@ -1,19 +1,16 @@
 CREATE TABLE IF NOT EXISTS `institutions` (
 	`id` bigint unsigned AUTO_INCREMENT NOT NULL,
 	`name` varchar(255) NOT NULL,
-	`slug` varchar(100) NOT NULL,
-	`logo_path` varchar(255),
 	`type` enum('school','university','organization') NOT NULL DEFAULT 'school',
 	`status` enum('active','inactive') NOT NULL DEFAULT 'active',
 	`created_at` timestamp DEFAULT (now()),
 	`updated_at` timestamp ON UPDATE CURRENT_TIMESTAMP,
 	`deleted_at` timestamp,
-	CONSTRAINT `institutions_id` PRIMARY KEY(`id`),
-	CONSTRAINT `institutions_slug_unique` UNIQUE(`slug`)
+	CONSTRAINT `institutions_id` PRIMARY KEY(`id`)
 );
 
-INSERT INTO `institutions` (`id`, `name`, `slug`, `type`, `status`, `created_at`, `updated_at`)
-VALUES (1, 'SMK Negeri 1 Demo', 'demo', 'school', 'active', NOW(), NOW())
+INSERT INTO `institutions` (`id`, `name`, `type`, `status`, `created_at`, `updated_at`)
+VALUES (1, 'SMK Negeri 1 Demo', 'school', 'active', NOW(), NOW())
 ON DUPLICATE KEY UPDATE `id`=`id`;
 
 ALTER TABLE `users` ADD COLUMN `institution_id` bigint unsigned;

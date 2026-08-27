@@ -16,8 +16,6 @@ class DefaultInstitutionSeeder extends Seeder
                 ['id' => 1],
                 [
                     'name' => 'SMK Negeri 1 Demo',
-                    'slug' => 'demo',
-                    'logo_path' => null,
                     'type' => 'school',
                     'status' => 'active',
                     'created_at' => now(),
