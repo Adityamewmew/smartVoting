@@ -38,7 +38,6 @@ class KioskManagerController extends Controller
         $data = $elections->map(function ($election) {
             $totalVotes = DB::table(DatabaseConst::VOTES())
                 ->where('election_id', $election->id)
-                ->whereNull('deleted_at')
                 ->count();
 
             $activeSessions = DB::table(DatabaseConst::VOTING_SESSIONS())

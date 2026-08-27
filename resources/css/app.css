@@ -339,3 +339,124 @@ textarea {
     justify-content: center !important;
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 2px 4px rgba(37,99,235,0.3) !important;
 }
+
+/* ============================================================
+   Landing Page / Canvas Utilities
+   ============================================================ */
+.dotted-canvas,
+.theme-canvas {
+    background: linear-gradient(180deg, #EFF6FF 0%, #F8FAFC 50%, #FFFFFF 100%);
+    border: 1px solid #DBEAFE;
+    box-shadow: 0 25px 60px -15px rgba(37, 99, 235, 0.08), 0 0 0 1px rgba(219, 234, 254, 0.5);
+    position: relative;
+}
+
+.dotted-canvas::before,
+.theme-canvas::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+        radial-gradient(ellipse at 50% 0%, rgba(59, 130, 246, 0.14) 0%, transparent 65%),
+        radial-gradient(circle at 10% 25%, rgba(14, 165, 233, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 25%, rgba(99, 102, 241, 0.06) 0%, transparent 40%);
+    pointer-events: none;
+    border-radius: inherit;
+}
+
+.dotted-canvas-subtle,
+.theme-canvas-subtle {
+    background: linear-gradient(180deg, #EFF6FF 0%, #FFFFFF 100%);
+    border: 1px solid #DBEAFE;
+}
+
+.squircle-tile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 22px;
+    background: linear-gradient(145deg, #FFFFFF 0%, #F1F5F9 100%);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 12px 28px -6px rgba(15, 23, 42, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.04), inset 0 2px 0 rgba(255, 255, 255, 0.95), inset 0 -2px 0 rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+}
+
+.squircle-tile:hover {
+    transform: translateY(-5px) scale(1.04);
+    box-shadow: 0 20px 36px -8px rgba(15, 23, 42, 0.18), inset 0 2px 0 rgba(255, 255, 255, 1);
+}
+
+.section-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 6px 18px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #334155;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 9999px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03), inset 0 1px 0 #FFFFFF;
+    margin-bottom: 16px;
+}
+
+.folder-tab {
+    position: relative;
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 24px;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.06);
+}
+
+.folder-tab::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    width: 70px;
+    height: 14px;
+    background: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+}
+
+.post-it {
+    background: linear-gradient(135deg, #FEF08A 0%, #FDE047 100%);
+    box-shadow: 0 12px 24px -6px rgba(202, 138, 4, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    transform: rotate(-3.5deg);
+    transition: transform 0.25s ease;
+}
+
+.post-it:hover {
+    transform: rotate(0deg) scale(1.02);
+}
+
+.pin-head {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #EF4444 0%, #B91C1C 100%);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+@keyframes floatSlow {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+}
+
+@keyframes floatAlt {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(8px); }
+}
+
+.animate-float-slow {
+    animation: floatSlow 4s ease-in-out infinite;
+}
+
+.animate-float-alt {
+    animation: floatAlt 4.5s ease-in-out infinite;
+}
