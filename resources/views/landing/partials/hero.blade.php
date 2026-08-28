@@ -37,7 +37,7 @@
         <!-- Center App Logo Tile -->
         <div class="flex justify-center mb-6 relative z-10">
             <div class="px-6 py-3.5 bg-gradient-to-b from-white to-slate-50 rounded-2xl border border-blue-100/80 shadow-[0_12px_28px_-6px_rgba(15,23,42,0.1),inset_0_1px_1px_rgba(255,255,255,1)] flex items-center justify-center transition-transform hover:scale-105 duration-200">
-                <img src="{{ asset('images/logo-light.png') }}" alt="Logo Starter Kit" class="h-9 w-auto object-contain">
+                <img src="{{ asset('images/logo-light.png') }}" alt="SmartVoting" class="h-9 w-auto object-contain">
             </div>
         </div>
 

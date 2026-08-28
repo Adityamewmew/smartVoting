@@ -2,7 +2,7 @@
 <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" id="pricing">
     <div class="text-center max-w-3xl mx-auto mb-10">
         <h2 class="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight leading-tight">
-            Pilihan Paket Sesuai Kebutuhan Institusi
+            Pilihan Paket Berlangganan
         </h2>
     </div>
 
