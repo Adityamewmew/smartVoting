@@ -811,5 +811,13 @@ $(document).ready(function () {
         });
     });
 
+    // Ensure #main-content clears animation class after finishing to avoid creating CSS transform stacking context for fixed modals
+    $(document).on('animationend', '#main-content', function () {
+        $(this).removeClass('animate-page-enter');
+    });
+    setTimeout(function () {
+        $('#main-content').removeClass('animate-page-enter');
+    }, 300);
+
 });
 }); // end waitForJQuery

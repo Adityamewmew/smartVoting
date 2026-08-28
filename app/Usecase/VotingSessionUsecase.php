@@ -91,8 +91,21 @@ class VotingSessionUsecase extends Usecase
                 return Response::buildErrorService('Sesi ini sudah digunakan untuk memilih.');
             }
 
+            $createdAt = Carbon::parse($session->created_at);
+            $elapsedSeconds = (int) $createdAt->diffInSeconds(now());
+            $remainingSeconds = max(0, 60 - $elapsedSeconds);
+
+            if ($remainingSeconds <= 0) {
+                $this->expireSession($token);
+
+                return Response::buildErrorService('Waktu sesi pemilihan telah habis.');
+            }
+
+            $sessionData = collect($session)->toArray();
+            $sessionData['remaining_seconds'] = $remainingSeconds;
+
             // Valid open session
-            return Response::buildSuccess(data: collect($session)->toArray());
+            return Response::buildSuccess(data: $sessionData);
         } catch (Exception $e) {
             Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
 

@@ -8,12 +8,22 @@
   -translate-x-full transition-all duration-300 transform
   w-64
   hidden
-  fixed top-16 bottom-0 start-0 z-50
-  lg:block lg:translate-x-0 lg:end-auto lg:z-40
-  bg-white border-r border-gray-100 shadow-xs"
+  fixed top-0 bottom-0 start-0 z-[1100]
+  lg:top-16 lg:block lg:translate-x-0 lg:end-auto lg:z-40
+  bg-white border-r border-gray-100 shadow-xl lg:shadow-xs"
     role="dialog" tabindex="-1" aria-label="Sidebar">
     <div class="relative flex flex-col h-full max-h-full">
-        <div class="px-5 pt-5 pb-2">
+        <!-- Mobile Sidebar Header with Close Button -->
+        <div class="px-5 py-4 flex items-center justify-between border-b border-gray-100 lg:hidden">
+            <a class="flex items-center gap-2" href="{{ route('admin.dashboard') }}">
+                <img src="{{ asset('images/logo-light.png') }}" alt="Logo" class="h-7 w-auto">
+            </a>
+            <button type="button" class="size-8 inline-flex justify-center items-center rounded-lg border border-gray-200 text-gray-500 hover:bg-gray-50 active:scale-95 cursor-pointer" data-hs-overlay="#hs-application-sidebar" aria-label="Close">
+                <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+        </div>
+
+        <div class="px-5 pt-4 pb-2">
             <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Menu Utama</span>
         </div>
 

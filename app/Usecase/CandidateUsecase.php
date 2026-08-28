@@ -94,21 +94,6 @@ class CandidateUsecase extends Usecase
             return Response::buildError(ResponseConst::HTTP_BAD_REQUEST, $validator->errors()->first());
         }
 
-        // Custom validation for photo dimensions & orientation
-        if ($data->hasFile('photo')) {
-            $photoError = $this->validatePhotoDimensions($data->file('photo'), 'Foto Calon Ketua');
-            if ($photoError) {
-                return Response::buildError(ResponseConst::HTTP_BAD_REQUEST, $photoError);
-            }
-        }
-
-        if ($data->hasFile('vice_chairman_photo')) {
-            $photoError = $this->validatePhotoDimensions($data->file('vice_chairman_photo'), 'Foto Calon Wakil Ketua');
-            if ($photoError) {
-                return Response::buildError(ResponseConst::HTTP_BAD_REQUEST, $photoError);
-            }
-        }
-
         DB::beginTransaction();
         try {
             $photoPath = null;
@@ -161,21 +146,6 @@ class CandidateUsecase extends Usecase
 
         if ($validator->fails()) {
             return Response::buildError(ResponseConst::HTTP_BAD_REQUEST, $validator->errors()->first());
-        }
-
-        // Custom validation for photo dimensions & orientation
-        if ($data->hasFile('photo')) {
-            $photoError = $this->validatePhotoDimensions($data->file('photo'), 'Foto Calon Ketua');
-            if ($photoError) {
-                return Response::buildError(ResponseConst::HTTP_BAD_REQUEST, $photoError);
-            }
-        }
-
-        if ($data->hasFile('vice_chairman_photo')) {
-            $photoError = $this->validatePhotoDimensions($data->file('vice_chairman_photo'), 'Foto Calon Wakil Ketua');
-            if ($photoError) {
-                return Response::buildError(ResponseConst::HTTP_BAD_REQUEST, $photoError);
-            }
         }
 
         DB::beginTransaction();
@@ -261,32 +231,6 @@ class CandidateUsecase extends Usecase
 
             return Response::buildErrorService($e->getMessage());
         }
-    }
-
-    /**
-     * Validate that photo is not landscape and does not exceed 700px.
-     */
-    private function validatePhotoDimensions($file, string $fieldLabel = 'Foto'): ?string
-    {
-        $imageInfo = @getimagesize($file->getRealPath());
-        if (! $imageInfo) {
-            return "File {$fieldLabel} tidak valid sebagai gambar.";
-        }
-
-        $width = $imageInfo[0];
-        $height = $imageInfo[1];
-
-        // Must not be landscape (width cannot be greater than height)
-        if ($width > $height) {
-            return "{$fieldLabel} tidak boleh berformat landscape (harus berorientasi portrait atau persegi).";
-        }
-
-        // Must not exceed 700px in either dimension
-        if ($width > 700 || $height > 700) {
-            return "Ukuran dimensi {$fieldLabel} tidak boleh lebih dari 700px (terdeteksi {$width}x{$height} px).";
-        }
-
-        return null;
     }
 
     /**

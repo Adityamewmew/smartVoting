@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Operator;
 use App\Constants\DatabaseConst;
 use App\Http\Controllers\Controller;
 use App\Usecase\VotingSessionUsecase;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,7 +37,6 @@ class KioskManagerController extends Controller
         $data = $elections->map(function ($election) {
             $totalVotes = DB::table(DatabaseConst::VOTES())
                 ->where('election_id', $election->id)
-                ->whereNull('deleted_at')
                 ->count();
 
             $activeSessions = DB::table(DatabaseConst::VOTING_SESSIONS())
@@ -46,8 +44,15 @@ class KioskManagerController extends Controller
                 ->where('status', 'open')
                 ->count();
 
+            $candidates = DB::table(DatabaseConst::CANDIDATES())
+                ->where('election_id', $election->id)
+                ->whereNull('deleted_at')
+                ->orderBy('order_number', 'asc')
+                ->get();
+
             $election->total_votes = $totalVotes;
             $election->active_sessions = $activeSessions;
+            $election->candidates = $candidates;
 
             return $election;
         });
@@ -84,19 +89,5 @@ class KioskManagerController extends Controller
         }
 
         return redirect()->back()->with('error', $process['message'] ?? 'Gagal membuat sesi bilik suara.');
-    }
-
-    /**
-     * Ambil data kandidat paslon untuk preview modal operator
-     */
-    public function candidates(int $electionId): JsonResponse
-    {
-        $candidates = DB::table(DatabaseConst::CANDIDATES())
-            ->where('election_id', $electionId)
-            ->whereNull('deleted_at')
-            ->orderBy('order_number', 'asc')
-            ->get();
-
-        return response()->json($candidates);
     }
 }

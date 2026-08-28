@@ -9,7 +9,9 @@
     <aside class="fixed top-5 right-5 sm:top-6 sm:right-6 z-40 flex items-center gap-3 bg-white/95 backdrop-blur-md border border-gray-200/90 py-2.5 px-4 sm:px-5 rounded-2xl shadow-lg shadow-slate-900/5" style="top: 1.5rem; right: 1.5rem;" aria-label="Waktu Tersisa">
         <div class="flex flex-col items-end text-right">
             <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-tight">Sisa Waktu</span>
-            <div id="timer" class="text-xl sm:text-2xl font-black text-blue-600 tabular-nums leading-none mt-0.5">01:00</div>
+            <div id="timer" class="text-xl sm:text-2xl font-black {{ $remainingSeconds <= 10 ? 'text-red-600 animate-pulse' : ($remainingSeconds <= 20 ? 'text-amber-500' : 'text-blue-600') }} tabular-nums leading-none mt-0.5">
+                {{ sprintf('00:%02d', $remainingSeconds) }}
+            </div>
         </div>
         <div class="size-8 sm:size-9 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
             <svg xmlns="http://www.w3.org/2000/svg" class="size-4 sm:size-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -105,166 +107,97 @@
 
 @push('scripts')
 <script>
-    let timeLeft = 60;
-    const timerEl = document.getElementById('timer');
+    let timeLeft = {{ $remainingSeconds }}, selectedCandidateId = null;
+    const $ = (id) => document.getElementById(id);
     const token = '{!! $token !!}';
-    let selectedCandidateId = null;
-    let timerInterval;
+    const csrf = document.querySelector('meta[name="csrf-token"]').content;
 
-    function startTimer() {
-        timerInterval = setInterval(() => {
-            timeLeft--;
-
-            if (timeLeft <= 10) {
-                timerEl.className = 'text-xl sm:text-2xl font-black text-red-600 animate-pulse tabular-nums leading-none mt-0.5';
-            } else if (timeLeft <= 20) {
-                timerEl.className = 'text-xl sm:text-2xl font-black text-amber-500 tabular-nums leading-none mt-0.5';
-            } else {
-                timerEl.className = 'text-xl sm:text-2xl font-black text-blue-600 tabular-nums leading-none mt-0.5';
-            }
-
-            if (timeLeft <= 0) {
-                clearInterval(timerInterval);
-                timerEl.textContent = '00:00';
-                handleTimeout();
-            } else {
-                let seconds = timeLeft;
-                timerEl.textContent = '00:' + (seconds < 10 ? '0' : '') + seconds;
-            }
-        }, 1000);
-    }
-
-    function handleTimeout() {
-        fetch(`/bilik/${token}/expire`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            }
-        }).then(() => {
-            alert('Waktu Anda telah habis! Sesi ini dibatalkan.');
-            window.location.href = '/bilik/start/{{ $session['election_id'] }}';
-        });
-    }
+    const timer = setInterval(() => {
+        if (--timeLeft <= 0) {
+            clearInterval(timer);
+            $('timer').textContent = '00:00';
+            fetch(`/bilik/${token}/expire`, { method: 'POST', headers: { 'X-CSRF-TOKEN': csrf } })
+                .then(() => { alert('Waktu Anda telah habis! Sesi dibatalkan.'); location.href = '/bilik/start/{{ $session['election_id'] }}'; });
+            return;
+        }
+        $('timer').textContent = `00:${String(timeLeft).padStart(2, '0')}`;
+        $('timer').className = `text-xl sm:text-2xl font-black tabular-nums leading-none mt-0.5 ${timeLeft <= 10 ? 'text-red-600 animate-pulse' : (timeLeft <= 20 ? 'text-amber-500' : 'text-blue-600')}`;
+    }, 1000);
 
     function playTingSound() {
-        try {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(1200, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(1, audioCtx.currentTime + 0.05);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.5);
-            osc.start(audioCtx.currentTime);
-            osc.stop(audioCtx.currentTime + 1.5);
-        } catch(e) {}
+        const audio = new Audio('/audio/vote-success.mp3');
+        audio.play().catch(() => {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                osc.connect(ctx.destination);
+                osc.frequency.setValueAtTime(1200, ctx.currentTime);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.3);
+            } catch(e) {}
+        });
     }
 
-    function confirmVote(candidateId, orderNumber, chairmanName = '', viceChairmanName = '') {
-        selectedCandidateId = candidateId;
-        const pad = String(orderNumber).padStart(2, '0');
-        const padEl = document.getElementById('confirm-candidate-pad');
-        const nameEl = document.getElementById('confirm-candidate-name');
+    function confirmVote(id, num, c1 = '', c2 = '') {
+        selectedCandidateId = id;
+        const pad = String(num).padStart(2, '0');
+        if ($('confirm-candidate-pad')) $('confirm-candidate-pad').textContent = `Pasangan Calon ${pad}`;
+        if ($('confirm-candidate-name')) $('confirm-candidate-name').textContent = c2 ? `${c1} & ${c2}` : (c1 || `Paslon ${pad}`);
 
-        if (padEl) padEl.textContent = 'Pasangan Calon ' + pad;
-        let displayName = chairmanName || `Paslon ${pad}`;
-        if (viceChairmanName) {
-            displayName += ' & ' + viceChairmanName;
-        }
-        if (nameEl) nameEl.textContent = displayName;
-
-        const modal = document.getElementById('confirm-modal');
-        const modalContent = document.getElementById('confirm-modal-content');
-
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-
-        requestAnimationFrame(() => {
-            modal.classList.remove('opacity-0');
-            modalContent.classList.remove('scale-95');
-        });
+        const m = $('confirm-modal'), c = $('confirm-modal-content');
+        m.classList.remove('hidden');
+        m.classList.add('flex');
+        requestAnimationFrame(() => { m.classList.remove('opacity-0'); c?.classList.remove('scale-95'); });
     }
 
     function closeConfirm() {
         selectedCandidateId = null;
-
-        const modal = document.getElementById('confirm-modal');
-        const modalContent = document.getElementById('confirm-modal-content');
-
-        modal.classList.add('opacity-0');
-        modalContent.classList.add('scale-95');
-
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }, 300);
+        const m = $('confirm-modal'), c = $('confirm-modal-content');
+        m.classList.add('opacity-0');
+        c?.classList.add('scale-95');
+        setTimeout(() => { m.classList.add('hidden'); m.classList.remove('flex'); }, 300);
     }
 
-    document.getElementById('btn-submit-vote').addEventListener('click', function() {
+    $('btn-submit-vote').addEventListener('click', async () => {
         if (!selectedCandidateId) return;
-
-        clearInterval(timerInterval);
-
-        const candidateIdToSubmit = selectedCandidateId;
+        clearInterval(timer);
+        const candidateId = selectedCandidateId;
         closeConfirm();
 
-        const overlay = document.getElementById('loading-overlay');
+        const overlay = $('loading-overlay');
         overlay.classList.remove('hidden');
         overlay.classList.add('flex');
-        setTimeout(() => {
-            overlay.classList.remove('opacity-0');
-        }, 10);
+        setTimeout(() => overlay.classList.remove('opacity-0'), 10);
 
-        fetch(`/bilik/${token}/submit`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                candidate_id: candidateIdToSubmit
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById('loading-spinner').classList.add('hidden');
-                const successModal = document.getElementById('modal-success');
-                successModal.classList.remove('hidden');
-                successModal.classList.add('flex');
-                setTimeout(() => {
-                    successModal.classList.remove('scale-95');
-                }, 10);
+        try {
+            const res = await fetch(`/bilik/${token}/submit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' },
+                body: JSON.stringify({ candidate_id: candidateId })
+            });
+            const data = await res.json();
+            if (!data.success) throw new Error(data.message);
 
-                playTingSound();
+            $('loading-spinner').classList.add('hidden');
+            const modal = $('modal-success');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            setTimeout(() => modal.classList.remove('scale-95'), 10);
+            playTingSound();
 
-                let secondsLeft = 5;
-                const countdownEl = document.getElementById('reset-countdown');
-                countdownEl.textContent = secondsLeft;
-                const cdInterval = setInterval(() => {
-                    secondsLeft--;
-                    countdownEl.textContent = secondsLeft;
-                    if (secondsLeft <= 0) {
-                        clearInterval(cdInterval);
-                        window.location.href = '/bilik/start/{{ $session['election_id'] }}';
-                    }
-                }, 1000);
-            } else {
-                alert('Terjadi kesalahan: ' + data.message);
-                window.location.reload();
-            }
-        })
-        .catch(err => {
-            alert('Terjadi kesalahan jaringan.');
-            window.location.reload();
-        });
+            let cd = 5;
+            $('reset-countdown').textContent = cd;
+            const cdInterval = setInterval(() => {
+                if (--cd <= 0) {
+                    clearInterval(cdInterval);
+                    location.href = '/bilik/start/{{ $session['election_id'] }}';
+                }
+                $('reset-countdown').textContent = cd;
+            }, 1000);
+        } catch (err) {
+            alert('Terjadi kesalahan: ' + (err.message || 'Jaringan bermasalah'));
+            location.reload();
+        }
     });
-
-    startTimer();
 </script>
 @endpush

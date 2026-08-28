@@ -25,7 +25,7 @@
 @keyframes page-enter {
     0% {
         opacity: 0;
-        transform: translateY(8px);
+        transform: translateY(6px);
     }
     100% {
         opacity: 1;
@@ -34,7 +34,7 @@
 }
 
 .animate-page-enter {
-    animation: page-enter 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: page-enter 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Modal Pop & Zoom-in Animation */
@@ -102,9 +102,9 @@
 }
 
 .hs-overlay-backdrop {
-    z-index: 45 !important;
-    background-color: rgba(15, 23, 42, 0.4) !important;
-    backdrop-filter: blur(2px) !important;
-    -webkit-backdrop-filter: blur(2px) !important;
+    z-index: 1090 !important;
+    background-color: rgba(15, 23, 42, 0.5) !important;
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
 }
 

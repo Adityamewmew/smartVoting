@@ -94,31 +94,29 @@
 
                     {{-- Actions Container --}}
                     <div class="flex flex-col space-y-3 mt-auto">
-                        {{-- Tombol Lihat Paslon --}}
+                        {{-- Tombol Lihat Paslon (Preline Modal Trigger) --}}
                         <x-admin.button
                             type="button"
                             color="secondary"
                             size="md"
                             class="w-full justify-center"
-                            onclick="showCandidates({{ $election->id }}, '{{ addslashes($election->name) }}')"
+                            data-hs-overlay="#modal-candidates-{{ $election->id }}"
                         >
                             <svg class="size-4 text-gray-500 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                            <span>Lihat Daftar Paslon</span>
+                            <span>Lihat Daftar Paslon ({{ count($election->candidates) }})</span>
                         </x-admin.button>
 
-                        {{-- Tombol Buka Bilik Suara (Primary Skeuomorphic Blue) --}}
-                        <form action="{{ route('operator.kiosk.generate', $election->id) }}" method="POST" target="_blank" class="w-full">
-                            @csrf
-                            <x-admin.button
-                                type="submit"
-                                color="primary"
-                                size="lg"
-                                class="w-full justify-center font-bold tracking-wide uppercase"
-                            >
-                                <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                                <span>Buka Bilik Suara</span>
-                            </x-admin.button>
-                        </form>
+                        {{-- Tombol Buka Bilik Suara (Layar Selamat Datang / Standby Bilik) --}}
+                        <x-admin.button
+                            href="{{ route('kiosk.start', $election->id) }}"
+                            target="_blank"
+                            color="primary"
+                            size="lg"
+                            class="w-full justify-center font-bold tracking-wide uppercase"
+                        >
+                            <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            <span>Buka Bilik Suara</span>
+                        </x-admin.button>
                     </div>
                 </x-admin.card>
             @empty
@@ -129,153 +127,62 @@
         </div>
     </main>
 
-    {{-- Modal Detail Paslon --}}
-    <div id="modal-candidates" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 sm:p-6 transition-all" role="dialog" aria-modal="true" onclick="if(event.target === this) closeCandidatesModal()">
-        
-        {{-- Modal Content Card --}}
-        <div id="modal-card" class="bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col min-h-0 overflow-hidden border border-gray-100 transform transition-all duration-200 scale-95 opacity-0">
-            
-            {{-- Modal Header --}}
-            <div class="px-5 sm:px-8 py-4 sm:py-5 border-b border-gray-100 flex justify-between items-center bg-slate-50/80 shrink-0">
-                <div class="flex items-center gap-3 min-w-0">
-                    <div class="p-2 bg-blue-50 text-blue-600 rounded-xl border border-blue-100 shrink-0">
-                        <svg class="size-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    </div>
-                    <div class="min-w-0">
-                        <h3 class="text-lg sm:text-xl font-bold text-gray-900 tracking-tight truncate">Daftar Pasangan Calon</h3>
-                        <p id="modal-election-name" class="text-xs sm:text-sm font-medium text-slate-500 mt-0.5 truncate">Informasi lengkap kandidat pemilihan</p>
-                    </div>
-                </div>
-                {{-- Tombol Close --}}
-                <button type="button" onclick="closeCandidatesModal()"
-                    class="text-gray-400 hover:text-gray-700 transition-colors p-2 rounded-full hover:bg-slate-200/80 flex items-center justify-center cursor-pointer shrink-0 ml-2"
-                    title="Tutup Modal">
-                    <svg class="size-5 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                </button>
-            </div>
+    {{-- Modals Daftar Paslon (Placed outside cards to cover full viewport) --}}
+    @foreach($data as $election)
+        <x-admin.modal
+            id="modal-candidates-{{ $election->id }}"
+            title="Daftar Pasangan Calon - {{ $election->name }}"
+            size="sm:max-w-xl"
+        >
+            <div class="space-y-4">
+                @forelse($election->candidates as $c)
+                    @php $padOrder = str_pad($c->order_number, 2, '0', STR_PAD_LEFT); @endphp
+                    <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 hover:shadow-md transition-all relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-gradient-to-br from-blue-500 to-blue-600 text-white w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center font-black text-base sm:text-lg rounded-bl-2xl shadow-xs border-b border-l border-white/30">
+                            {{ $padOrder }}
+                        </div>
 
-            {{-- Modal Body --}}
-            <div class="px-5 sm:px-8 py-5 sm:py-6 overflow-y-auto overscroll-contain flex-1 min-h-0">
-                {{-- Loading State --}}
-                <div id="modal-loading" class="flex flex-col items-center justify-center py-12 gap-3">
-                    <div class="size-9 border-3 border-gray-200 border-t-blue-600 rounded-full animate-spin"></div>
-                    <p class="text-sm font-medium text-gray-500">Memuat data paslon...</p>
-                </div>
+                        <div class="flex items-center gap-3.5 pr-10 sm:pr-12">
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                @if($c->photo_path)
+                                    <img src="{{ Storage::url($c->photo_path) }}" alt="Foto {{ $c->chairman_name }}" class="w-10 h-13 sm:w-12 sm:h-16 object-cover rounded-xl border border-slate-200 shadow-2xs">
+                                @else
+                                    <div class="w-10 h-13 sm:w-12 sm:h-16 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 font-bold text-xs">K</div>
+                                @endif
 
-                {{-- Paslon Cards Container --}}
-                <div id="modal-content" class="hidden space-y-4"></div>
-
-                {{-- Empty State --}}
-                <div id="modal-empty" class="hidden text-center py-12">
-                    <div class="mx-auto flex items-center justify-center size-14 rounded-full bg-slate-50 border border-slate-200/80 mb-3">
-                        <svg class="size-7 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-                    </div>
-                    <p class="text-sm font-semibold text-gray-700">Belum ada paslon terdaftar pada event ini.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-@endsection
-
-@push('scripts')
-<script>
-    const candidatesUrl = '{{ route("operator.kiosk.candidates", ["electionId" => "__ID__"]) }}';
-    const modalBackdrop = document.getElementById('modal-candidates');
-    const modalCard = document.getElementById('modal-card');
-    const modalTitle = document.getElementById('modal-election-name');
-    const loadingEl = document.getElementById('modal-loading');
-    const contentEl = document.getElementById('modal-content');
-    const emptyEl = document.getElementById('modal-empty');
-
-    function showCandidates(electionId, electionName) {
-        // Reset state
-        modalTitle.textContent = electionName;
-        loadingEl.classList.remove('hidden');
-        contentEl.classList.add('hidden');
-        emptyEl.classList.add('hidden');
-        contentEl.innerHTML = '';
-
-        // Show modal backdrop
-        modalBackdrop.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-
-        // Trigger scale & opacity transition
-        setTimeout(() => {
-            modalCard.classList.remove('scale-95', 'opacity-0');
-            modalCard.classList.add('scale-100', 'opacity-100');
-        }, 10);
-
-        // Fetch candidates
-        const url = candidatesUrl.replace('__ID__', electionId);
-        fetch(url, {
-            headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' }
-        })
-        .then(res => res.json())
-        .then(response => {
-            loadingEl.classList.add('hidden');
-            const candidates = response.data?.candidates ?? [];
-
-            if (candidates.length === 0) {
-                emptyEl.classList.remove('hidden');
-                return;
-            }
-
-            candidates.forEach((c) => {
-                const padOrder = String(c.order_number).padStart(2, '0');
-                const card = document.createElement('div');
-                card.className = 'bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 hover:shadow-md transition-all relative overflow-hidden';
-                
-                const photoHtml = c.photo_path 
-                    ? `<div class="size-14 sm:size-16 rounded-xl overflow-hidden bg-slate-100 shrink-0 border border-slate-200 mr-3.5"><img src="/storage/${c.photo_path}" alt="Foto ${c.chairman_name}" class="size-full object-cover"></div>`
-                    : '';
-
-                card.innerHTML = `
-                    <div class="absolute top-0 right-0 bg-gradient-to-br from-blue-500 to-blue-600 text-white w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center font-black text-base sm:text-lg rounded-bl-2xl shadow-xs border-b border-l border-white/30">
-                        ${padOrder}
-                    </div>
-
-                    <div class="flex items-center pr-10 sm:pr-12">
-                        ${photoHtml}
-                        <div class="min-w-0 flex-1">
-                            <div class="mb-2.5">
-                                <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider block">Calon Ketua</span>
-                                <p class="text-sm sm:text-base font-bold text-gray-900 leading-snug">${c.chairman_name}</p>
+                                @if($c->vice_chairman_photo_path)
+                                    <img src="{{ Storage::url($c->vice_chairman_photo_path) }}" alt="Foto {{ $c->vice_chairman_name }}" class="w-10 h-13 sm:w-12 sm:h-16 object-cover rounded-xl border border-slate-200 shadow-2xs">
+                                @elseif($c->vice_chairman_name)
+                                    <div class="w-10 h-13 sm:w-12 sm:h-16 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 font-bold text-xs">W</div>
+                                @endif
                             </div>
-                            <div>
-                                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Calon Wakil Ketua</span>
-                                <p class="text-sm sm:text-base font-bold text-gray-900 leading-snug">${c.vice_chairman_name || '-'}</p>
+                            <div class="min-w-0 flex-1">
+                                <div class="mb-1.5">
+                                    <span class="text-[10px] font-bold text-blue-600 uppercase tracking-wider block">Calon Ketua</span>
+                                    <p class="text-sm sm:text-base font-bold text-gray-900 leading-snug">{{ $c->chairman_name }}</p>
+                                </div>
+                                <div>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Calon Wakil Ketua</span>
+                                    <p class="text-sm sm:text-base font-bold text-gray-900 leading-snug">{{ $c->vice_chairman_name ?: '-' }}</p>
+                                </div>
+                                @if(!empty($c->vision))
+                                    <p class="text-xs text-gray-500 italic mt-2 line-clamp-1">"{{ $c->vision }}"</p>
+                                @endif
                             </div>
                         </div>
                     </div>
-                `;
-                contentEl.appendChild(card);
-            });
-
-            contentEl.classList.remove('hidden');
-        })
-        .catch(() => {
-            loadingEl.classList.add('hidden');
-            contentEl.innerHTML = '<p class="text-center text-sm font-semibold text-red-500 py-8">Gagal memuat data paslon. Silakan coba lagi.</p>';
-            contentEl.classList.remove('hidden');
-        });
-    }
-
-    function closeCandidatesModal() {
-        modalCard.classList.remove('scale-100', 'opacity-100');
-        modalCard.classList.add('scale-95', 'opacity-0');
-        
-        setTimeout(() => {
-            modalBackdrop.classList.add('hidden');
-            document.body.style.overflow = '';
-        }, 150);
-    }
-
-    // Close on Escape key
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeCandidatesModal();
-    });
-</script>
-@endpush
+                @empty
+                    <div class="text-center py-8">
+                        <div class="mx-auto flex items-center justify-center size-14 rounded-full bg-slate-50 border border-slate-200/80 mb-3">
+                            <svg class="size-7 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+                        </div>
+                        <p class="text-sm font-semibold text-gray-700">Belum ada paslon terdaftar pada event ini.</p>
+                    </div>
+                @endforelse
+            </div>
+        </x-admin.modal>
+    @endforeach
+@endsection
 
 
 

@@ -115,6 +115,7 @@ class KioskController extends Controller
         return view('kiosk.vote', [
             'token' => $token,
             'session' => $session,
+            'remainingSeconds' => $session['remaining_seconds'] ?? 60,
             'candidates' => $candidates,
             'election' => $election,
         ]);

@@ -33,20 +33,34 @@
     <!-- ========== HEADER ========== -->
     <header class="fixed top-0 left-0 right-0 z-50 w-full bg-white/95 backdrop-blur-md shadow-xs border-b border-gray-200/80">
         <nav class="flex items-center justify-between px-4 sm:px-6 w-full h-16">
-            <div class="flex items-center justify-between w-full lg:w-auto">
-                <!-- Logo -->
-                <a class="flex items-center gap-2.5 rounded-md focus:outline-hidden" href="{{ route('admin.dashboard') }}">
-                    <img src="{{ asset('images/logo-light.png') }}" alt="Logo" class="h-8 w-auto">
-                    @if(!empty($current_tenant?->name))
-                        <span class="hidden sm:inline-block text-xs font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200 truncate max-w-[200px]">
-                            {{ $current_tenant->name }}
-                        </span>
-                    @endif
+            <!-- Left: Logo & Tenant Name -->
+            <div class="flex items-center gap-2.5 min-w-0">
+                <a class="flex items-center gap-2 rounded-md focus:outline-hidden shrink-0" href="{{ route('admin.dashboard') }}">
+                    <img src="{{ asset('images/logo-light.png') }}" alt="Logo" class="h-7 sm:h-8 w-auto">
                 </a>
+                @if(!empty($current_tenant?->name))
+                    <span class="text-xs font-bold text-gray-700 bg-gray-100 px-2 py-0.5 rounded-md border border-gray-200 truncate max-w-[130px] sm:max-w-[200px]">
+                        {{ $current_tenant->name }}
+                    </span>
+                @endif
+            </div>
 
-                <!-- Navigation Toggle (Mobile) -->
+            <!-- Right: Date/Time pills + Mobile Toggle -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Date Time area (Visible on large screens) -->
+                <div class="hidden lg:flex items-center gap-2">
+                    <div class="bg-gradient-to-r from-blue-50 to-blue-100/70 text-blue-700 text-xs font-bold px-3.5 py-1.5 rounded-full border border-blue-200/80 shadow-2xs flex items-center gap-1.5 whitespace-nowrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
+                        <span>{{ \Carbon\Carbon::now()->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</span>
+                    </div>
+                    <div class="bg-gradient-to-r from-slate-50 to-gray-100 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-full border border-gray-200/80 shadow-2xs whitespace-nowrap">
+                        {{ \Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('H.i') }} WIB
+                    </div>
+                </div>
+
+                <!-- Navigation Toggle (Mobile & Tablet) -->
                 <button type="button"
-                    class="lg:hidden me-0 size-9.5 px-2.5 flex justify-center items-center gap-x-2 border border-gray-200 text-gray-700 hover:bg-gray-50 active:scale-95 rounded-xl focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none cursor-pointer transition-transform"
+                    class="lg:hidden size-9 flex justify-center items-center border border-gray-200 text-gray-700 hover:bg-gray-50 active:scale-95 rounded-xl focus:outline-hidden disabled:opacity-50 cursor-pointer transition-transform shrink-0"
                     aria-haspopup="dialog" aria-expanded="false" aria-controls="hs-application-sidebar"
                     aria-label="Toggle navigation" data-hs-overlay="#hs-application-sidebar">
                     <span class="sr-only">Toggle Navigation</span>
@@ -58,17 +72,6 @@
                         <path d="m8 9 3 3-3 3" />
                     </svg>
                 </button>
-            </div>
-
-            <!-- Date Time area (Hidden on mobile) -->
-            <div class="hidden md:flex items-center gap-2.5">
-                <div class="bg-gradient-to-r from-blue-50 to-blue-100/70 text-blue-700 text-xs font-bold px-3.5 py-1.5 rounded-full border border-blue-200/80 shadow-2xs flex items-center gap-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>
-                    <span>{{ \Carbon\Carbon::now()->locale('id')->isoFormat('dddd, D MMMM YYYY') }}</span>
-                </div>
-                <div class="bg-gradient-to-r from-slate-50 to-gray-100 text-slate-700 text-xs font-bold px-3 py-1.5 rounded-full border border-gray-200/80 shadow-2xs">
-                    {{ \Carbon\Carbon::now()->timezone('Asia/Jakarta')->format('H.i') }} WIB
-                </div>
             </div>
         </nav>
     </header>

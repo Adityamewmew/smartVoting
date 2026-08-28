@@ -126,7 +126,6 @@ Route::middleware(['auth', 'access_type:2'])->prefix('operator')->name('operator
     Route::prefix('kiosk')->name('kiosk.')->group(function () {
         Route::get('/', [KioskManagerController::class, 'index'])->name('index');
         Route::post('/generate/{electionId}', [KioskManagerController::class, 'generate'])->middleware('throttle:operator-kiosk')->name('generate');
-        Route::get('/{electionId}/candidates', [KioskManagerController::class, 'candidates'])->name('candidates');
     });
 });
 

@@ -5,14 +5,14 @@
 @section('content')
     <div class="space-y-6">
         {{-- Header & Quick Actions --}}
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-xs">
-            <div class="flex items-center gap-3">
-                <x-admin.button href="{{ route('admin.elections.index') }}" size="icon-md" color="secondary">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-xs">
+            <div class="flex items-start sm:items-center gap-3 min-w-0">
+                <x-admin.button href="{{ route('admin.elections.index') }}" size="icon-md" color="secondary" class="shrink-0">
                     <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                 </x-admin.button>
-                <div>
-                    <div class="flex items-center gap-2">
-                        <h1 class="text-xl font-bold text-gray-900 tracking-tight">{{ $election->name }}</h1>
+                <div class="min-w-0">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h1 class="text-xl font-bold text-gray-900 tracking-tight break-words">{{ $election->name }}</h1>
                         @php
                             $statusLabels = [
                                 'draft' => 'Draft',
@@ -22,30 +22,30 @@
                         @endphp
                         <x-admin.badge :status="$election->status" :text="$statusLabels[$election->status] ?? ucfirst($election->status)" />
                     </div>
-                    <p class="text-xs text-gray-500 mt-1 flex items-center gap-2">
+                    <p class="text-xs text-gray-500 mt-1 flex flex-wrap items-center gap-1.5 sm:gap-2">
                         <span>🗓️ {{ \Carbon\Carbon::parse($election->date ?? $election->start_time)->translatedFormat('d F Y') }}</span>
-                        <span>•</span>
+                        <span class="hidden sm:inline">•</span>
                         <span>⏰ {{ \Carbon\Carbon::parse($election->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($election->end_time)->format('H:i') }} WIB</span>
                     </p>
                 </div>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex flex-wrap items-center gap-2 shrink-0">
                 @if($election->slug)
                     <x-admin.button href="{{ url('/' . $election->slug) }}" target="_blank" color="outline-primary" size="sm">
                         <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
-                        Buka Landing Slug
+                        <span>Buka Landing Slug</span>
                     </x-admin.button>
                 @endif
                 <x-admin.button href="{{ route('admin.dashboard.print', $election->id) }}" target="_blank" color="secondary" size="sm">
                     <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
-                    Cetak Laporan
+                    <span>Cetak Laporan</span>
                 </x-admin.button>
             </div>
         </div>
 
         {{-- Navigation Tabs --}}
-        <div class="border-b border-gray-200">
-            <nav class="flex space-x-2" aria-label="Tabs" role="tablist">
+        <div class="border-b border-gray-200 overflow-x-auto">
+            <nav class="flex space-x-2 min-w-max pb-1" aria-label="Tabs" role="tablist">
                 <button type="button" 
                         class="hs-tab-active:font-bold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-3.5 px-4 inline-flex items-center gap-x-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 focus:outline-hidden {{ $activeTab === 'paslon' ? 'active font-bold border-blue-600 text-blue-600' : '' }}" 
                         id="tab-paslon-item" 
@@ -148,19 +148,17 @@
                                     >
                                         <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
                                     </x-admin.button>
-                                    <form action="{{ route('admin.candidates.delete', $c->id) }}" method="POST"
-                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus paslon ini?');" class="inline">
-                                        @csrf
-                                        <x-admin.button
-                                            type="submit"
-                                            size="icon-sm"
-                                            color="outline-secondary"
-                                            class="text-red-600 hover:text-red-700 hover:bg-red-50 hover:border-red-200"
-                                            title="Hapus Data"
-                                        >
-                                            <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                                        </x-admin.button>
-                                    </form>
+                                    <x-admin.button
+                                        type="button"
+                                        size="icon-sm"
+                                        color="outline-secondary"
+                                        class="text-red-600 hover:text-red-700 hover:bg-red-50 hover:border-red-200 cursor-pointer"
+                                        title="Hapus Paslon"
+                                        data-hs-overlay="#delete-candidate-modal"
+                                        onclick="setDeleteCandidate('{{ $c->id }}', '{{ addslashes($c->chairman_name . ($c->vice_chairman_name ? ' & ' . $c->vice_chairman_name : '')) }}', '{{ str_pad($c->order_number, 2, '0', STR_PAD_LEFT) }}')"
+                                    >
+                                        <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                    </x-admin.button>
                                 </x-admin.table.td>
                             </x-admin.table.tr>
                         @empty
@@ -489,9 +487,45 @@
                 </x-admin.table.wrapper>
             </div>
         </div>
+
+        {{-- Delete Candidate Modal --}}
+        <x-admin.modal id="delete-candidate-modal" title="Hapus Pasangan Calon" size="sm:max-w-md">
+            <div class="text-center py-3">
+                <div class="mx-auto flex items-center justify-center size-12 rounded-full bg-rose-50 border border-rose-100 text-rose-600 mb-3 shadow-2xs">
+                    <svg class="size-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                </div>
+                <h3 class="text-base font-bold text-gray-900 mb-1">Hapus Pasangan Calon?</h3>
+                <p class="text-xs text-gray-500 max-w-sm mx-auto leading-relaxed mb-4">
+                    Apakah Anda yakin ingin menghapus <strong id="delete-candidate-pad" class="text-blue-600 font-bold"></strong>: <strong id="delete-candidate-name" class="font-bold text-gray-900"></strong>?
+                </p>
+                <div class="bg-rose-50/70 border border-rose-200/80 rounded-xl p-3 text-left flex items-start gap-2.5">
+                    <svg class="size-4 text-rose-600 shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                    <p class="text-[11px] font-medium text-rose-800 leading-tight">
+                        Data paslon beserta foto profil yang tersimpan akan dihapus dari pemilihan ini.
+                    </p>
+                </div>
+            </div>
+            <x-slot:footer>
+                <div class="grid grid-cols-2 gap-2.5 w-full">
+                    <x-admin.button color="secondary" size="md" class="w-full justify-center font-medium" data-hs-overlay="#delete-candidate-modal">Batal</x-admin.button>
+                    <form id="delete-candidate-form" method="POST" action="" class="w-full m-0 p-0" navigate-form>
+                        @csrf
+                        @method('DELETE')
+                        <x-admin.button type="submit" color="danger" size="md" class="w-full justify-center font-bold">Ya, Hapus</x-admin.button>
+                    </form>
+                </div>
+            </x-slot:footer>
+        </x-admin.modal>
     </div>
 
     @push('scripts')
+        <script>
+            window.setDeleteCandidate = function(id, name, pad) {
+                document.getElementById('delete-candidate-pad').textContent = 'Paslon ' + pad;
+                document.getElementById('delete-candidate-name').textContent = name;
+                document.getElementById('delete-candidate-form').action = '{{ url('admin/candidates/delete') }}/' + id;
+            };
+        </script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             (() => {

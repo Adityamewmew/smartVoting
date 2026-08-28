@@ -132,21 +132,30 @@
 
         {{-- Delete Confirmation Modal --}}
         <x-admin.modal id="delete-modal" title="Hapus Event Pemilihan" size="sm:max-w-md">
-            <div class="text-center py-4">
-                <span class="mb-4 inline-flex justify-center items-center size-12 rounded-full bg-red-50 text-red-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="size-6" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                </span>
-                <p class="text-sm text-gray-600">
-                    Apakah Anda yakin ingin menghapus event <span id="delete-item-name" class="font-bold text-gray-900"></span>?<br>Semua data paslon dan suara terkait akan dihapus.
+            <div class="text-center py-3">
+                <div class="mx-auto flex items-center justify-center size-12 rounded-full bg-rose-50 border border-rose-100 text-rose-600 mb-3 shadow-2xs">
+                    <svg class="size-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                </div>
+                <h3 class="text-base font-bold text-gray-900 mb-1">Hapus Event Pemilihan?</h3>
+                <p class="text-xs text-gray-500 max-w-sm mx-auto leading-relaxed mb-4">
+                    Apakah Anda yakin ingin menghapus event <strong id="delete-item-name" class="font-bold text-gray-900"></strong>? Tindakan ini tidak dapat dibatalkan.
                 </p>
+                <div class="bg-rose-50/70 border border-rose-200/80 rounded-xl p-3 text-left flex items-start gap-2.5">
+                    <svg class="size-4 text-rose-600 shrink-0 mt-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                    <p class="text-[11px] font-medium text-rose-800 leading-tight">
+                        Semua data pasangan calon (paslon), sesi bilik suara, dan riwayat suara terkait event ini akan ikut terhapus permanen.
+                    </p>
+                </div>
             </div>
             <x-slot:footer>
-                <x-admin.button color="secondary" size="md" data-hs-overlay="#delete-modal">Batal</x-admin.button>
-                <form id="delete-form" method="POST" action="" class="inline m-0 p-0" navigate-form>
-                    @csrf
-                    @method('DELETE')
-                    <x-admin.button type="submit" color="danger" size="md">Ya, Hapus</x-admin.button>
-                </form>
+                <div class="grid grid-cols-2 gap-2.5 w-full">
+                    <x-admin.button color="secondary" size="md" class="w-full justify-center font-medium" data-hs-overlay="#delete-modal">Batal</x-admin.button>
+                    <form id="delete-form" method="POST" action="" class="w-full m-0 p-0" navigate-form>
+                        @csrf
+                        @method('DELETE')
+                        <x-admin.button type="submit" color="danger" size="md" class="w-full justify-center font-bold">Ya, Hapus</x-admin.button>
+                    </form>
+                </div>
             </x-slot:footer>
         </x-admin.modal>
     </div>
@@ -154,7 +163,7 @@
     <script>
         window.setDeleteData = function (id, name) {
             document.getElementById('delete-item-name').textContent = name;
-            document.getElementById('delete-form').action = '{{ route('admin.elections.index') }}/delete/' + id;
+            document.getElementById('delete-form').action = '{{ url('admin/elections/delete') }}/' + id;
         };
     </script>
 @endsection
