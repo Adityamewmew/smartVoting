@@ -44,6 +44,8 @@ export const usersTable = mysqlTable('users', {
     email_verified_at: timestamp(),
     password: varchar({ length: 255 }).notNull(),
     remember_token: varchar({ length: 100 }),
+    google_id: varchar({ length: 255 }),
+    avatar: text(),
     access_type: tinyint(), // 0: Superadmin, 1: Admin Sekolah, 2: Operator
     is_active: tinyint().notNull().default(1),
     created_by: bigint({ mode: 'number', unsigned: true }).references((): AnyMySqlColumn => usersTable.id),
@@ -54,6 +56,7 @@ export const usersTable = mysqlTable('users', {
     deleted_at: timestamp(),
 }, (t) => [
     uniqueIndex('users_email_unique').on(t.email),
+    uniqueIndex('users_google_id_unique').on(t.google_id),
     index('users_institution_id_index').on(t.institution_id),
 ]);
 

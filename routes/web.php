@@ -39,6 +39,8 @@ Route::get('/payment/{invoice_number}', [SubscriptionController::class, 'showPay
 // Authentication Routes
 Route::get('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/login', [AuthController::class, 'doLogin'])->middleware('throttle:auth')->name('login.post');
+Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->middleware('throttle:google-auth')->name('auth.google');
+Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->middleware('throttle:google-auth')->name('auth.google.callback');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Admin Users Routes

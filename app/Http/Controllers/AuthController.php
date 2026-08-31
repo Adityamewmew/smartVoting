@@ -4,13 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Constants\DatabaseConst;
 use App\Constants\UserConst;
+use App\Usecase\UserUsecase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
+    public function __construct(
+        protected UserUsecase $userUsecase
+    ) {}
+
     public function login()
     {
         $currentTenant = app()->bound('current_tenant') ? app('current_tenant') : null;
@@ -18,6 +25,50 @@ class AuthController extends Controller
         return view('_admin.auth.login', [
             'currentTenant' => $currentTenant,
         ]);
+    }
+
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function handleGoogleCallback(Request $request)
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+        } catch (\Exception $e) {
+            Log::error('Google OAuth Callback Error: '.$e->getMessage());
+
+            return redirect()->route('login')->withErrors([
+                'login_error' => 'Gagal melakukan autentikasi dengan Google. Silakan coba kembali.',
+            ]);
+        }
+
+        $process = $this->userUsecase->handleGoogleUser($googleUser);
+
+        if (! $process['success']) {
+            return redirect()->route('login')->withErrors([
+                'login_error' => $process['message'] ?? 'Autentikasi Google gagal.',
+            ]);
+        }
+
+        $user = $process['data']['user'];
+
+        if (! empty($user->institution_id)) {
+            $institution = DB::table(DatabaseConst::INSTITUTION())
+                ->where('id', $user->institution_id)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if ($institution) {
+                app()->instance('current_tenant', $institution);
+                View::share('current_tenant', $institution);
+            }
+        }
+
+        $request->session()->regenerate();
+
+        return $this->redirectByRole($user);
     }
 
     public function doLogin(Request $request)

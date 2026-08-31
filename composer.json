@@ -12,6 +12,7 @@
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.1",
         "laravel/framework": "^13.0",
+        "laravel/socialite": "^5.30",
         "laravel/tinker": "^3.0",
         "livewire/blaze": "1.0.11",
         "phpoffice/phpspreadsheet": "^5.7"

@@ -6,13 +6,16 @@ use App\Constants\DatabaseConst;
 use App\Constants\ResponseConst;
 use App\Constants\UserConst;
 use App\Http\Presenter\Response;
+use App\Models\User;
 use Exception;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class UserUsecase extends Usecase
@@ -312,5 +315,113 @@ class UserUsecase extends Usecase
 
             return Response::buildErrorService($e->getMessage());
         }
+    }
+
+    public function handleGoogleUser(object $googleUser): array
+    {
+        $googleId = (string) $googleUser->getId();
+        $email = strtolower(trim((string) $googleUser->getEmail()));
+        $rawVerified = $googleUser->user['email_verified'] ?? null;
+        $isEmailVerified = filter_var($rawVerified, FILTER_VALIDATE_BOOLEAN);
+
+        if (empty($googleId) || empty($email) || ! $isEmailVerified) {
+            return Response::buildError(403, 'Autentikasi Google gagal: Akun tidak valid atau email belum diverifikasi.');
+        }
+
+        try {
+            $user = DB::transaction(function () use ($googleUser, $googleId, $email) {
+                // 1. Strict lookup by google_id
+                $existingUser = DB::table(DatabaseConst::USER())
+                    ->where('google_id', $googleId)
+                    ->whereNull('deleted_at')
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($existingUser) {
+                    return $existingUser;
+                }
+
+                // 2. Lookup by verified email for account linking
+                $emailUser = DB::table(DatabaseConst::USER())
+                    ->where('email', $email)
+                    ->whereNull('deleted_at')
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($emailUser) {
+                    DB::table(DatabaseConst::USER())
+                        ->where('id', $emailUser->id)
+                        ->update([
+                            'google_id' => $googleId,
+                            'avatar' => $emailUser->avatar ?? $googleUser->getAvatar(),
+                            'updated_at' => now(),
+                        ]);
+
+                    return DB::table(DatabaseConst::USER())->where('id', $emailUser->id)->first();
+                }
+
+                // 3. Auto-Provisioning: create institution + admin user
+                $orgName = ($googleUser->getName() ?: 'User').' Organization';
+
+                $institutionId = DB::table(DatabaseConst::INSTITUTION())->insertGetId([
+                    'name' => $orgName,
+                    'type' => 'organization',
+                    'status' => 'active',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                $userId = DB::table(DatabaseConst::USER())->insertGetId([
+                    'institution_id' => $institutionId,
+                    'name' => $googleUser->getName() ?: 'Admin',
+                    'email' => $email,
+                    'password' => Hash::make(Str::random(32)),
+                    'google_id' => $googleId,
+                    'avatar' => $googleUser->getAvatar(),
+                    'access_type' => UserConst::SUPERADMIN,
+                    'is_active' => 1,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                return DB::table(DatabaseConst::USER())->where('id', $userId)->first();
+            });
+        } catch (QueryException $e) {
+            Log::warning('Google OAuth collision, retrying lookup', ['email' => $email, 'error' => $e->getMessage()]);
+            $user = DB::table(DatabaseConst::USER())
+                ->where('google_id', $googleId)
+                ->orWhere('email', $email)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if (! $user) {
+                return Response::buildErrorService('Terjadi kendala saat memproses login. Silakan coba kembali.');
+            }
+        } catch (Exception $e) {
+            Log::error('Google OAuth failed', ['error' => $e->getMessage(), 'method' => __METHOD__]);
+
+            return Response::buildErrorService($e->getMessage());
+        }
+
+        // Status checks
+        if (isset($user->is_active) && ! $user->is_active) {
+            return Response::buildError(403, 'Akun Anda sedang dinonaktifkan.');
+        }
+
+        if (! empty($user->institution_id)) {
+            $institution = DB::table(DatabaseConst::INSTITUTION())
+                ->where('id', $user->institution_id)
+                ->whereNull('deleted_at')
+                ->first();
+
+            if (! $institution || $institution->status !== 'active') {
+                return Response::buildError(403, 'Institusi atau organisasi Anda sedang tidak aktif atau ditangguhkan.');
+            }
+        }
+
+        $userModel = User::find($user->id);
+        Auth::login($userModel, remember: true);
+
+        return Response::buildSuccess(['user' => $userModel]);
     }
 }

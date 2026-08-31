@@ -18,11 +18,8 @@
 
         <!-- Action Buttons -->
         <div class="hidden lg:flex items-center space-x-2.5 whitespace-nowrap shrink-0">
-            <x-admin.button href="{{ route('login') }}" color="outline-secondary" size="sm">
-                Masuk Akun
-            </x-admin.button>
-            <x-admin.button href="{{ route('subscribe') }}" color="primary" size="sm">
-                Daftar / Berlangganan
+            <x-admin.button href="{{ route('auth.google') }}" color="primary" size="sm">
+                <span>Masuk ke Aplikasi</span>
             </x-admin.button>
         </div>
 
@@ -41,11 +38,8 @@
         <a class="block font-semibold text-slate-700 hover:text-blue-600 py-2 px-3 rounded-xl hover:bg-blue-50/50 transition-colors" href="#testimonials">Testimoni</a>
         <a class="block font-semibold text-slate-700 hover:text-blue-600 py-2 px-3 rounded-xl hover:bg-blue-50/50 transition-colors" href="#pricing">Paket Harga</a>
         <div class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row gap-2">
-            <x-admin.button href="{{ route('login') }}" color="secondary" size="sm" class="w-full justify-center">
-                Masuk Akun
-            </x-admin.button>
-            <x-admin.button href="{{ route('subscribe') }}" color="primary" size="sm" class="w-full justify-center">
-                Daftar / Berlangganan
+            <x-admin.button href="{{ route('auth.google') }}" color="primary" size="sm" class="w-full justify-center">
+                <span>Masuk ke Aplikasi</span>
             </x-admin.button>
         </div>
     </div>

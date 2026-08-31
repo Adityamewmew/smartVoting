@@ -6,7 +6,7 @@
         "build": "vite build",
         "dev": "vite",
         "db:generate": "drizzle-kit generate",
-        "db:migrate": "drizzle-kit migrate",
+        "db:migrate": "bun --cwd db-migrator-with-drizzle db:migrate",
         "db:push": "drizzle-kit push"
     },
     "devDependencies": {
