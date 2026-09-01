@@ -28,13 +28,20 @@
                     </div>
                 </div>
 
-                <form action="{{ route('logout') }}" method="POST" class="inline">
-                    @csrf
-                    <x-admin.button type="submit" color="outline-danger" size="sm">
-                        <svg class="size-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-                        <span>Keluar Panel</span>
+                @if(Auth::user()->access_type == \App\Constants\UserConst::SUPERADMIN)
+                    <x-admin.button href="{{ route('admin.dashboard') }}" color="secondary" size="sm">
+                        <svg class="size-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                        <span>Kembali ke Dashboard</span>
                     </x-admin.button>
-                </form>
+                @else
+                    <form action="{{ route('logout') }}" method="POST" class="inline">
+                        @csrf
+                        <x-admin.button type="submit" color="outline-danger" size="sm">
+                            <svg class="size-3.5 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                            <span>Keluar Panel</span>
+                        </x-admin.button>
+                    </form>
+                @endif
             </div>
 
             {{-- 3 Summary Stat Cards --}}

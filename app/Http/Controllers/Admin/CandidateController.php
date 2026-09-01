@@ -41,10 +41,15 @@ class CandidateController extends Controller
         $elections = $this->electionUsecase->getAll(['no_pagination' => true]);
         $elections = $elections['data']['list'] ?? [];
 
+        $selectedElectionId = $request->get('election_id');
+        if ($selectedElectionId && ! collect($elections)->firstWhere('id', (int) $selectedElectionId)) {
+            $selectedElectionId = null;
+        }
+
         return view('_admin.candidates.add', [
             'page' => $this->page,
             'elections' => $elections,
-            'selectedElectionId' => $request->get('election_id'),
+            'selectedElectionId' => $selectedElectionId,
         ]);
     }
 

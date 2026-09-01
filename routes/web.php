@@ -123,8 +123,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
 });
 
-// Operator Routes
-Route::middleware(['auth', 'access_type:2'])->prefix('operator')->name('operator.')->group(function () {
+// Operator & Admin Kiosk Routes
+Route::middleware(['auth', 'access_type:1,2'])->prefix('operator')->name('operator.')->group(function () {
     Route::prefix('kiosk')->name('kiosk.')->group(function () {
         Route::get('/', [KioskManagerController::class, 'index'])->name('index');
         Route::post('/generate/{electionId}', [KioskManagerController::class, 'generate'])->middleware('throttle:operator-kiosk')->name('generate');

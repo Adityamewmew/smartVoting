@@ -55,6 +55,12 @@ class ElectionController extends Controller
         $process = $this->usecase->create(data: $request);
 
         if ($process['success']) {
+            $newEventId = $process['data']['id'] ?? null;
+            if ($newEventId) {
+                return redirect()->route('admin.candidates.add', ['election_id' => $newEventId])
+                    ->with('success', 'Event pemilihan berhasil dibuat! Silakan daftarkan Paslon pertama.');
+            }
+
             return redirect()->route('admin.elections.index')
                 ->with('success', ResponseConst::SUCCESS_MESSAGE_CREATED);
         }

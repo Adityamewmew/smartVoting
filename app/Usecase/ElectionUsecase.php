@@ -130,7 +130,7 @@ class ElectionUsecase extends Usecase
                 $logoPath = $this->processAndStoreLogo($data->file('logo'));
             }
 
-            DB::table(DatabaseConst::ELECTIONS())->insert([
+            $electionId = DB::table(DatabaseConst::ELECTIONS())->insertGetId([
                 'institution_id' => $tenantId,
                 'name' => $data['name'],
                 'slug' => $slug,
@@ -146,7 +146,7 @@ class ElectionUsecase extends Usecase
 
             DB::commit();
 
-            return Response::buildSuccessCreated();
+            return Response::buildSuccessCreated(['id' => $electionId]);
         } catch (Exception $e) {
             DB::rollback();
             Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);

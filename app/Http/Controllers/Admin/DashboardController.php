@@ -30,45 +30,69 @@ class DashboardController extends Controller
         if (Auth::user()->access_type == UserConst::OPERATOR) {
             return redirect()->route('operator.kiosk.index');
         }
-        $modules = $this->sidebarMenuUsecase->getDashboardModules(
-            accessType: (int) Auth::user()->access_type
-        );
+        $tenantId = Auth::user()->institution_id;
 
-        $allowedRoutes = [
-            'admin.users.index',
-            'admin.sidebar_menu.index',
-        ];
+        // Cari pemilihan aktif yang sedang berlangsung (Hari-H & status == 'active')
+        $activeElection = DB::table(DatabaseConst::ELECTIONS())
+            ->where('institution_id', $tenantId)
+            ->where('status', 'active')
+            ->whereNull('deleted_at')
+            ->where('start_time', '<=', now())
+            ->where('end_time', '>=', now())
+            ->first();
 
-        $modules = collect($modules['data'] ?? [])
-            ->filter(fn ($menu) => in_array($menu->route_name, $allowedRoutes, true))
-            ->values()
-            ->all();
+        $isLive = (bool) $activeElection;
+        $selectedElection = $activeElection;
 
-        $electionId = $request->get('election_id');
-        $keywords = $request->get('keywords');
-
-        // Fetch Elections for Admin Dashboard (both currently active or closed/past)
-        $process = $this->livePollingUsecase->getDashboardElections($keywords);
-        $electionsList = collect($process['data']['list'] ?? []);
-
-        if ($electionId) {
-            $selectedElection = $electionsList->firstWhere('id', $electionId);
-        } else {
-            // Default to the first active election, or the first election
-            $selectedElection = $electionsList->firstWhere('status', 'active') ?? $electionsList->first();
+        // Jika tidak ada pemilihan live hari ini, ambil event terdekat / terbaru milik tenant
+        if (! $selectedElection) {
+            $selectedElection = DB::table(DatabaseConst::ELECTIONS())
+                ->where('institution_id', $tenantId)
+                ->whereNull('deleted_at')
+                ->orderByRaw("CASE WHEN status = 'active' THEN 1 WHEN status = 'draft' THEN 2 ELSE 3 END")
+                ->orderBy('start_time', 'desc')
+                ->first();
         }
 
-        // Fetch recent voting sessions (T-07) only if there is an active/selected election
         $recentSessions = [];
-        if ($selectedElection) {
+        $candidates = collect();
+        $totalVotes = 0;
+        $chartLabels = [];
+        $chartData = [];
+
+        if ($isLive && $selectedElection) {
             $processSessions = $this->livePollingUsecase->getRecentSessions(10, $selectedElection->id);
             $recentSessions = $processSessions['data']['sessions'] ?? [];
+
+            $liveResults = $this->livePollingUsecase->getLiveResults($selectedElection->id);
+            if ($liveResults['success']) {
+                $totalVotes = $liveResults['data']['total_votes'] ?? 0;
+                $candidates = collect($liveResults['data']['candidates'] ?? []);
+                $chartLabels = $candidates->map(fn ($c) => 'Paslon '.$c->order_number)->toArray();
+                $chartData = $candidates->pluck('vote_count')->toArray();
+            }
         }
 
+        $onboardingRes = $this->livePollingUsecase->getOnboardingProgress($tenantId, $selectedElection);
+        $onboarding = $onboardingRes['data'] ?? [
+            'steps' => [],
+            'completed_count' => 0,
+            'total_steps' => 2,
+            'progress_percentage' => 0,
+            'all_completed' => false,
+        ];
+        $showOnboarding = ! ($onboarding['all_completed'] ?? false);
+
         return view('_admin.dashboard', [
-            'electionsList' => $electionsList,
             'selectedElection' => $selectedElection,
+            'isLive' => $isLive,
             'recentSessions' => $recentSessions,
+            'totalVotes' => $totalVotes,
+            'candidates' => $candidates,
+            'chartLabels' => $chartLabels,
+            'chartData' => $chartData,
+            'onboarding' => $onboarding,
+            'showOnboarding' => $showOnboarding,
         ]);
     }
 

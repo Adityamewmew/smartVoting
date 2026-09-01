@@ -5,14 +5,14 @@
 @section('content')
     <div class="space-y-6">
         {{-- Header & Quick Actions --}}
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-xs">
-            <div class="flex items-start sm:items-center gap-3 min-w-0">
-                <x-admin.button href="{{ route('admin.elections.index') }}" size="icon-md" color="secondary" class="shrink-0">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/80 shadow-xs">
+            <div class="flex items-center gap-3.5 min-w-0">
+                <x-admin.button :href="route('admin.elections.index')" size="icon-md" color="secondary" class="shrink-0">
                     <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                 </x-admin.button>
-                <div class="min-w-0">
-                    <div class="flex flex-wrap items-center gap-2">
-                        <h1 class="text-xl font-bold text-gray-900 tracking-tight break-words">{{ $election->name }}</h1>
+                <div class="min-w-0 space-y-1">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <h1 class="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight truncate">{{ $election->name }}</h1>
                         @php
                             $statusLabels = [
                                 'draft' => 'Draft',
@@ -22,23 +22,36 @@
                         @endphp
                         <x-admin.badge :status="$election->status" :text="$statusLabels[$election->status] ?? ucfirst($election->status)" />
                     </div>
-                    <p class="text-xs text-gray-500 mt-1 flex flex-wrap items-center gap-1.5 sm:gap-2">
-                        <span>🗓️ {{ \Carbon\Carbon::parse($election->date ?? $election->start_time)->translatedFormat('d F Y') }}</span>
-                        <span class="hidden sm:inline">•</span>
-                        <span>⏰ {{ \Carbon\Carbon::parse($election->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($election->end_time)->format('H:i') }} WIB</span>
-                    </p>
+                    <div class="flex items-center gap-3 text-xs text-gray-500 font-medium flex-wrap">
+                        <span class="inline-flex items-center gap-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                            <span>{{ \Carbon\Carbon::parse($election->date ?? $election->start_time)->translatedFormat('d F Y') }}</span>
+                        </span>
+                        <span class="text-gray-300">•</span>
+                        <span class="inline-flex items-center gap-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span>{{ \Carbon\Carbon::parse($election->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($election->end_time)->format('H:i') }} WIB</span>
+                        </span>
+                    </div>
                 </div>
             </div>
-            <div class="flex flex-wrap items-center gap-2 shrink-0">
+
+            <div class="flex items-center justify-start sm:justify-end gap-2.5 flex-wrap sm:flex-nowrap shrink-0">
                 @if($election->slug)
-                    <x-admin.button href="{{ url('/' . $election->slug) }}" target="_blank" color="outline-primary" size="sm">
-                        <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+                    <x-admin.button :href="url('/' . $election->slug)" target="_blank" color="secondary" size="sm" class="gap-1.5">
+                        <svg class="size-3.5 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
                         <span>Buka Landing Slug</span>
                     </x-admin.button>
                 @endif
-                <x-admin.button href="{{ route('admin.dashboard.print', $election->id) }}" target="_blank" color="secondary" size="sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+
+                <x-admin.button :href="route('admin.dashboard.print', $election->id)" target="_blank" color="secondary" size="sm" class="gap-1.5">
+                    <svg class="size-3.5 text-gray-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
                     <span>Cetak Laporan</span>
+                </x-admin.button>
+
+                <x-admin.button :href="route('operator.kiosk.index')" color="primary" size="sm" class="gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/></svg>
+                    <span>Buka Bilik Suara</span>
                 </x-admin.button>
             </div>
         </div>
@@ -289,9 +302,13 @@
                             Bar Chart
                         </span>
                     </div>
-                    <div class="w-full h-[260px] sm:h-[290px] relative">
-                        <canvas id="chart-bar-detail"></canvas>
-                    </div>
+                    <x-admin.chart 
+                        type="bar" 
+                        :labels="$candidates->map(fn($c) => 'Paslon '.$c->order_number)->values()->toArray()" 
+                        :data="$candidates->pluck('vote_count')->values()->toArray()" 
+                        id="chart-bar-detail" 
+                        height="h-[260px] sm:h-[290px]"
+                    />
                 </x-admin.card>
 
                 <!-- Doughnut Chart: Proporsi Pangsa Suara -->
@@ -305,9 +322,13 @@
                             Doughnut
                         </span>
                     </div>
-                    <div class="w-full h-[260px] sm:h-[290px] relative flex items-center justify-center">
-                        <canvas id="chart-doughnut-detail"></canvas>
-                    </div>
+                    <x-admin.chart 
+                        type="doughnut" 
+                        :labels="$candidates->map(fn($c) => 'Paslon '.$c->order_number)->values()->toArray()" 
+                        :data="$candidates->pluck('vote_count')->values()->toArray()" 
+                        id="chart-doughnut-detail" 
+                        height="h-[260px] sm:h-[290px]"
+                    />
                 </x-admin.card>
             </div>
 
@@ -525,192 +546,6 @@
                 document.getElementById('delete-candidate-name').textContent = name;
                 document.getElementById('delete-candidate-form').action = '{{ url('admin/candidates/delete') }}/' + id;
             };
-        </script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            (() => {
-                const barCtx = document.getElementById('chart-bar-detail')?.getContext('2d');
-                const doughnutCtx = document.getElementById('chart-doughnut-detail')?.getContext('2d');
-                if (!barCtx || !doughnutCtx) return;
-
-                const initialLabels = @json($candidates->map(fn($c) => "Paslon {$c->order_number}")->values());
-                const initialData = @json($candidates->pluck('vote_count')->values());
-                const colors = ['#2563EB', '#059669', '#D97706', '#7C3AED', '#DC2626', '#0891B2'];
-
-                // 1. Initialize Bar Chart
-                const barChart = new Chart(barCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: initialLabels,
-                        datasets: [{
-                            label: 'Perolehan Suara',
-                            data: initialData,
-                            backgroundColor: colors.slice(0, initialLabels.length),
-                            borderRadius: 8,
-                            borderSkipped: false,
-                            maxBarThickness: 48
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: { color: '#F1F5F9' },
-                                ticks: { stepSize: 1, precision: 0, font: { family: 'Geist' } }
-                            },
-                            x: {
-                                grid: { display: false },
-                                ticks: { font: { family: 'Geist', weight: 'bold' } }
-                            }
-                        },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: '#1E293B',
-                                titleFont: { family: 'Geist', weight: 'bold' },
-                                bodyFont: { family: 'Geist' },
-                                padding: 10,
-                                cornerRadius: 8
-                            }
-                        }
-                    }
-                });
-
-                // 2. Initialize Doughnut Chart
-                const doughnutChart = new Chart(doughnutCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: initialLabels,
-                        datasets: [{
-                            data: initialData.length && initialData.some(v => v > 0) ? initialData : [1],
-                            backgroundColor: initialData.length && initialData.some(v => v > 0) ? colors.slice(0, initialLabels.length) : ['#E2E8F0'],
-                            borderWidth: 2,
-                            borderColor: '#FFFFFF',
-                            hoverOffset: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        cutout: '65%',
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    font: { family: 'Geist', size: 11, weight: 'bold' },
-                                    usePointStyle: true,
-                                    padding: 15
-                                }
-                            },
-                            tooltip: {
-                                backgroundColor: '#1E293B',
-                                titleFont: { family: 'Geist', weight: 'bold' },
-                                bodyFont: { family: 'Geist' },
-                                padding: 10,
-                                cornerRadius: 8
-                            }
-                        }
-                    }
-                });
-
-                function fetchLiveUpdates() {
-                    fetch(`{{ route('admin.dashboard.data') }}?election_id={{ $election->id }}`)
-                        .then(res => res.json())
-                        .then(res => {
-                            if (!res.success) return;
-                            const d = res.data;
-                            const totalVotes = d.total_votes || 0;
-
-                            // Update Total Votes KPI
-                            const totalEl = document.getElementById('total-votes-detail');
-                            if (totalEl) totalEl.innerText = totalVotes;
-
-                            // Update Active & Total Sessions KPI
-                            const activeSessionsEl = document.getElementById('kpi-active-sessions');
-                            if (activeSessionsEl && d.active_sessions !== undefined) {
-                                activeSessionsEl.innerText = d.active_sessions;
-                            }
-                            const totalSessionsEl = document.getElementById('kpi-total-sessions');
-                            if (totalSessionsEl && d.total_sessions !== undefined) {
-                                totalSessionsEl.innerText = `Dari total ${d.total_sessions} sesi pemilihan tercatat`;
-                            }
-
-                            // Update Leading Candidate KPI
-                            const sorted = [...d.candidates].sort((a, b) => b.vote_count - a.vote_count);
-                            const leader = sorted[0];
-                            const leaderContainer = document.getElementById('kpi-leader-container');
-                            const leaderPctEl = document.getElementById('kpi-leader-pct');
-                            const leaderVotesEl = document.getElementById('kpi-leader-votes');
-
-                            if (leader && leader.vote_count > 0 && totalVotes > 0) {
-                                const lPct = ((leader.vote_count / totalVotes) * 100).toFixed(1);
-                                if (leaderPctEl) leaderPctEl.innerText = `${lPct}%`;
-                                if (leaderVotesEl) leaderVotesEl.innerText = `${leader.vote_count} suara diperoleh`;
-                                if (leaderContainer) {
-                                    leaderContainer.innerHTML = `
-                                        <div class="flex items-center gap-2.5">
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-100">
-                                                ${leader.order_number.toString().padStart(2, '0')}
-                                            </span>
-                                            <div class="truncate">
-                                                <h4 class="text-sm font-bold text-gray-900 truncate leading-tight">${leader.chairman_name}</h4>
-                                                <span class="text-[11px] text-gray-500 truncate block">&amp; ${leader.vice_chairman_name || '-'}</span>
-                                            </div>
-                                        </div>
-                                    `;
-                                }
-                            }
-
-                            // Update Charts
-                            const labels = d.candidates.map(c => `Paslon ${c.order_number}`);
-                            const data = d.candidates.map(c => c.vote_count);
-
-                            barChart.data.labels = labels;
-                            barChart.data.datasets[0].data = data;
-                            barChart.update();
-
-                            doughnutChart.data.labels = labels;
-                            doughnutChart.data.datasets[0].data = data.some(v => v > 0) ? data : [1];
-                            doughnutChart.data.datasets[0].backgroundColor = data.some(v => v > 0) ? colors.slice(0, labels.length) : ['#E2E8F0'];
-                            doughnutChart.update();
-
-                            // Update Candidate Cards & Table
-                            d.candidates.forEach((c, idx) => {
-                                const pct = totalVotes > 0 ? ((c.vote_count / totalVotes) * 100).toFixed(1) : 0;
-                                const color = colors[idx % colors.length];
-
-                                // Card updates
-                                const cardVotes = document.getElementById(`card-votes-${c.id}`);
-                                if (cardVotes) cardVotes.innerHTML = `${c.vote_count} <span class="text-xs font-normal text-gray-400">suara</span>`;
-                                const cardPct = document.getElementById(`card-pct-${c.id}`);
-                                if (cardPct) cardPct.innerText = `${pct}%`;
-                                const cardBar = document.getElementById(`card-bar-${c.id}`);
-                                if (cardBar) cardBar.style.width = `${pct}%`;
-
-                                // Table updates
-                                const tableVotes = document.getElementById(`vote-count-${c.id}`);
-                                if (tableVotes) tableVotes.innerHTML = `${c.vote_count} <span class="text-xs font-normal text-gray-400">suara</span>`;
-                                const tablePct = document.getElementById(`vote-percentage-${c.id}`);
-                                if (tablePct) tablePct.innerText = `${pct}%`;
-                                const tableBar = document.getElementById(`table-bar-${c.id}`);
-                                if (tableBar) tableBar.style.width = `${pct}%`;
-                            });
-                        })
-                        .catch(err => console.warn('Live polling error:', err));
-                }
-
-                const livePollingInterval = setInterval(fetchLiveUpdates, 8000);
-
-                if (window.registerSpaCleanup) {
-                    window.registerSpaCleanup(() => {
-                        clearInterval(livePollingInterval);
-                        if (barChart) barChart.destroy();
-                        if (doughnutChart) doughnutChart.destroy();
-                    });
-                }
-            })();
         </script>
     @endpush
 @endsection

@@ -192,4 +192,62 @@ class LivePollingUsecase extends Usecase
             return Response::buildErrorService($e->getMessage());
         }
     }
+
+    public function getOnboardingProgress(int $tenantId, ?object $selectedElection = null): array
+    {
+        try {
+            $electionsCount = DB::table(DatabaseConst::ELECTIONS())
+                ->where('institution_id', $tenantId)
+                ->whereNull('deleted_at')
+                ->count();
+
+            $votesCount = 0;
+
+            if ($selectedElection) {
+                $votesCount = DB::table(DatabaseConst::VOTES())
+                    ->where('institution_id', $tenantId)
+                    ->where('election_id', $selectedElection->id)
+                    ->count();
+            }
+
+            $hasElection = ($selectedElection !== null || $electionsCount > 0);
+            $hasSimulated = ($votesCount > 0);
+
+            $steps = [
+                [
+                    'step' => 1,
+                    'title' => 'Buat Event Pemilihan Pertama',
+                    'desc' => 'Tentukan nama acara, tanggal, serta jam mulai dan berakhirnya pemilihan.',
+                    'is_completed' => $hasElection,
+                    'action_url' => $hasElection ? route('admin.elections.index') : route('admin.elections.add'),
+                    'action_text' => $hasElection ? 'Kelola Pemilihan' : 'Buat Pemilihan',
+                ],
+                [
+                    'step' => 2,
+                    'title' => 'Coba Simulasi Voting',
+                    'desc' => 'Buka bilik suara dan lakukan 1 kali simulasi coblosan untuk menguji sistem.',
+                    'is_completed' => $hasSimulated,
+                    'action_url' => route('operator.kiosk.index'),
+                    'action_text' => 'Coba Simulasi Voting',
+                ],
+            ];
+
+            $completedCount = collect($steps)->where('is_completed', true)->count();
+            $totalSteps = count($steps);
+            $progressPercentage = (int) round(($completedCount / $totalSteps) * 100);
+            $allCompleted = ($completedCount === $totalSteps);
+
+            return Response::buildSuccess([
+                'steps' => $steps,
+                'completed_count' => $completedCount,
+                'total_steps' => $totalSteps,
+                'progress_percentage' => $progressPercentage,
+                'all_completed' => $allCompleted,
+            ], ResponseConst::HTTP_SUCCESS);
+        } catch (Exception $e) {
+            Log::error(message: $e->getMessage(), context: ['method' => __METHOD__]);
+
+            return Response::buildErrorService($e->getMessage());
+        }
+    }
 }

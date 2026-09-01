@@ -94,6 +94,16 @@ class CandidateUsecase extends Usecase
             return Response::buildError(ResponseConst::HTTP_BAD_REQUEST, $validator->errors()->first());
         }
 
+        $election = DB::table(DatabaseConst::ELECTIONS())
+            ->where('id', $data->input('election_id'))
+            ->where('institution_id', $this->tenantId())
+            ->whereNull('deleted_at')
+            ->first();
+
+        if (! $election) {
+            return Response::buildError(ResponseConst::HTTP_BAD_REQUEST, 'Event pemilihan tidak valid atau tidak ditemukan.');
+        }
+
         DB::beginTransaction();
         try {
             $photoPath = null;
