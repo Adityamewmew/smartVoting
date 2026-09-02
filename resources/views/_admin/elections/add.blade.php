@@ -46,7 +46,7 @@
                         label="Logo Pemilihan" 
                         outputWidth="500" 
                         outputHeight="500" 
-                        help="Format JPG, PNG, atau WEBP. Maksimal 2MB. Logo akan tampil di landing slug dan bilik pemilihan."
+                        help="Format JPG, PNG, atau WEBP. Maksimal 2MB. Logo akan tampil di landing page dan bilik pemilihan."
                     />
 
                     <x-admin.markdown-editor 

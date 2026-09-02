@@ -63,7 +63,7 @@
                 </div>
                 <div class="flex items-center gap-2 flex-wrap">
                     <x-admin.button color="outline-primary" size="sm" icon='<i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>'>
-                        Buka Landing Slug
+                        Buka Landing Page
                     </x-admin.button>
                     <x-admin.button color="secondary" size="sm" icon='<i class="fa-solid fa-print text-[11px]"></i>'>
                         Cetak Laporan
