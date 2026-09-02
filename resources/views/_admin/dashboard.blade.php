@@ -39,10 +39,11 @@
             <x-admin.card class="p-4 sm:p-6 overflow-hidden">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-4 mb-5 sm:mb-6 border-b border-gray-100">
                     <div>
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-emerald-50 to-emerald-100/80 text-emerald-700 border border-emerald-200/90 shadow-2xs mb-2">
-                            <span class="size-2 rounded-full bg-emerald-600 animate-pulse"></span>
-                            LIVE COUNTING
-                        </span>
+                        <div class="mb-2">
+                            <x-admin.badge status="active" pulse="true" size="sm">
+                                LIVE COUNTING
+                            </x-admin.badge>
+                        </div>
                         <h2 class="text-lg sm:text-xl font-bold text-gray-900">{{ $selectedElection->name }}</h2>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
@@ -58,13 +59,13 @@
                 </div>
 
                 {{-- Total Votes Counter --}}
-                <div class="mb-5 sm:mb-6 bg-gradient-to-r from-blue-50/70 via-indigo-50/30 to-white p-4 sm:p-5 rounded-2xl border border-blue-100/90 shadow-2xs flex items-center justify-between">
+                <div class="mb-6 bg-gradient-to-r from-blue-50/70 via-indigo-50/30 to-white p-4 sm:p-6 rounded-2xl border border-blue-100/90 shadow-2xs flex items-center justify-between">
                     <span class="text-xs sm:text-sm font-semibold text-gray-700">Total Suara Masuk</span>
                     <span class="text-2xl sm:text-3xl font-black text-blue-600 tracking-tight">{{ $totalVotes }} <span class="text-xs sm:text-sm font-normal text-gray-500">suara</span></span>
                 </div>
 
                 {{-- Candidate Poll Cards (Server-rendered via Blade) --}}
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4 mb-6 sm:mb-8">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6 sm:mb-8">
                     @forelse($candidates as $index => $c)
                         @php
                             $color = $colors[$index % count($colors)];

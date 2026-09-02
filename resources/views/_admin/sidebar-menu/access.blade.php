@@ -23,15 +23,15 @@
                 <div class="space-y-3">
                     @foreach ($accessTypes as $typeValue => $typeLabel)
                         <label class="flex items-center gap-x-3.5 p-4 rounded-xl border cursor-pointer transition-all
-                            {{ in_array($typeValue, $accesses) ? 'border-blue-200 bg-blue-50/40 text-blue-900' : 'border-gray-100 bg-white hover:bg-gray-50 text-gray-700' }}">
+                            {{ in_array($typeValue, $accesses) ? 'border-blue-200 bg-blue-50/70 text-blue-950 font-medium' : 'border-slate-200 bg-white hover:bg-slate-50 text-slate-700' }}">
                             <input type="checkbox" name="access_types[]" value="{{ $typeValue }}"
-                                class="shrink-0 size-4.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                class="shrink-0 size-4.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                                 {{ in_array($typeValue, $accesses) ? 'checked' : '' }}>
                             <div>
-                                <span class="block text-sm font-bold text-gray-900">
+                                <span class="block text-sm font-bold {{ in_array($typeValue, $accesses) ? 'text-blue-950' : 'text-slate-900' }}">
                                     {{ $typeLabel }}
                                 </span>
-                                <span class="block text-xs text-gray-400 mt-0.5">
+                                <span class="block text-xs {{ in_array($typeValue, $accesses) ? 'text-blue-700' : 'text-slate-500' }} mt-0.5">
                                     Role Access ID: {{ $typeValue }}
                                 </span>
                             </div>

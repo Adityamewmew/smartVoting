@@ -16,7 +16,7 @@ class UserConst
     {
         return [
             self::PLATFORM_SUPERADMIN => 'Superadmin Platform',
-            self::SUPERADMIN => 'Admin Sekolah',
+            self::SUPERADMIN => 'Administrator',
             self::OPERATOR => 'Operator',
         ];
     }
@@ -24,7 +24,7 @@ class UserConst
     public static function getAppAccessTypes(): array
     {
         return [
-            self::SUPERADMIN => 'Admin Sekolah',
+            self::SUPERADMIN => 'Administrator',
             self::OPERATOR => 'Operator',
         ];
     }

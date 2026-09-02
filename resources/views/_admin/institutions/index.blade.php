@@ -1,18 +1,18 @@
 @extends('_admin._layout.app')
 
-@section('title', 'Data Institusi & Sekolah')
+@section('title', 'Data User')
 
 @section('content')
     <div class="space-y-6">
         {{-- Header Section --}}
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/80 shadow-xs">
             <div>
-                <h1 class="text-lg sm:text-2xl font-bold text-gray-900 tracking-tight">{{ $page['title'] ?? 'Institusi & Sekolah' }}</h1>
-                <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Kelola data tenant sekolah/kampus, subdomain, dan status operasional sistem e-voting.</p>
+                <h1 class="text-lg sm:text-2xl font-bold text-gray-900 tracking-tight">{{ $page['title'] ?? 'Data User' }}</h1>
+                <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Kelola data tenant user/organisasi, subdomain, dan status operasional sistem e-voting.</p>
             </div>
             <x-admin.button href="{{ route('admin.institutions.add') }}" color="primary" size="md" class="w-full sm:w-auto justify-center">
                 <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
-                Tambah Institusi Baru
+                Tambah User Baru
             </x-admin.button>
         </div>
 
@@ -21,7 +21,7 @@
             <form action="{{ route('admin.institutions.index') }}" method="GET" navigate-form
                 class="flex flex-col sm:flex-row items-center gap-3">
                 <div class="w-full sm:w-80">
-                    <x-admin.input name="keywords" :value="$keywords ?? ''" placeholder="Cari nama institusi..." size="sm" />
+                    <x-admin.input name="keywords" :value="$keywords ?? ''" placeholder="Cari nama user / organisasi..." size="sm" />
                 </div>
                 <div class="w-full sm:w-48">
                     @php
@@ -37,9 +37,9 @@
                     @php
                         $typeOptions = [
                             'all' => 'Semua Tipe',
-                            'school' => 'Sekolah (SMA/SMK/SMP)',
-                            'campus' => 'Perguruan Tinggi',
                             'organization' => 'Organisasi / Komunitas',
+                            'school' => 'Pendidikan / Sekolah / Kampus',
+                            'company' => 'Perusahaan / Lembaga',
                         ];
                     @endphp
                     <x-admin.select :label="null" name="type" :options="$typeOptions" :value="$type ?? 'all'" size="sm" class="cursor-pointer" />
@@ -63,7 +63,7 @@
             <x-admin.table>
                 <x-admin.table.thead>
                     <tr>
-                        <x-admin.table.th>Nama Institusi</x-admin.table.th>
+                        <x-admin.table.th>Nama User / Organisasi</x-admin.table.th>
                         <x-admin.table.th>Tipe</x-admin.table.th>
                         <x-admin.table.th>Status</x-admin.table.th>
                         <x-admin.table.th>Statistik</x-admin.table.th>
@@ -84,21 +84,19 @@
                                 </div>
                             </x-admin.table.td>
                             <x-admin.table.td>
-                                <span class="capitalize text-xs font-semibold text-gray-700 bg-gray-100 px-2.5 py-1 rounded-lg border border-gray-200">
-                                    {{ $item->type ?? 'School' }}
-                                </span>
+                                <x-admin.badge color="gray" class="capitalize">
+                                    {{ $item->type ?? 'General' }}
+                                </x-admin.badge>
                             </x-admin.table.td>
                             <x-admin.table.td>
                                 @if($item->status === 'active')
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
-                                        <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                    <x-admin.badge status="active" pulse="true">
                                         Aktif
-                                    </span>
+                                    </x-admin.badge>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs">
-                                        <span class="size-1.5 rounded-full bg-rose-500"></span>
+                                    <x-admin.badge status="inactive">
                                         Ditangguhkan
-                                    </span>
+                                    </x-admin.badge>
                                 @endif
                             </x-admin.table.td>
                             <x-admin.table.td>
@@ -129,8 +127,8 @@
                         <x-admin.table.tr>
                             <x-admin.table.td colspan="5" class="text-center py-12">
                                 <x-admin.empty-state
-                                    title="Belum ada data institusi"
-                                    description="Daftarkan sekolah atau institusi baru untuk memulai penggunaan aplikasi e-voting."
+                                    title="Belum ada data user"
+                                    description="Daftarkan user baru untuk memulai penggunaan aplikasi e-voting."
                                 />
                             </x-admin.table.td>
                         </x-admin.table.tr>

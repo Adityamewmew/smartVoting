@@ -4,9 +4,9 @@
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>SmartVoting — Platform E-Voting Kiosk Modern, Aman &amp; Terpercaya</title>
+    <title>SmartVoting | Platform E-Voting Kiosk Modern, Aman &amp; Terpercaya</title>
     <meta name="description"
-        content="Sistem e-voting digital berbasis bilik suara kiosk fisik untuk OSIS, BEM, dan Institusi. 100% suara anonim, anti-double voting, dan rekapitulasi real-time." />
+        content="Sistem e-voting digital berbasis bilik suara kiosk fisik untuk organisasi, komunitas, dan institusi. 100% suara anonim, anti-double voting, dan rekapitulasi real-time." />
 
     {{-- Favicon --}}
     @include('_admin._layout.favicon')
@@ -14,7 +14,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet" />
 
     <!-- FontAwesome Icons -->

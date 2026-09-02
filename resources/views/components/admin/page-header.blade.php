@@ -4,7 +4,7 @@
     'backUrl' => null,
 ])
 
-<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-xs mb-6">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-xs mb-6">
     <div class="flex items-center gap-3">
         @if ($backUrl)
             <a href="{{ $backUrl }}" navigate

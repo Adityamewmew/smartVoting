@@ -24,7 +24,7 @@
             <form id="update-form" navigate-form action="{{ route('admin.users.doUpdate', $data->id) }}" method="POST" class="space-y-6">
                 @csrf
 
-                <div class="space-y-5">
+                <div class="space-y-6">
                     <x-admin.input 
                         label="Nama Lengkap" 
                         name="name" 
@@ -33,7 +33,7 @@
                         required="true" 
                     />
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                         <x-admin.input 
                             type="email"
                             label="Alamat Email" 

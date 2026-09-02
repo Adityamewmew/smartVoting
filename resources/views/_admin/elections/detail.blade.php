@@ -5,8 +5,8 @@
 @section('content')
     <div class="space-y-6">
         {{-- Header & Quick Actions --}}
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/80 shadow-xs">
-            <div class="flex items-center gap-3.5 min-w-0">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/80 shadow-xs">
+            <div class="flex items-center gap-4 min-w-0">
                 <x-admin.button :href="route('admin.elections.index')" size="icon-md" color="secondary" class="shrink-0">
                     <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                 </x-admin.button>
@@ -60,19 +60,19 @@
         <div class="border-b border-gray-200 overflow-x-auto">
             <nav class="flex space-x-2 min-w-max pb-1" aria-label="Tabs" role="tablist">
                 <button type="button" 
-                        class="hs-tab-active:font-bold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-3.5 px-4 inline-flex items-center gap-x-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 focus:outline-hidden {{ $activeTab === 'paslon' ? 'active font-bold border-blue-600 text-blue-600' : '' }}" 
+                        class="hs-tab-active:font-bold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-4 inline-flex items-center gap-x-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 focus:outline-hidden {{ $activeTab === 'paslon' ? 'active font-bold border-blue-600 text-blue-600' : '' }}" 
                         id="tab-paslon-item" 
                         data-hs-tab="#tab-paslon" 
                         aria-controls="tab-paslon" 
                         role="tab">
                     <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                     Pasangan Calon (Paslon)
-                    <span class="inline-flex items-center py-0.5 px-2 rounded-full text-xs font-semibold {{ $activeTab === 'paslon' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800' }}">
+                    <span class="inline-flex items-center py-0.5 px-2 rounded-full text-xs font-semibold {{ $activeTab === 'paslon' ? 'bg-blue-100 text-blue-900' : 'bg-slate-100 text-slate-900' }}">
                         {{ count($candidatesList) }}
                     </span>
                 </button>
                 <button type="button" 
-                        class="hs-tab-active:font-bold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-3.5 px-4 inline-flex items-center gap-x-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 focus:outline-hidden {{ $activeTab === 'detail' ? 'active font-bold border-blue-600 text-blue-600' : '' }}" 
+                        class="hs-tab-active:font-bold hs-tab-active:border-blue-600 hs-tab-active:text-blue-600 py-4 px-4 inline-flex items-center gap-x-2 border-b-2 border-transparent text-sm whitespace-nowrap text-gray-500 hover:text-blue-600 focus:outline-hidden {{ $activeTab === 'detail' ? 'active font-bold border-blue-600 text-blue-600' : '' }}" 
                         id="tab-detail-item" 
                         data-hs-tab="#tab-detail" 
                         aria-controls="tab-detail" 
@@ -85,7 +85,7 @@
 
         {{-- Tab 1: Paslon CRUD --}}
         <div id="tab-paslon" class="{{ $activeTab === 'paslon' ? '' : 'hidden' }} space-y-6" role="tabpanel" aria-labelledby="tab-paslon-item">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-xs">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-xs">
                 <div>
                     <h2 class="text-base sm:text-lg font-bold text-gray-900">Daftar Pasangan Calon</h2>
                     <p class="text-xs text-gray-500 mt-0.5">Kelola data kandidat paslon yang bertanding pada pemilihan ini.</p>
@@ -103,7 +103,6 @@
                             <x-admin.table.th align="center">No. Urut</x-admin.table.th>
                             <x-admin.table.th>Foto Paslon</x-admin.table.th>
                             <x-admin.table.th>Nama Pasangan Calon</x-admin.table.th>
-                            <x-admin.table.th>Visi &amp; Misi</x-admin.table.th>
                             <x-admin.table.th align="end">Aksi</x-admin.table.th>
                         </tr>
                     </x-admin.table.thead>
@@ -145,14 +144,18 @@
                                     <div class="font-bold text-gray-900 text-sm">{{ $c->chairman_name }}</div>
                                     <div class="text-xs text-gray-500 mt-0.5">&amp; {{ $c->vice_chairman_name ?: '-' }}</div>
                                 </x-admin.table.td>
-                                <x-admin.table.td>
-                                    @if(!empty($c->vision))
-                                        <p class="text-xs text-gray-600 line-clamp-1 italic">"{{ $c->vision }}"</p>
-                                    @else
-                                        <span class="text-xs text-gray-400">-</span>
-                                    @endif
-                                </x-admin.table.td>
                                 <x-admin.table.td innerClass="px-6 py-3 flex items-center justify-end gap-x-1.5">
+                                    <x-admin.button
+                                        type="button"
+                                        size="icon-sm"
+                                        color="outline-secondary"
+                                        title="Lihat Visi & Misi"
+                                        data-hs-overlay="#vision-mission-modal"
+                                        onclick="setVisionMissionData('{{ str_pad($c->order_number, 2, '0', STR_PAD_LEFT) }}', '{{ addslashes($c->chairman_name . ($c->vice_chairman_name ? ' & ' . $c->vice_chairman_name : '')) }}', {{ json_encode($c->vision ?? '') }}, {{ json_encode($c->mission ?? '') }})"
+                                        class="hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 cursor-pointer"
+                                    >
+                                        <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    </x-admin.button>
                                     <x-admin.button
                                         size="icon-sm"
                                         color="outline-secondary"
@@ -176,7 +179,7 @@
                             </x-admin.table.tr>
                         @empty
                             <x-admin.table.tr>
-                                <x-admin.table.td colspan="5" innerClass="text-center py-10">
+                                <x-admin.table.td colspan="4" innerClass="text-center py-10">
                                     <div class="flex flex-col items-center justify-center">
                                         <div class="size-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-3">
                                             <svg class="size-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
@@ -205,32 +208,29 @@
                 $colors = ['#2563EB', '#059669', '#D97706', '#7C3AED', '#DC2626', '#0891B2'];
             @endphp
 
-            {{-- 1. Top KPI Summary Cards Grid --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- KPI 1: Total Votes -->
-                <x-admin.card class="p-5 flex flex-col justify-between relative overflow-hidden bg-gradient-to-br from-blue-50/60 via-white to-white border-blue-100/80">
+            {{-- 1. Top KPI Summary Cards Grid (3 clean, essential metrics) --}}
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+                <!-- KPI 1: Total Suara Masuk -->
+                <x-admin.card class="p-4 sm:p-6 flex flex-col justify-between relative overflow-hidden bg-white border-gray-200/80">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Suara</span>
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-700">
-                            <span class="size-1.5 rounded-full bg-blue-600 animate-ping"></span>
-                            LIVE
-                        </span>
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Suara Masuk</span>
+                        <span class="size-2 rounded-full bg-blue-500"></span>
                     </div>
                     <div class="my-3">
                         <span class="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight" id="total-votes-detail">{{ $totalVotes }}</span>
-                        <span class="text-xs text-gray-400 font-medium ml-1">suara masuk</span>
+                        <span class="text-xs text-gray-400 font-medium ml-1">suara sah</span>
                     </div>
-                    <p class="text-[11px] text-gray-400 flex items-center gap-1">
-                        <svg class="size-3.5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <p class="text-[11px] text-gray-500 flex items-center gap-1">
+                        <svg class="size-3.5 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Akumulasi seluruh bilik suara
                     </p>
                 </x-admin.card>
 
-                <!-- KPI 2: Leading Candidate -->
-                <x-admin.card class="p-5 flex flex-col justify-between relative overflow-hidden bg-gradient-to-br from-emerald-50/60 via-white to-white border-emerald-100/80">
+                <!-- KPI 2: Paslon Terdepan -->
+                <x-admin.card class="p-4 sm:p-6 flex flex-col justify-between relative overflow-hidden bg-white border-gray-200/80">
                     <div class="flex items-center justify-between">
                         <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Paslon Terdepan</span>
-                        <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full" id="kpi-leader-pct">
+                        <span class="text-xs font-bold text-emerald-600" id="kpi-leader-pct">
                             {{ $hasVotes ? $leaderPct . '%' : '-' }}
                         </span>
                     </div>
@@ -254,53 +254,29 @@
                     </p>
                 </x-admin.card>
 
-                <!-- KPI 3: Voting Sessions -->
-                <x-admin.card class="p-5 flex flex-col justify-between relative overflow-hidden bg-gradient-to-br from-indigo-50/40 via-white to-white border-indigo-100/60">
+                <!-- KPI 3: Aktivitas Bilik Suara -->
+                <x-admin.card class="p-4 sm:p-6 flex flex-col justify-between relative overflow-hidden bg-white border-gray-200/80">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Bilik Suara</span>
-                        <span class="size-2 rounded-full bg-indigo-500"></span>
+                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Aktivitas Bilik Suara</span>
+                        <span class="size-2 rounded-full bg-emerald-500"></span>
                     </div>
                     <div class="my-3">
-                        <span class="text-3xl sm:text-4xl font-black text-indigo-600 tracking-tight" id="kpi-active-sessions">{{ $activeSessions }}</span>
-                        <span class="text-xs text-gray-400 font-medium ml-1">bilik aktif</span>
+                        <span class="text-3xl sm:text-4xl font-black text-gray-900 tracking-tight" id="kpi-active-sessions">{{ $activeSessions }}</span>
+                        <span class="text-xs text-gray-400 font-medium ml-1">bilik aktif saat ini</span>
                     </div>
-                    <p class="text-[11px] text-gray-400" id="kpi-total-sessions">
+                    <p class="text-[11px] text-gray-500" id="kpi-total-sessions">
                         Dari total {{ $totalSessions }} sesi pemilihan tercatat
-                    </p>
-                </x-admin.card>
-
-                <!-- KPI 4: Schedule & Status -->
-                <x-admin.card class="p-5 flex flex-col justify-between relative overflow-hidden bg-gradient-to-br from-slate-50/60 via-white to-white border-gray-200/80">
-                    <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">Status Event</span>
-                        <x-admin.badge :status="$election->status" :text="$statusLabels[$election->status] ?? ucfirst($election->status)" />
-                    </div>
-                    <div class="my-2">
-                        <p class="text-sm font-bold text-gray-900">
-                            {{ \Carbon\Carbon::parse($election->date ?? $election->start_time)->translatedFormat('d M Y') }}
-                        </p>
-                        <p class="text-xs text-gray-500 font-medium mt-0.5">
-                            {{ \Carbon\Carbon::parse($election->start_time)->format('H:i') }} - {{ \Carbon\Carbon::parse($election->end_time)->format('H:i') }} WIB
-                        </p>
-                    </div>
-                    <p class="text-[11px] text-gray-400">
-                        Slug: <span class="font-mono text-gray-600">{{ $election->slug ?: '-' }}</span>
                     </p>
                 </x-admin.card>
             </div>
 
-            {{-- 2. Dual Analytics Charts (Bar Chart & Doughnut Chart) --}}
+            {{-- 2. Dual Analytics Charts (Clean, No-badge visual summary) --}}
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Bar Chart: Perolehan Suara -->
-                <x-admin.card class="lg:col-span-2 p-5 sm:p-6 flex flex-col justify-between">
-                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
-                        <div>
-                            <h3 class="text-sm sm:text-base font-bold text-gray-900">Distribusi Perolehan Suara</h3>
-                            <p class="text-xs text-gray-500 mt-0.5">Perbandingan jumlah suara sah antar pasangan calon.</p>
-                        </div>
-                        <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg border border-blue-100/80">
-                            Bar Chart
-                        </span>
+                <x-admin.card class="lg:col-span-2 p-4 sm:p-6 flex flex-col justify-between">
+                    <div class="mb-4 pb-3 border-b border-gray-100">
+                        <h3 class="text-sm sm:text-base font-bold text-gray-900">Distribusi Perolehan Suara</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Perbandingan jumlah suara sah antar pasangan calon.</p>
                     </div>
                     <x-admin.chart 
                         type="bar" 
@@ -312,15 +288,10 @@
                 </x-admin.card>
 
                 <!-- Doughnut Chart: Proporsi Pangsa Suara -->
-                <x-admin.card class="lg:col-span-1 p-5 sm:p-6 flex flex-col justify-between">
-                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-gray-100">
-                        <div>
-                            <h3 class="text-sm sm:text-base font-bold text-gray-900">Proporsi Suara</h3>
-                            <p class="text-xs text-gray-500 mt-0.5">Pangsa persentase (%) suara.</p>
-                        </div>
-                        <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-2.5 py-1 rounded-lg border border-purple-100/80">
-                            Doughnut
-                        </span>
+                <x-admin.card class="lg:col-span-1 p-4 sm:p-6 flex flex-col justify-between">
+                    <div class="mb-4 pb-3 border-b border-gray-100">
+                        <h3 class="text-sm sm:text-base font-bold text-gray-900">Proporsi Suara</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Pangsa persentase (%) suara sah.</p>
                     </div>
                     <x-admin.chart 
                         type="doughnut" 
@@ -332,77 +303,13 @@
                 </x-admin.card>
             </div>
 
-            {{-- 3. Candidate Performance Cards with Animated Progress Bars --}}
-            <div class="space-y-3">
-                <div class="flex items-center justify-between px-1">
-                    <h3 class="text-base font-bold text-gray-900">Ringkasan Kandidat &amp; Pangsa Suara</h3>
-                    <span class="text-xs text-gray-500">Live perolehan suara per paslon</span>
-                </div>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="candidates-cards-container">
-                    @foreach($candidates as $idx => $c)
-                        @php
-                            $pct = $totalVotes > 0 ? round(($c->vote_count / $totalVotes) * 100, 1) : 0;
-                            $color = $colors[$idx % count($colors)];
-                            $isLeader = $hasVotes && $leaderCandidate && $leaderCandidate->id === $c->id;
-                        @endphp
-                        <x-admin.card class="p-4 sm:p-5 flex flex-col justify-between border-gray-100 hover:shadow-md transition-shadow relative overflow-hidden" id="card-candidate-{{ $c->id }}">
-                            @if($isLeader)
-                                <div class="absolute top-0 right-0 bg-gradient-to-l from-emerald-500 to-emerald-600 text-white text-[10px] font-extrabold uppercase px-3 py-0.5 rounded-bl-xl shadow-xs">
-                                    Unggul #1
-                                </div>
-                            @endif
-
-                            <div>
-                                <div class="flex items-center gap-3 mb-3">
-                                    <span class="num-badge w-9 h-9 rounded-xl flex items-center justify-center text-white font-extrabold text-xs shrink-0" aria-label="Nomor urut {{ $c->order_number }}">
-                                        {{ str_pad($c->order_number, 2, '0', STR_PAD_LEFT) }}
-                                    </span>
-                                    
-                                    {{-- Photo Thumbnails --}}
-                                    <div class="flex items-center gap-1.5 shrink-0">
-                                        @if($c->photo_path)
-                                            <img src="{{ Storage::url($c->photo_path) }}" alt="Ketua" class="w-8 h-10 object-cover rounded-lg border border-gray-200 shadow-2xs">
-                                        @endif
-                                        @if(!empty($c->vice_chairman_photo_path))
-                                            <img src="{{ Storage::url($c->vice_chairman_photo_path) }}" alt="Wakil" class="w-8 h-10 object-cover rounded-lg border border-gray-200 shadow-2xs">
-                                        @endif
-                                    </div>
-
-                                    <div class="truncate min-w-0">
-                                        <h4 class="text-sm font-bold text-gray-900 truncate leading-snug">{{ $c->chairman_name }}</h4>
-                                        <span class="text-xs text-gray-500 truncate block">&amp; {{ $c->vice_chairman_name ?: '-' }}</span>
-                                    </div>
-                                </div>
-
-                                {{-- Vote Counter & Percentage --}}
-                                <div class="flex items-baseline justify-between mb-2">
-                                    <span class="text-2xl font-black text-gray-900 tracking-tight" id="card-votes-{{ $c->id }}">
-                                        {{ $c->vote_count }} <span class="text-xs font-normal text-gray-400">suara</span>
-                                    </span>
-                                    <span class="text-sm font-extrabold text-blue-600" id="card-pct-{{ $c->id }}">
-                                        {{ $pct }}%
-                                    </span>
-                                </div>
-
-                                {{-- Animated Progress Bar --}}
-                                <div class="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
-                                    <div id="card-bar-{{ $c->id }}"
-                                         class="h-2.5 rounded-full transition-all duration-700 ease-out"
-                                         style="width: {{ $pct }}%; background-color: {{ $color }};">
-                                    </div>
-                                </div>
-                            </div>
-                        </x-admin.card>
-                    @endforeach
-                </div>
-            </div>
-
-            {{-- 4. Table Results Breakdown --}}
+            {{-- 3. Table Results Breakdown --}}
             <div class="space-y-3 pt-2">
                 <div class="flex items-center justify-between px-1">
-                    <h3 class="text-base font-bold text-gray-900">Tabel Rekapitulasi Perolehan Suara</h3>
-                    <span class="text-xs text-gray-400">Diperbarui otomatis secara real-time</span>
+                    <div>
+                        <h3 class="text-base font-bold text-gray-900">Tabel Rekapitulasi Perolehan Suara</h3>
+                        <p class="text-xs text-gray-500 mt-0.5">Perolehan suara resmi per pasangan calon</p>
+                    </div>
                 </div>
 
                 <x-admin.table.wrapper>
@@ -422,6 +329,7 @@
                                 @php
                                     $percentage = $totalVotes > 0 ? round(($c->vote_count / $totalVotes) * 100, 1) : 0;
                                     $color = $colors[$idx % count($colors)];
+                                    $isLeader = $hasVotes && $leaderCandidate && $leaderCandidate->id === $c->id;
                                 @endphp
                                 <x-admin.table.tr>
                                     <x-admin.table.td innerClass="text-center">
@@ -440,8 +348,13 @@
                                         </div>
                                     </x-admin.table.td>
                                     <x-admin.table.td>
-                                        <div class="font-bold text-gray-900 text-sm">{{ $c->chairman_name }}</div>
-                                        <div class="text-xs text-gray-500">&amp; {{ $c->vice_chairman_name ?: '-' }}</div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-bold text-gray-900 text-sm">{{ $c->chairman_name }}</span>
+                                            @if($isLeader)
+                                                <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-full">Unggul #1</span>
+                                            @endif
+                                        </div>
+                                        <div class="text-xs text-gray-500 mt-0.5">&amp; {{ $c->vice_chairman_name ?: '-' }}</div>
                                     </x-admin.table.td>
                                     <x-admin.table.td innerClass="text-end font-bold text-gray-900" id="vote-count-{{ $c->id }}">
                                         {{ $c->vote_count }} <span class="text-xs font-normal text-gray-400">suara</span>
@@ -509,6 +422,9 @@
             </div>
         </div>
 
+        {{-- Vision & Mission Modal Component --}}
+        <x-admin.vision-mission-modal />
+
         {{-- Delete Candidate Modal --}}
         <x-admin.modal id="delete-candidate-modal" title="Hapus Pasangan Calon" size="sm:max-w-md">
             <div class="text-center py-3">
@@ -541,6 +457,56 @@
 
     @push('scripts')
         <script>
+            window.setVisionMissionData = function(pad, name, vision, mission) {
+                const padEl = document.getElementById('vm-modal-pad');
+                if (padEl) padEl.textContent = pad;
+
+                const nameEl = document.getElementById('vm-modal-name');
+                if (nameEl) nameEl.textContent = name;
+
+                const visionEl = document.getElementById('vm-modal-vision');
+                if (visionEl) {
+                    if (vision && vision.trim() !== '') {
+                        visionEl.textContent = vision.trim().replace(/^["']|["']$/g, '');
+                        visionEl.classList.remove('text-gray-400', 'italic');
+                        visionEl.classList.add('text-gray-800');
+                    } else {
+                        visionEl.textContent = 'Belum ada visi yang dicantumkan.';
+                        visionEl.classList.add('text-gray-400', 'italic');
+                        visionEl.classList.remove('text-gray-800');
+                    }
+                }
+
+                const missionListEl = document.getElementById('vm-modal-mission-list');
+                if (missionListEl) {
+                    missionListEl.innerHTML = '';
+                    if (!mission || mission.trim() === '') {
+                        missionListEl.innerHTML = '<li class="text-xs sm:text-sm text-gray-400 italic">Belum ada misi yang dicantumkan.</li>';
+                    } else {
+                        const rawLines = mission.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+                        let itemIndex = 1;
+                        rawLines.forEach(line => {
+                            const cleanLine = line.replace(/^(\*|\-|\d+[\.\)])\s*/, '').trim();
+                            if (cleanLine.length > 0) {
+                                const li = document.createElement('li');
+                                li.className = 'flex items-start gap-3 text-xs sm:text-sm text-gray-800 leading-relaxed';
+                                li.innerHTML = `
+                                    <span class="size-5 rounded-full bg-blue-100/80 text-blue-700 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                                        ${itemIndex}
+                                    </span>
+                                    <span class="grow">${cleanLine}</span>
+                                `;
+                                missionListEl.appendChild(li);
+                                itemIndex++;
+                            }
+                        });
+                        if (missionListEl.children.length === 0) {
+                            missionListEl.innerHTML = '<li class="text-xs sm:text-sm text-gray-400 italic">Belum ada misi yang dicantumkan.</li>';
+                        }
+                    }
+                }
+            };
+
             window.setDeleteCandidate = function(id, name, pad) {
                 document.getElementById('delete-candidate-pad').textContent = 'Paslon ' + pad;
                 document.getElementById('delete-candidate-name').textContent = name;

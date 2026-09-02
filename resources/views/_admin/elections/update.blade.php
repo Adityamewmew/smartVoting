@@ -19,12 +19,12 @@
         <x-admin.card class="p-6">
             <form id="update-form" navigate-form action="{{ route('admin.elections.doUpdate', $data->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
-                <div class="space-y-5">
+                <div class="space-y-6">
                     <x-admin.input 
                         label="Nama Event" 
                         name="name" 
                         :value="old('name', $data->name)" 
-                        placeholder="Contoh: Pemilihan Ketua OSIS 2026" 
+                        placeholder="Contoh: Pemilihan Ketua & Wakil Ketua 2026" 
                         required="true" 
                     />
 
@@ -33,7 +33,7 @@
                             label="Custom Slug / URL" 
                             name="slug" 
                             :value="old('slug', $data->slug)" 
-                            placeholder="Contoh: osis-2026" 
+                            placeholder="Contoh: pemilu-2026" 
                             required="true"
                         />
                         <p class="text-xs text-gray-400 mt-1.5 flex items-center gap-1">
@@ -67,7 +67,7 @@
                         required="true" 
                     />
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                         <x-admin.input 
                             type="time"
                             label="Waktu Mulai (WIB)" 

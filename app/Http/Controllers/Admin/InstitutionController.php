@@ -14,7 +14,7 @@ class InstitutionController extends Controller
 {
     protected array $page = [
         'route' => 'institutions',
-        'title' => 'Institusi & Sekolah',
+        'title' => 'Data User',
     ];
 
     protected string $baseRedirect;

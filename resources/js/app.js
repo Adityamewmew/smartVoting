@@ -5,6 +5,8 @@ import "toastify-js/src/toastify.css";
 
 window.Toastify = Toastify;
 
+import { cropImageWithCroppie } from './croppie-modal';
+window.cropImageWithCroppie = cropImageWithCroppie;
 
 import flatpickr from "flatpickr";
 import { Indonesian } from "flatpickr/dist/l10n/id.js";

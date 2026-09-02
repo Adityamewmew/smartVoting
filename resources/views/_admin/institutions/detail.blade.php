@@ -1,6 +1,6 @@
 @extends('_admin._layout.app')
 
-@section('title', 'Detail Institusi: ' . ($data->name ?? ''))
+@section('title', 'Detail User: ' . ($data->name ?? ''))
 
 @section('content')
     <div class="space-y-6">
@@ -12,19 +12,19 @@
                 </x-admin.button>
                 <div>
                     <h1 class="text-xl font-bold text-gray-900 tracking-tight">{{ $data->name }}</h1>
-                    <p class="text-xs text-gray-500 capitalize">{{ $data->type ?? 'Sekolah / Institusi' }}</p>
+                    <p class="text-xs text-gray-500 capitalize">{{ $data->type ?? 'Organisasi / Institusi' }}</p>
                 </div>
             </div>
             <div class="flex items-center gap-2 w-full sm:w-auto">
                 <x-admin.button href="{{ route('admin.institutions.update', $data->id) }}" color="primary" size="md">
                     <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
-                    Edit Institusi
+                    Edit User
                 </x-admin.button>
             </div>
         </div>
 
         {{-- Metrics & Overview Grid --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             {{-- Profile Card --}}
             <x-admin.card class="p-6 md:col-span-1 space-y-4">
                 <div class="flex flex-col items-center text-center p-4">
@@ -63,14 +63,14 @@
             </x-admin.card>
 
             {{-- Stats & Registered Users --}}
-            <div class="md:col-span-2 space-y-5">
+            <div class="md:col-span-2 space-y-6">
                 {{-- Stats Counters --}}
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs">
+                    <div class="bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/80 shadow-2xs">
                         <span class="text-xs font-semibold text-gray-500">Total Pemilihan / Event</span>
                         <div class="text-3xl font-black text-gray-900 mt-1">{{ $data->elections_count ?? 0 }}</div>
                     </div>
-                    <div class="bg-white p-5 rounded-2xl border border-gray-200/80 shadow-2xs">
+                    <div class="bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/80 shadow-2xs">
                         <span class="text-xs font-semibold text-gray-500">Pengguna Terdaftar</span>
                         <div class="text-3xl font-black text-gray-900 mt-1">{{ $data->users_count ?? 0 }}</div>
                     </div>
@@ -90,7 +90,7 @@
                                     <div class="text-xs text-gray-500">{{ $u->email }}</div>
                                 </div>
                                 <span class="text-xs font-semibold text-gray-700 bg-gray-100 px-2.5 py-1 rounded-lg border border-gray-200">
-                                    {{ $u->access_type == 1 ? 'Admin Sekolah' : 'Operator' }}
+                                    {{ $u->access_type == 1 ? 'Admin Utama' : 'Operator' }}
                                 </span>
                             </div>
                         @empty

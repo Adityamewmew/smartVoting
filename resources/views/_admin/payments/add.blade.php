@@ -18,14 +18,14 @@
 
         {{-- Form Card --}}
         <div class="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200/80 shadow-xs">
-            <form action="{{ route('admin.payments.create') }}" method="POST" class="space-y-5">
+            <form action="{{ route('admin.payments.create') }}" method="POST" class="space-y-6">
                 @csrf
 
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">
-                        Pilih Institusi / Sekolah <span class="text-rose-500">*</span>
+                        Pilih Institusi / Organisasi <span class="text-rose-500">*</span>
                     </label>
-                    <select name="institution_id" class="py-2.5 px-3.5 block w-full rounded-xl border border-gray-200/90 text-sm focus:border-blue-500 focus:ring-3 focus:ring-blue-500/15" required>
+                    <select name="institution_id" class="py-2.5 px-4 block w-full rounded-xl border border-gray-200/90 text-sm focus:border-blue-500 focus:ring-3 focus:ring-blue-500/15" required>
                         <option value="">-- Pilih Institusi --</option>
                         @foreach($institutions as $inst)
                             <option value="{{ $inst->id }}" {{ old('institution_id') == $inst->id ? 'selected' : '' }}>
@@ -42,7 +42,7 @@
                     <x-admin.input 
                         name="package_name" 
                         label="Nama Paket / Layanan" 
-                        placeholder="Contoh: Paket Pemilu Sekolah 1 Tahun (Pro)"
+                        placeholder="Contoh: Paket Pemilu Organisasi 1 Tahun (Pro)"
                         :value="old('package_name')"
                         required 
                     />
@@ -64,7 +64,7 @@
                         <x-admin.input 
                             name="customer_name" 
                             label="Nama Kontak Pembayar (Opsional)" 
-                            placeholder="Contoh: Kepala Sekolah / Bendahara"
+                            placeholder="Contoh: Ketua Panitia / Admin PIC"
                             :value="old('customer_name')"
                         />
                     </div>
@@ -73,7 +73,7 @@
                             type="email"
                             name="customer_email" 
                             label="Email Notifikasi Mayar (Opsional)" 
-                            placeholder="Contoh: admin@sekolah.sch.id"
+                            placeholder="Contoh: admin@organisasi.id"
                             :value="old('customer_email')"
                         />
                     </div>

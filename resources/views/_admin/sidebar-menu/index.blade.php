@@ -5,7 +5,7 @@
 @section('content')
     <div class="space-y-6">
         {{-- Header Section --}}
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-gray-200/80 shadow-xs">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/80 shadow-xs">
             <div>
                 <h1 class="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight">Manajemen Menu Sidebar</h1>
                 <p class="text-xs sm:text-sm text-gray-500 mt-0.5">Kelola navigasi menu, grup modul, routing, dan permission hak akses.</p>

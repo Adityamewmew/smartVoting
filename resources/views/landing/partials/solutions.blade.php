@@ -41,23 +41,23 @@
     <!-- Interactive Admin Dashboard Mockup Showcase -->
     <div class="max-w-6xl mx-auto mt-8 relative text-left">
         <!-- Outer Glassmorphism Card Container -->
-        <div class="bg-white/95 rounded-[32px] border border-blue-100/70 shadow-[0_20px_50px_-15px_rgba(15,23,42,0.06)] p-5 sm:p-8 space-y-6">
+        <div class="bg-white/95 rounded-[32px] border border-blue-100/70 shadow-[0_20px_50px_-15px_rgba(15,23,42,0.06)] p-6 sm:p-8 space-y-6">
 
             {{-- 1. Header & Quick Actions --}}
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/70 p-4 sm:p-5 rounded-2xl border border-slate-100">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-slate-50/70 p-4 sm:p-6 rounded-2xl border border-slate-100">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-slate-500 shadow-2xs">
                         <i class="fa-solid fa-chevron-left text-xs"></i>
                     </div>
                     <div>
                         <div class="flex items-center gap-2 flex-wrap">
-                            <h3 class="text-base sm:text-lg font-bold text-slate-900 m-0">Pemilihan Ketua & Wakil Ketua OSIS 2026</h3>
+                            <h3 class="text-base sm:text-lg font-bold text-slate-900 m-0">Pemilihan Ketua & Wakil Ketua 2026</h3>
                             <x-admin.badge status="active" size="sm" pulse="true">Aktif</x-admin.badge>
                         </div>
                         <p class="text-xs text-slate-500 mt-1 flex items-center gap-2 m-0">
-                            <span>🗓️ 29 August 2026</span>
+                            <span class="inline-flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="size-3 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg> 29 August 2026</span>
                             <span>•</span>
-                            <span>⏰ 08:00 - 14:00 WIB</span>
+                            <span class="inline-flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="size-3 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 08:00 - 14:00 WIB</span>
                         </p>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
             {{-- Top KPI Summary Cards Grid (4 Cards) --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- KPI 1: Total Suara -->
-                <div class="bg-gradient-to-br from-blue-50/60 via-white to-white rounded-2xl p-4 sm:p-5 border border-blue-100 flex flex-col justify-between shadow-2xs">
+                <div class="bg-gradient-to-br from-blue-50/60 via-white to-white rounded-2xl p-4 sm:p-6 border border-blue-100 flex flex-col justify-between shadow-2xs">
                     <div class="flex items-center justify-between">
                         <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">TOTAL SUARA</span>
                         <x-admin.badge color="blue" size="sm" pulse="true">LIVE</x-admin.badge>
@@ -90,7 +90,7 @@
                 </div>
 
                 <!-- KPI 2: Paslon Terdepan -->
-                <div class="bg-gradient-to-br from-emerald-50/60 via-white to-white rounded-2xl p-4 sm:p-5 border border-emerald-100 flex flex-col justify-between shadow-2xs">
+                <div class="bg-gradient-to-br from-emerald-50/60 via-white to-white rounded-2xl p-4 sm:p-6 border border-emerald-100 flex flex-col justify-between shadow-2xs">
                     <div class="flex items-center justify-between">
                         <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">PASLON TERDEPAN</span>
                         <x-admin.badge color="emerald" size="sm">54.3%</x-admin.badge>
@@ -106,7 +106,7 @@
                 </div>
 
                 <!-- KPI 3: Bilik Suara -->
-                <div class="bg-gradient-to-br from-indigo-50/40 via-white to-white rounded-2xl p-4 sm:p-5 border border-indigo-100 flex flex-col justify-between shadow-2xs">
+                <div class="bg-gradient-to-br from-indigo-50/40 via-white to-white rounded-2xl p-4 sm:p-6 border border-indigo-100 flex flex-col justify-between shadow-2xs">
                     <div class="flex items-center justify-between">
                         <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">BILIK SUARA</span>
                         <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
@@ -119,7 +119,7 @@
                 </div>
 
                 <!-- KPI 4: Status Event -->
-                <div class="bg-gradient-to-br from-slate-50/60 via-white to-white rounded-2xl p-4 sm:p-5 border border-slate-200 flex flex-col justify-between shadow-2xs">
+                <div class="bg-gradient-to-br from-slate-50/60 via-white to-white rounded-2xl p-4 sm:p-6 border border-slate-200 flex flex-col justify-between shadow-2xs">
                     <div class="flex items-center justify-between">
                         <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">STATUS EVENT</span>
                         <x-admin.badge status="active" size="sm">Aktif</x-admin.badge>
@@ -128,12 +128,12 @@
                         <p class="text-xs sm:text-sm font-bold text-slate-900 m-0">29 Agu 2026</p>
                         <p class="text-xs text-slate-500 font-medium mt-0.5 m-0">08:00 - 14:00 WIB</p>
                     </div>
-                    <p class="text-[11px] text-slate-400 m-0">Slug: <span class="font-mono text-slate-600 font-bold">osis-2026</span></p>
+                    <p class="text-[11px] text-slate-400 m-0">Slug: <span class="font-mono text-slate-600 font-bold">pemilu-2026</span></p>
                 </div>
             </div>
 
             {{-- 4. Distribusi Perolehan Suara (Bar Chart) --}}
-            <div class="bg-white p-5 sm:p-6 rounded-2xl border border-slate-100 shadow-2xs flex flex-col justify-between">
+            <div class="bg-white p-4 sm:p-6 rounded-2xl border border-slate-100 shadow-2xs flex flex-col justify-between">
                 <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
                     <div>
                         <h4 class="text-sm sm:text-base font-bold text-slate-900 m-0">Distribusi Perolehan Suara</h4>
@@ -198,7 +198,7 @@
                         </x-admin.table.thead>
                         <x-admin.table.tbody>
                             <x-admin.table.tr>
-                                <x-admin.table.td innerClass="px-6 py-3.5 text-center">
+                                <x-admin.table.td innerClass="px-6 py-4 text-center">
                                     <span class="bg-blue-600 text-white font-extrabold text-xs px-2.5 py-0.5 rounded-lg shadow-xs">01</span>
                                 </x-admin.table.td>
                                 <x-admin.table.td>
@@ -218,13 +218,13 @@
                                         <div class="bg-blue-600 h-full rounded-full" style="width: 54.3%"></div>
                                     </div>
                                 </x-admin.table.td>
-                                <x-admin.table.td innerClass="px-6 py-3.5 text-right">
+                                <x-admin.table.td innerClass="px-6 py-4 text-right">
                                     <span class="font-black text-blue-600 text-xs">54.3%</span>
                                 </x-admin.table.td>
                             </x-admin.table.tr>
 
                             <x-admin.table.tr>
-                                <x-admin.table.td innerClass="px-6 py-3.5 text-center">
+                                <x-admin.table.td innerClass="px-6 py-4 text-center">
                                     <span class="bg-slate-900 text-white font-extrabold text-xs px-2.5 py-0.5 rounded-lg shadow-xs">02</span>
                                 </x-admin.table.td>
                                 <x-admin.table.td>
@@ -244,13 +244,13 @@
                                         <div class="bg-slate-700 h-full rounded-full" style="width: 31.5%"></div>
                                     </div>
                                 </x-admin.table.td>
-                                <x-admin.table.td innerClass="px-6 py-3.5 text-right">
+                                <x-admin.table.td innerClass="px-6 py-4 text-right">
                                     <span class="font-black text-slate-700 text-xs">31.5%</span>
                                 </x-admin.table.td>
                             </x-admin.table.tr>
 
                             <x-admin.table.tr>
-                                <x-admin.table.td innerClass="px-6 py-3.5 text-center">
+                                <x-admin.table.td innerClass="px-6 py-4 text-center">
                                     <span class="bg-slate-900 text-white font-extrabold text-xs px-2.5 py-0.5 rounded-lg shadow-xs">03</span>
                                 </x-admin.table.td>
                                 <x-admin.table.td>
@@ -270,7 +270,7 @@
                                         <div class="bg-amber-500 h-full rounded-full" style="width: 14.2%"></div>
                                     </div>
                                 </x-admin.table.td>
-                                <x-admin.table.td innerClass="px-6 py-3.5 text-right">
+                                <x-admin.table.td innerClass="px-6 py-4 text-right">
                                     <span class="font-black text-amber-600 text-xs">14.2%</span>
                                 </x-admin.table.td>
                             </x-admin.table.tr>

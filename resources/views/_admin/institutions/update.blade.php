@@ -1,6 +1,6 @@
 @extends('_admin._layout.app')
 
-@section('title', 'Edit Institusi / Sekolah')
+@section('title', 'Edit User')
 
 @section('content')
     <div class="max-w-3xl mx-auto space-y-6">
@@ -10,8 +10,8 @@
                 <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             </x-admin.button>
             <div>
-                <h1 class="text-xl font-bold text-gray-900">Edit Institusi / Sekolah</h1>
-                <p class="text-xs text-gray-500">Perbarui nama, tipe, atau status operasional institusi.</p>
+                <h1 class="text-xl font-bold text-gray-900">Edit User</h1>
+                <p class="text-xs text-gray-500">Perbarui data user, tipe, atau status operasional.</p>
             </div>
         </div>
 
@@ -21,26 +21,26 @@
                 @csrf
 
                 <x-admin.input 
-                    label="Nama Institusi / Sekolah" 
+                    label="Nama User / Organisasi" 
                     name="name" 
                     :value="old('name', $data->name)" 
-                    placeholder="Contoh: SMK Negeri 1 Jakarta" 
+                    placeholder="Contoh: Asosiasi / Organisasi Anda" 
                     required="true" 
                 />
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 items-start">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 items-start">
                     @php
                         $types = [
-                            'school' => 'Sekolah (SMA/SMK/SMP)',
-                            'campus' => 'Perguruan Tinggi',
-                            'organization' => 'Organisasi / Komunitas',
+                            'organization' => 'Organisasi / Komunitas / Asosiasi',
+                            'school' => 'Pendidikan / Sekolah / Kampus',
+                            'company' => 'Perusahaan / Lembaga',
                         ];
                     @endphp
                     <x-admin.select 
-                        label="Tipe Institusi" 
+                        label="Tipe Organisasi" 
                         name="type" 
                         :options="$types" 
-                        :value="old('type', $data->type ?? 'school')" 
+                        :value="old('type', $data->type ?? 'organization')" 
                         required="true" 
                     />
 

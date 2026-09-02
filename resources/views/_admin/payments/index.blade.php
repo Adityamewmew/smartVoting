@@ -19,8 +19,8 @@
         </div>
 
         {{-- Filter & Search --}}
-        <div class="bg-white p-4 sm:p-5 rounded-2xl border border-gray-200/80 shadow-xs">
-            <form action="{{ route('admin.payments.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+        <div class="bg-white p-4 sm:p-6 rounded-2xl border border-gray-200/80 shadow-xs">
+            <form action="{{ route('admin.payments.index') }}" method="GET" class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
                 <div class="sm:col-span-5">
                     <x-admin.input 
                         name="keywords" 
@@ -29,7 +29,7 @@
                     />
                 </div>
                 <div class="sm:col-span-3">
-                    <select name="status" class="py-2 px-3.5 block w-full rounded-xl border border-gray-200/90 text-sm focus:border-blue-500 focus:ring-3 focus:ring-blue-500/15">
+                    <select name="status" class="py-2 px-4 block w-full rounded-xl border border-gray-200/90 text-sm focus:border-blue-500 focus:ring-3 focus:ring-blue-500/15">
                         <option value="all" {{ ($status ?? 'all') === 'all' ? 'selected' : '' }}>Semua Status</option>
                         <option value="pending" {{ ($status ?? '') === 'pending' ? 'selected' : '' }}>Menunggu Bayar (Pending)</option>
                         <option value="paid" {{ ($status ?? '') === 'paid' ? 'selected' : '' }}>Lunas (Paid)</option>
@@ -57,7 +57,7 @@
                 <x-admin.table.thead>
                     <tr>
                         <x-admin.table.th>Invoice & Paket</x-admin.table.th>
-                        <x-admin.table.th>Institusi / Sekolah</x-admin.table.th>
+                        <x-admin.table.th>Institusi / Organisasi</x-admin.table.th>
                         <x-admin.table.th>Nominal</x-admin.table.th>
                         <x-admin.table.th>Status</x-admin.table.th>
                         <x-admin.table.th>Metode & Tanggal</x-admin.table.th>
@@ -81,53 +81,47 @@
                             </x-admin.table.td>
                             <x-admin.table.td>
                                 @if($item->status === 'paid')
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <span class="size-1.5 rounded-full bg-emerald-500"></span>
+                                    <x-admin.badge status="success" pulse="false">
                                         Lunas
-                                    </span>
+                                    </x-admin.badge>
                                 @elseif($item->status === 'pending')
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                                        <span class="size-1.5 rounded-full bg-amber-500"></span>
+                                    <x-admin.badge status="warning" pulse="true">
                                         Menunggu Bayar
-                                    </span>
+                                    </x-admin.badge>
                                 @else
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                                        <span class="size-1.5 rounded-full bg-rose-500"></span>
+                                    <x-admin.badge status="danger">
                                         {{ ucfirst($item->status) }}
-                                    </span>
+                                    </x-admin.badge>
                                 @endif
                             </x-admin.table.td>
                             <x-admin.table.td>
                                 <div class="text-xs text-gray-700 font-semibold capitalize">{{ $item->payment_method ?? 'Mayar' }}</div>
-                                <div class="text-[11px] text-gray-400 mt-0.5">{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d M Y, H:i') }}</div>
+                                <div class="text-[11px] text-gray-500 mt-0.5">{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('d M Y, H:i') }}</div>
                             </x-admin.table.td>
                             <x-admin.table.td align="end">
                                 <div class="flex items-center justify-end gap-1.5">
                                     @if($item->status === 'pending')
                                         <form action="{{ route('admin.payments.confirm', $item->id) }}" method="POST" onsubmit="return confirm('Konfirmasi tagihan ini sudah lunas?')">
                                             @csrf
-                                            <button type="submit" class="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors" title="Konfirmasi Lunas">
-                                                <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-                                            </button>
+                                            <x-admin.button type="submit" size="icon-sm" color="outline-secondary" class="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50" title="Konfirmasi Lunas">
+                                                <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                                            </x-admin.button>
                                         </form>
                                     @endif
 
                                     @if(!empty($item->payment_url))
-                                        <a href="{{ $item->payment_url }}" target="_blank" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Buka Link Mayar">
-                                            <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
-                                        </a>
+                                        <x-admin.button href="{{ $item->payment_url }}" target="_blank" size="icon-sm" color="outline-secondary" class="text-blue-600 hover:text-blue-700 hover:bg-blue-50" title="Buka Link Mayar">
+                                            <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>
+                                        </x-admin.button>
                                     @endif
 
-                                    <a href="{{ route('admin.payments.detail', $item->id) }}" class="p-1.5 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors" title="Lihat Detail">
-                                        <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                                    </a>
-
-                                    <form action="{{ route('admin.payments.delete', $item->id) }}" method="POST" onsubmit="return confirm('Hapus tagihan ini?')">
+                                    {{-- Delete Button --}}
+                                    <form action="{{ route('admin.payments.delete', $item->id) }}" method="POST" onsubmit="return confirm('Hapus tagihan ini?');" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="p-1.5 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors" title="Hapus">
-                                            <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-                                        </button>
+                                        <x-admin.button type="submit" size="icon-sm" color="outline-danger" title="Hapus">
+                                            <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                        </x-admin.button>
                                     </form>
                                 </div>
                             </x-admin.table.td>

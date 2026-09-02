@@ -18,8 +18,9 @@
                 <div>
                     <p class="font-extrabold uppercase tracking-wider text-slate-400 mb-3.5 text-[11px]">Navigasi</p>
                     <ul class="space-y-2.5 p-0 list-none text-slate-700">
-                        <li><a href="{{ route('login') }}" class="hover:text-blue-600 transition-colors">Masuk Akun</a></li>
-                        <li><a href="{{ route('subscribe') }}" class="hover:text-blue-600 transition-colors">Daftar Langganan</a></li>
+                        <li><a href="#solutions" class="hover:text-blue-600 transition-colors">Solusi TPS</a></li>
+                        <li><a href="#features" class="hover:text-blue-600 transition-colors">Fitur Unggulan</a></li>
+                        <li><a href="{{ route('auth.google') }}" class="hover:text-blue-600 transition-colors">Masuk ke Aplikasi</a></li>
                     </ul>
                 </div>
                 <div>
@@ -31,9 +32,9 @@
                     </ul>
                 </div>
                 <div>
-                    <p class="font-extrabold uppercase tracking-wider text-slate-400 mb-3.5 text-[11px]">Bantuan</p>
+                    <p class="font-extrabold uppercase tracking-wider text-slate-400 mb-3.5 text-[11px]">Akses Cepat</p>
                     <ul class="space-y-2.5 p-0 list-none text-slate-700">
-                        <li><a href="{{ route('subscribe', ['package' => 'starter']) }}" class="hover:text-blue-600 transition-colors">Demo Simulasi</a></li>
+                        <li><a href="{{ route('auth.google') }}" class="hover:text-blue-600 transition-colors">Coba Aplikasi Sekarang</a></li>
                         <li><span class="text-slate-500">Dukungan Teknis</span></li>
                     </ul>
                 </div>
@@ -41,7 +42,7 @@
         </div>
 
         <div class="text-center pt-8 text-xs font-medium text-slate-400">
-            &copy; 2026 SmartVoting — Platform E-Voting Kiosk Modern Berdasarkan Standar TPS Resmi.
+            &copy; 2026 SmartVoting. Platform E-Voting Kiosk Modern Berdasarkan Standar TPS Resmi.
         </div>
     </div>
 </footer>

@@ -31,9 +31,9 @@
             </div>
 
             {{-- Breakdown --}}
-            <div class="bg-gray-50 rounded-2xl p-5 border border-gray-200/80 space-y-3 text-xs">
+            <div class="bg-gray-50 rounded-2xl p-4 sm:p-6 border border-gray-200/80 space-y-3 text-xs">
                 <div class="flex justify-between items-center text-gray-600">
-                    <span class="font-medium">Institusi / Sekolah:</span>
+                    <span class="font-medium">Institusi / Organisasi:</span>
                     <span class="font-bold text-gray-900 text-right">{{ $invoice->institution_name }}</span>
                 </div>
                 <div class="flex justify-between items-center text-gray-600">
@@ -56,7 +56,7 @@
 
             {{-- Status Action Alert / Buttons --}}
             @if($invoice->status === 'paid')
-                <div class="p-5 rounded-2xl bg-emerald-50/80 border border-emerald-200 text-center space-y-3">
+                <div class="p-4 sm:p-6 rounded-2xl bg-emerald-50/80 border border-emerald-200 text-center space-y-3">
                     <div class="inline-flex p-2 bg-emerald-100 text-emerald-600 rounded-full">
                         <svg class="size-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
                     </div>

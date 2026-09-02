@@ -14,7 +14,7 @@
             <!-- Card 1 -->
             <div class="bg-white rounded-[28px] p-7 sm:p-8 border border-slate-200/80 shadow-[0_10px_30px_-5px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-lg transition-all duration-300">
                 <p class="text-sm text-slate-700 leading-relaxed mb-6 font-normal">
-                    &ldquo;SmartVoting benar-benar mengubah cara kami menyelenggarakan Pemilu OSIS. Biasanya panitia harus begadang sampai malam menghitung lembar kertas, sekarang dalam hitungan menit hasil resmi sudah selesai dan ditandatangani kepala sekolah.&rdquo;
+                    &ldquo;SmartVoting benar-benar mengubah cara kami menyelenggarakan pemilihan ketua. Biasanya panitia harus begadang sampai larut malam menghitung kertas suara, sekarang dalam hitungan menit hasil resmi sudah selesai dan ditandatangani saksi.&rdquo;
                 </p>
 
                 <div class="flex items-center gap-3 pt-4 border-t border-slate-100">
@@ -23,7 +23,7 @@
                     </div>
                     <div>
                         <h4 class="text-xs sm:text-sm font-bold text-slate-900 m-0">Ahmad Rasyid</h4>
-                        <p class="text-[11px] text-slate-500 font-medium m-0">Ketua MPK SMAN 1</p>
+                        <p class="text-[11px] text-slate-500 font-medium m-0">Ketua Panitia Pemilihan</p>
                     </div>
                 </div>
             </div>
@@ -51,7 +51,7 @@
             <!-- Card 2 -->
             <div class="bg-white rounded-[28px] p-7 sm:p-8 border border-slate-200/80 shadow-[0_10px_30px_-5px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-lg transition-all duration-300">
                 <p class="text-sm text-slate-600 leading-relaxed mb-6 font-normal">
-                    &ldquo;Fitur multi-event memungkinkan kami mengadakan pemilihan Ketua BEM dan Himpunan Jurusan secara serentak di hari yang sama tanpa ada kendala server.&rdquo;
+                    &ldquo;Fitur multi-event memungkinkan kami mengadakan pemilihan pimpinan dan perwakilan divisi secara serentak di hari yang sama tanpa ada kendala server.&rdquo;
                 </p>
 
                 <div class="flex items-center gap-3 pt-4 border-t border-slate-100">
@@ -60,7 +60,7 @@
                     </div>
                     <div>
                         <h4 class="text-xs sm:text-sm font-bold text-slate-900 m-0">Farhan Nugraha</h4>
-                        <p class="text-[11px] text-slate-500 font-medium m-0">Ketua KPU Mahasiswa</p>
+                        <p class="text-[11px] text-slate-500 font-medium m-0">Koordinator Pemilihan Raya</p>
                     </div>
                 </div>
             </div>
@@ -77,7 +77,7 @@
                     </div>
                     <div>
                         <h4 class="text-xs sm:text-sm font-bold text-slate-900 m-0">Rian Saputra</h4>
-                        <p class="text-[11px] text-slate-500 font-medium m-0">Operator TPS Kampus</p>
+                        <p class="text-[11px] text-slate-500 font-medium m-0">Operator TPS Lapangan</p>
                     </div>
                 </div>
             </div>
@@ -88,7 +88,7 @@
             <!-- Card 3 -->
             <div class="bg-white rounded-[28px] p-7 sm:p-8 border border-slate-200/80 shadow-[0_10px_30px_-5px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-lg transition-all duration-300">
                 <p class="text-sm text-slate-600 leading-relaxed mb-6 font-normal">
-                    &ldquo;Alur bilik suara kiosknya sangat mudah dipahami siswa baru. Tidak ada yang bingung karena navigasi layarnya simpel dan persis seperti memilih di bilik fisik sesungguhnya.&rdquo;
+                    &ldquo;Alur bilik suara kiosknya sangat mudah dipahami anggota dan pemilih. Tidak ada yang bingung karena navigasi layarnya simpel dan persis seperti memilih di bilik fisik sesungguhnya.&rdquo;
                 </p>
 
                 <div class="flex items-center gap-3 pt-4 border-t border-slate-100">
@@ -96,8 +96,8 @@
                         DW
                     </div>
                     <div>
-                        <h4 class="text-xs sm:text-sm font-bold text-slate-900 m-0">Dewi Lestari, S.Pd</h4>
-                        <p class="text-[11px] text-slate-500 font-medium m-0">Pembina Kesiswaan</p>
+                        <h4 class="text-xs sm:text-sm font-bold text-slate-900 m-0">Dewi Lestari</h4>
+                        <p class="text-[11px] text-slate-500 font-medium m-0">Pengurus Asosiasi</p>
                     </div>
                 </div>
             </div>
@@ -105,7 +105,7 @@
             <!-- Card 6 -->
             <div class="bg-white rounded-[28px] p-6 sm:p-7 border border-slate-200/80 shadow-[0_10px_30px_-5px_rgba(15,23,42,0.04)] flex flex-col justify-between hover:shadow-lg transition-all duration-300 bg-slate-50/50">
                 <p class="text-sm text-slate-600 leading-relaxed mb-6 font-normal">
-                    &ldquo;Tampilan dashboard telemetri real-time sangat membantu panitia memantau kehadiran dan bilik yang kosong agar antrean siswa tertib.&rdquo;
+                    &ldquo;Tampilan dashboard telemetri real-time sangat membantu panitia memantau kehadiran dan bilik yang kosong agar antrean pemilih tetap tertib.&rdquo;
                 </p>
 
                 <div class="flex items-center gap-3 pt-4 border-t border-slate-200/60">
@@ -114,7 +114,7 @@
                     </div>
                     <div>
                         <h4 class="text-xs sm:text-sm font-bold text-slate-900 m-0">Bagus Kurniawan</h4>
-                        <p class="text-[11px] text-slate-500 font-medium m-0">Koordinator IT SMKN 2</p>
+                        <p class="text-[11px] text-slate-500 font-medium m-0">Koordinator IT &amp; Sistem</p>
                     </div>
                 </div>
             </div>

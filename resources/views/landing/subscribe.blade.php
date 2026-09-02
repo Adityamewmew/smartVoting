@@ -16,8 +16,8 @@
                 </div>
                 <span class="font-extrabold text-2xl tracking-tight text-gray-900">Smart<span class="text-blue-600">Voting</span></span>
             </a>
-            <h1 class="text-2xl font-black text-gray-900 tracking-tight mt-3">Pendaftaran Institusi Baru</h1>
-            <p class="text-xs text-gray-500 mt-1">Daftarkan sekolah atau organisasi Anda untuk memulai pemilihan digital.</p>
+            <h1 class="text-2xl font-black text-gray-900 tracking-tight mt-3">Pendaftaran Institusi / Organisasi</h1>
+            <p class="text-xs text-gray-500 mt-1">Daftarkan organisasi atau institusi Anda untuk memulai pemilihan digital.</p>
         </div>
 
         {{-- Flash Error --}}
@@ -57,7 +57,7 @@
 
                         <label class="border-2 rounded-2xl p-4 cursor-pointer transition-all flex flex-col justify-between hover:border-blue-400 {{ ($package ?? 'pro') === 'pro' ? 'border-blue-600 bg-blue-50/40' : 'border-gray-200' }}">
                             <div class="flex items-center justify-between">
-                                <span class="text-xs font-bold text-blue-700">Sekolah & OSIS</span>
+                                <span class="text-xs font-bold text-blue-700">Organisasi & Komunitas</span>
                                 <input type="radio" name="package" value="pro" class="text-blue-600 focus:ring-blue-500" {{ ($package ?? 'pro') === 'pro' ? 'checked' : '' }} />
                             </div>
                             <span class="text-lg font-black text-gray-900 mt-2">Rp 1.500.000</span>
@@ -77,29 +77,29 @@
 
                 {{-- 2. Data Institusi --}}
                 <div class="pt-4 border-t border-gray-100 space-y-4">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-700">Data Institusi / Sekolah</h3>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-700">Data Institusi / Organisasi</h3>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
                         <x-admin.input 
-                            label="Nama Institusi / Sekolah" 
+                            label="Nama Institusi / Organisasi" 
                             name="institution_name" 
                             :value="old('institution_name')" 
-                            placeholder="Contoh: SMA Negeri 1 Jakarta" 
+                            placeholder="Contoh: Asosiasi / Organisasi Anda" 
                             required="true" 
                         />
 
                         @php
                             $types = [
-                                'school' => 'Sekolah (SMP/SMA/SMK)',
-                                'campus' => 'Kampus / Universitas',
-                                'organization' => 'Organisasi / Komunitas',
+                                'organization' => 'Organisasi / Komunitas / Asosiasi',
+                                'school' => 'Pendidikan / Sekolah / Kampus',
+                                'company' => 'Perusahaan / Lembaga',
                             ];
                         @endphp
                         <x-admin.select 
-                            label="Tipe Institusi" 
+                            label="Tipe Organisasi" 
                             name="type" 
                             :options="$types" 
-                            :value="old('type', 'school')" 
+                            :value="old('type', 'organization')" 
                             required="true" 
                         />
                     </div>
@@ -107,7 +107,7 @@
 
                 {{-- 3. Akun Administrator --}}
                 <div class="pt-4 border-t border-gray-100 space-y-4">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-700">Akun Administrator Sekolah</h3>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-700">Akun Administrator</h3>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-start">
                         <x-admin.input 

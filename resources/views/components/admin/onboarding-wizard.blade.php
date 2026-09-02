@@ -18,7 +18,7 @@
     $nextActiveStep = collect($steps)->firstWhere('is_completed', false)['step'] ?? null;
 @endphp
 
-<x-admin.card {{ $attributes->merge(['class' => 'p-6 sm:p-7 overflow-hidden']) }}>
+<x-admin.card {{ $attributes->merge(['class' => 'p-6 sm:p-8 overflow-hidden']) }}>
     {{-- Header & Progress Bar --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 mb-6 border-b border-gray-100">
         <div>
@@ -26,7 +26,7 @@
             <p class="text-xs sm:text-sm text-gray-500 mt-1">Selesaikan tahapan berikut untuk memulai pemungutan suara di institusi Anda.</p>
         </div>
 
-        <div class="bg-gray-50/80 p-3.5 sm:p-4 rounded-2xl border border-gray-200/80 min-w-[240px] shrink-0">
+        <div class="bg-gray-50/80 p-4 rounded-2xl border border-gray-200/80 min-w-[240px] shrink-0">
             <div class="flex items-center justify-between text-xs font-bold text-gray-700 mb-2">
                 <span>Progres Persiapan</span>
                 <span class="text-blue-600 font-black">{{ $completedCount }}/{{ $totalSteps }} ({{ $percentage }}%)</span>
@@ -44,10 +44,10 @@
                 $isCompleted = $st['is_completed'] ?? false;
                 $isCurrentNext = ($st['step'] === $nextActiveStep);
             @endphp
-            <div class="p-5 rounded-2xl border border-gray-200/80 bg-white shadow-2xs hover:shadow-xs transition-all duration-200 flex flex-col justify-between">
+            <div class="p-4 sm:p-6 rounded-2xl border border-gray-200/80 bg-white shadow-2xs hover:shadow-xs transition-all duration-200 flex flex-col justify-between">
                 
                 {{-- Step Body --}}
-                <div class="flex items-start gap-3.5 mb-5">
+                <div class="flex items-start gap-4 mb-6">
                     @if($isCompleted)
                         {{-- Completed: Emerald Button Style --}}
                         <span class="size-9 rounded-xl bg-gradient-to-b from-emerald-500 to-emerald-600 text-white font-bold text-sm shrink-0 shadow-md shadow-emerald-500/25 border-t border-white/25 flex items-center justify-center">

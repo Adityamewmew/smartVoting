@@ -89,9 +89,9 @@
                                     size="icon-sm"
                                     color="outline-secondary"
                                     href="{{ route('admin.elections.detail', $d->id) }}"
-                                    title="Kelola Paslon & Detail"
+                                    title="Lihat Detail & Paslon"
                                     class="hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200">
-                                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                    <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
                                 </x-admin.button>
                                 <x-admin.button
                                     size="icon-sm"

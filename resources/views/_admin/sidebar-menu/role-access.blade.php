@@ -5,7 +5,7 @@
 @section('content')
     <div class="space-y-6">
         {{-- Header Section --}}
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-5 sm:p-6 rounded-2xl border border-gray-100 shadow-xs">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-4 sm:p-6 rounded-2xl border border-gray-100 shadow-xs">
             <div class="flex items-center gap-3">
                 <x-admin.button href="{{ route('admin.sidebar_menu.index') }}" size="icon-md" color="secondary">
                     <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
@@ -47,7 +47,7 @@
 
                     <div class="bg-white overflow-hidden shadow-xs rounded-2xl border border-gray-100">
                         {{-- Group header --}}
-                        <div class="px-5 py-3.5 border-b border-gray-100 bg-gray-50/70 flex items-center justify-between">
+                        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/70 flex items-center justify-between">
                             <div class="flex items-center gap-x-2">
                                 <x-admin.badge color="primary" :text="$groupLabel" />
                                 <span class="text-xs text-gray-500 font-medium">
@@ -98,19 +98,19 @@
                                         <div class="pb-2.5 px-4 space-y-1 border-t border-dashed border-gray-200/60 pt-2">
                                             @foreach ($menu->children as $child)
                                                 <label class="flex items-center gap-x-3 px-3 py-2 cursor-pointer rounded-lg transition-all
-                                                    {{ $child->is_enabled ? 'bg-blue-50 text-blue-900 font-medium' : 'hover:bg-gray-50 text-gray-700' }}">
+                                                    {{ $child->is_enabled ? 'bg-blue-50 text-blue-950 font-medium' : 'hover:bg-slate-50 text-slate-700' }}">
                                                     <div class="size-4 shrink-0 flex items-center justify-center">
-                                                        <span class="size-1.5 rounded-full {{ $child->is_enabled ? 'bg-blue-600' : 'bg-gray-300' }}"></span>
+                                                        <span class="size-1.5 rounded-full {{ $child->is_enabled ? 'bg-blue-600' : 'bg-slate-300' }}"></span>
                                                     </div>
                                                     <input type="checkbox" name="menu_ids[]" value="{{ $child->id }}"
-                                                        class="menu-checkbox shrink-0 size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                        class="menu-checkbox shrink-0 size-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
                                                         data-group="{{ $groupId }}"
                                                         {{ $child->is_enabled ? 'checked' : '' }}>
                                                     <span class="text-xs flex-1">
                                                         {{ $child->label }}
                                                     </span>
                                                     @if ($child->route_name)
-                                                        <span class="text-[11px] font-mono text-gray-400 hidden sm:block">
+                                                        <span class="text-[11px] font-mono {{ $child->is_enabled ? 'text-blue-700' : 'text-slate-400' }} hidden sm:block">
                                                             {{ $child->route_name }}
                                                         </span>
                                                     @endif

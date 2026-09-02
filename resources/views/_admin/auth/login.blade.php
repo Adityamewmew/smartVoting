@@ -16,7 +16,7 @@
         </div>
 
         {{-- Login Card --}}
-        <div class="bg-white p-7 sm:p-8 rounded-2xl border border-gray-100 shadow-sm space-y-5">
+        <div class="bg-white p-6 sm:p-8 rounded-2xl border border-gray-100 shadow-sm space-y-6">
             @error('login_error')
                 <div class="p-4 bg-red-50 border border-red-200 text-xs font-semibold text-red-700 rounded-xl flex items-center gap-2">
                     <svg class="size-4 shrink-0 text-red-500" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>

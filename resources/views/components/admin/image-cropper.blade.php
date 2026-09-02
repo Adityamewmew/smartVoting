@@ -13,9 +13,14 @@
     $hasExistingPhoto = !empty($value);
     $existingPhotoUrl = $hasExistingPhoto ? Storage::url($value) : null;
     $isSquare = ($outputWidth === $outputHeight);
-    $ratioText = $isSquare ? 'Auto 1:1' : 'Auto 3:4';
-    $descText = $isSquare ? 'Rasio square 1:1 • Otomatis terpotong' : 'Rasio portrait 3:4 • Otomatis terpotong';
-    $placeholderText = $isSquare ? 'Square 1:1 • Otomatis crop instan' : 'Portrait 3:4 • Otomatis crop instan';
+    $ratioLabel = $isSquare ? '1:1 (Square)' : '3:4 (Portrait)';
+    $descText = $isSquare ? 'Rasio 1:1 • Sesuaikan posisi & zoom' : 'Rasio 3:4 • Sesuaikan posisi & zoom';
+    $placeholderText = $isSquare ? 'Rasio 1:1 • Klik atau seret foto ke sini' : 'Rasio 3:4 • Klik atau seret foto ke sini';
+
+    $viewportWidth = $isSquare ? 220 : 210;
+    $viewportHeight = $isSquare ? 220 : 280;
+    $boundaryWidth = 280;
+    $boundaryHeight = $isSquare ? 280 : 330;
 @endphp
 
 <div class="image-cropper-component w-full" id="cropper-wrapper-{{ $cleanId }}" data-name="{{ $name }}">
@@ -39,7 +44,7 @@
     {{-- Main Container Card --}}
     <div id="drop-area-{{ $cleanId }}" class="border border-dashed border-gray-300 rounded-2xl p-4 bg-slate-50/50 hover:bg-slate-50 transition-all">
         
-        {{-- Preview Box (Shown when photo exists or auto-cropped) --}}
+        {{-- Preview Box (Shown when photo exists or cropped) --}}
         <div id="preview-container-{{ $cleanId }}" class="{{ $hasExistingPhoto ? 'flex' : 'hidden' }} items-center gap-4">
             <div class="relative size-20 sm:w-20 sm:h-26 rounded-xl overflow-hidden bg-slate-200 border border-gray-200 shadow-2xs shrink-0 flex items-center justify-center">
                 <img 
@@ -52,10 +57,10 @@
             <div class="min-w-0 flex-1">
                 <div class="flex items-center gap-2">
                     <p id="preview-filename-{{ $cleanId }}" class="text-xs sm:text-sm font-bold text-gray-900 truncate">
-                        {{ $hasExistingPhoto ? 'Foto tersimpan' : 'Foto terpilih' }}
+                        {{ $hasExistingPhoto ? 'Foto tersimpan' : 'Foto siap digunakan' }}
                     </p>
-                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
-                        {{ $ratioText }}
+                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
+                        {{ $ratioLabel }}
                     </span>
                 </div>
                 <p class="text-[11px] text-gray-500 mt-0.5">{{ $descText }}</p>
@@ -106,76 +111,84 @@
     const previewImg_{{ $cleanId }} = document.getElementById('preview-img-{{ $cleanId }}');
     const previewFilename_{{ $cleanId }} = document.getElementById('preview-filename-{{ $cleanId }}');
 
+    let currentRawFile_{{ $cleanId }} = null;
+
     window.triggerFileInput_{{ $cleanId }} = function() {
         fileInput_{{ $cleanId }}.click();
     };
 
-    function autoCenterCrop_{{ $cleanId }}(imgElement, rawFile) {
-        const targetRatio = {{ $outputWidth }} / {{ $outputHeight }}; // 3/4
-        const srcWidth = imgElement.naturalWidth || imgElement.width;
-        const srcHeight = imgElement.naturalHeight || imgElement.height;
-        const srcRatio = srcWidth / srcHeight;
-
-        let cropX = 0, cropY = 0, cropWidth = srcWidth, cropHeight = srcHeight;
-        if (srcRatio > targetRatio) {
-            cropWidth = Math.round(srcHeight * targetRatio);
-            cropX = Math.round((srcWidth - cropWidth) / 2);
-        } else {
-            cropHeight = Math.round(srcWidth / targetRatio);
-            cropY = Math.round((srcHeight - cropHeight) / 2);
-        }
-
-        const canvas = document.createElement('canvas');
-        canvas.width = {{ $outputWidth }};
-        canvas.height = {{ $outputHeight }};
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(imgElement, cropX, cropY, cropWidth, cropHeight, 0, 0, canvas.width, canvas.height);
-
-        canvas.toBlob(function(blob) {
-            if (!blob) return;
-
-            const originalName = rawFile ? rawFile.name.replace(/\.[^/.]+$/, "") : "photo";
-            const fileName = originalName + "_cropped.jpg";
-            const croppedFile = new File([blob], fileName, { type: 'image/jpeg' });
-
-            try {
-                const dt = new DataTransfer();
-                dt.items.add(croppedFile);
-                fileInput_{{ $cleanId }}.files = dt.files;
-            } catch(e) {}
-
-            const objectUrl = URL.createObjectURL(blob);
-            previewImg_{{ $cleanId }}.src = objectUrl;
-            previewFilename_{{ $cleanId }}.textContent = rawFile ? rawFile.name : fileName;
-
-            dropzone_{{ $cleanId }}.classList.add('hidden');
-            dropzone_{{ $cleanId }}.classList.remove('flex');
-            previewContainer_{{ $cleanId }}.classList.remove('hidden');
-            previewContainer_{{ $cleanId }}.classList.add('flex');
-        }, 'image/jpeg', 0.92);
-    }
-
-    function processSelectedFile_{{ $cleanId }}(file) {
+    async function handleCropProcess_{{ $cleanId }}(file) {
         if (!file || !file.type.match(/^image\//)) {
             alert('File yang dipilih harus berupa gambar (JPG, PNG, WEBP).');
             return;
         }
 
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const img = new Image();
-            img.onload = function() {
-                autoCenterCrop_{{ $cleanId }}(img, file);
-            };
-            img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
+        if (!window.cropImageWithCroppie) {
+            console.error('cropImageWithCroppie function is not available.');
+            return;
+        }
+
+        currentRawFile_{{ $cleanId }} = file;
+
+        try {
+            const croppedBlob = await window.cropImageWithCroppie(file, {
+                title: 'Sesuaikan {{ $label }}',
+                subtitle: 'Geser & atur zoom bingkai {{ $ratioLabel }}.',
+                confirmLabel: 'Gunakan Foto',
+                outputWidth: {{ $outputWidth }},
+                outputHeight: {{ $outputHeight }},
+                viewportWidth: {{ $viewportWidth }},
+                viewportHeight: {{ $viewportHeight }},
+                boundaryWidth: {{ $boundaryWidth }},
+                boundaryHeight: {{ $boundaryHeight }}
+            });
+
+            const baseName = (file.name || 'photo').replace(/\.[^.]+$/, '');
+            const croppedFile = new File([croppedBlob], `${baseName}_cropped.jpg`, {
+                type: 'image/jpeg',
+                lastModified: Date.now()
+            });
+
+            try {
+                const dt = new DataTransfer();
+                dt.items.add(croppedFile);
+                fileInput_{{ $cleanId }}.files = dt.files;
+            } catch(e) {
+                console.error("DataTransfer error:", e);
+            }
+
+            const objectUrl = URL.createObjectURL(croppedBlob);
+            previewImg_{{ $cleanId }}.src = objectUrl;
+            previewFilename_{{ $cleanId }}.textContent = croppedFile.name;
+
+            dropzone_{{ $cleanId }}.classList.add('hidden');
+            dropzone_{{ $cleanId }}.classList.remove('flex');
+            previewContainer_{{ $cleanId }}.classList.remove('hidden');
+            previewContainer_{{ $cleanId }}.classList.add('flex');
+        } catch (error) {
+            if (error?.message && error.message !== 'cancelled') {
+                alert(error.message);
+            }
+        }
     }
+
+
+    window.removePhoto_{{ $cleanId }} = function() {
+        fileInput_{{ $cleanId }}.value = '';
+        currentRawFile_{{ $cleanId }} = null;
+        previewImg_{{ $cleanId }}.src = '';
+        previewFilename_{{ $cleanId }}.textContent = '';
+
+        previewContainer_{{ $cleanId }}.classList.add('hidden');
+        previewContainer_{{ $cleanId }}.classList.remove('flex');
+        dropzone_{{ $cleanId }}.classList.remove('hidden');
+        dropzone_{{ $cleanId }}.classList.add('flex');
+    };
 
     fileInput_{{ $cleanId }}.addEventListener('change', function(e) {
         const files = e.target.files;
         if (!files || files.length === 0) return;
-        processSelectedFile_{{ $cleanId }}(files[0]);
+        handleCropProcess_{{ $cleanId }}(files[0]);
     });
 
     // Drag and Drop Events
@@ -199,18 +212,8 @@
         const dt = e.dataTransfer;
         const files = dt ? dt.files : null;
         if (files && files.length > 0) {
-            processSelectedFile_{{ $cleanId }}(files[0]);
+            handleCropProcess_{{ $cleanId }}(files[0]);
         }
     });
-
-    window.removePhoto_{{ $cleanId }} = function() {
-        fileInput_{{ $cleanId }}.value = '';
-        previewImg_{{ $cleanId }}.src = '';
-        previewFilename_{{ $cleanId }}.textContent = '';
-        previewContainer_{{ $cleanId }}.classList.add('hidden');
-        previewContainer_{{ $cleanId }}.classList.remove('flex');
-        dropzone_{{ $cleanId }}.classList.remove('hidden');
-        dropzone_{{ $cleanId }}.classList.add('flex');
-    };
 })();
 </script>

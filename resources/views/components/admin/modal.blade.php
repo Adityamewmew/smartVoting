@@ -22,7 +22,7 @@
 
             {{-- Header --}}
             <div
-                class="flex justify-between items-center py-3.5 px-4 sm:px-6 border-b border-gray-100 bg-gray-50/50">
+                class="flex justify-between items-center py-4 px-4 sm:px-6 border-b border-gray-100 bg-gray-50/50">
                 <div class="flex items-center gap-3 min-w-0">
                     @if ($icon)
                         <div class="p-2 bg-blue-50 text-blue-600 rounded-xl shrink-0">
@@ -64,12 +64,12 @@
             {{-- Footer --}}
             @if ($footer)
                 <div
-                    class="flex flex-col-reverse sm:flex-row justify-end items-stretch sm:items-center gap-2 py-3.5 px-4 sm:px-6 border-t border-gray-100 bg-gray-50/30">
+                    class="flex flex-col-reverse sm:flex-row justify-end items-stretch sm:items-center gap-2 py-4 px-4 sm:px-6 border-t border-gray-100 bg-gray-50/30">
                     {{ $footer }}
                 </div>
             @elseif($formAction)
                 <div
-                    class="flex flex-col-reverse sm:flex-row justify-end items-stretch sm:items-center gap-2 py-3.5 px-4 sm:px-6 border-t border-gray-100 bg-gray-50/30">
+                    class="flex flex-col-reverse sm:flex-row justify-end items-stretch sm:items-center gap-2 py-4 px-4 sm:px-6 border-t border-gray-100 bg-gray-50/30">
                     <button type="button"
                         class="py-2 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-xl border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 active:scale-95 transition-colors cursor-pointer"
                         data-hs-overlay="#{{ $id }}">

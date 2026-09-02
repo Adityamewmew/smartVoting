@@ -18,7 +18,7 @@
 
         {{-- Form Card --}}
         <div class="bg-white p-6 sm:p-8 rounded-2xl border border-gray-200/80 shadow-xs">
-            <form action="{{ route('admin.payments.doUpdate', $data->id) }}" method="POST" class="space-y-5">
+            <form action="{{ route('admin.payments.doUpdate', $data->id) }}" method="POST" class="space-y-6">
                 @csrf
 
                 <div>

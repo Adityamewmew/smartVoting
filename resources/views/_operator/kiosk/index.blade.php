@@ -45,20 +45,20 @@
             </div>
 
             {{-- 3 Summary Stat Cards --}}
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-6 sm:mt-8 relative z-10">
-                <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-blue-50/70 to-blue-100/40 border border-blue-200/80 shadow-2xs">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6 sm:mt-8 relative z-10">
+                <div class="rounded-2xl p-4 sm:p-6 bg-gradient-to-br from-blue-50/70 to-blue-100/40 border border-blue-200/80 shadow-2xs">
                     <p class="text-xs font-bold uppercase tracking-wider text-blue-700 mb-1">Pemilihan Aktif</p>
                     <p class="text-2xl font-black text-blue-950 tracking-tight">
                         {{ $totalElections }} <span class="text-xs font-semibold text-blue-600 ml-0.5">Event</span>
                     </p>
                 </div>
-                <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-emerald-50/70 to-emerald-100/40 border border-emerald-200/80 shadow-2xs">
+                <div class="rounded-2xl p-4 sm:p-6 bg-gradient-to-br from-emerald-50/70 to-emerald-100/40 border border-emerald-200/80 shadow-2xs">
                     <p class="text-xs font-bold uppercase tracking-wider text-emerald-700 mb-1">Total Suara Masuk</p>
                     <p class="text-2xl font-black text-emerald-950 tracking-tight">
                         {{ $totalVotesAll }} <span class="text-xs font-semibold text-emerald-600 ml-0.5">Suara</span>
                     </p>
                 </div>
-                <div class="rounded-2xl p-4 sm:p-5 bg-gradient-to-br from-indigo-50/70 to-indigo-100/40 border border-indigo-200/80 shadow-2xs">
+                <div class="rounded-2xl p-4 sm:p-6 bg-gradient-to-br from-indigo-50/70 to-indigo-100/40 border border-indigo-200/80 shadow-2xs">
                     <p class="text-xs font-bold uppercase tracking-wider text-indigo-700 mb-1">Sesi Bilik Berlangsung</p>
                     <p class="text-2xl font-black text-indigo-950 tracking-tight">
                         {{ $activeSessionsAll }} <span class="text-xs font-semibold text-indigo-600 ml-0.5">Sesi</span>
@@ -144,12 +144,12 @@
             <div class="space-y-4">
                 @forelse($election->candidates as $c)
                     @php $padOrder = str_pad($c->order_number, 2, '0', STR_PAD_LEFT); @endphp
-                    <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 hover:shadow-md transition-all relative overflow-hidden">
+                    <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-6 hover:shadow-md transition-all relative overflow-hidden">
                         <div class="absolute top-0 right-0 bg-gradient-to-br from-blue-500 to-blue-600 text-white w-10 sm:w-12 h-10 sm:h-12 flex items-center justify-center font-black text-base sm:text-lg rounded-bl-2xl shadow-xs border-b border-l border-white/30">
                             {{ $padOrder }}
                         </div>
 
-                        <div class="flex items-center gap-3.5 pr-10 sm:pr-12">
+                        <div class="flex items-center gap-4 pr-10 sm:pr-12">
                             <div class="flex items-center gap-1.5 shrink-0">
                                 @if($c->photo_path)
                                     <img src="{{ Storage::url($c->photo_path) }}" alt="Foto {{ $c->chairman_name }}" class="w-10 h-13 sm:w-12 sm:h-16 object-cover rounded-xl border border-slate-200 shadow-2xs">

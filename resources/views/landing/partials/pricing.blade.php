@@ -1,82 +1,45 @@
-<!-- PRICING & SUBSCRIPTION SECTION -->
-<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" id="pricing">
-    <div class="text-center max-w-3xl mx-auto mb-10">
-        <h2 class="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight leading-tight">
-            Pilihan Paket Berlangganan
-        </h2>
-    </div>
+<!-- CTA GET STARTED SECTION -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" id="cta-start">
+    <div class="rounded-[40px] p-8 sm:p-14 lg:p-16 text-white text-center shadow-2xl relative overflow-hidden"
+        style="background: linear-gradient(135deg, #1e40af 0%, #2563eb 50%, #1d4ed8 100%);">
+        
+        <!-- Subtle background glow -->
+        <div class="absolute -top-24 -right-24 size-96 bg-sky-400/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-24 size-96 bg-blue-600/30 rounded-full blur-3xl pointer-events-none"></div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
-        <!-- Starter Plan -->
-        <x-admin.card class="p-8 rounded-3xl border border-blue-100/70 shadow-card flex flex-col justify-between">
-            <div>
-                <div class="mb-6">
-                    <h3 class="text-lg font-bold text-slate-900 m-0">Paket Uji Coba / Trial</h3>
-                    <p class="text-xs text-slate-500 mt-1">Cocok untuk uji coba sistem dan simulasi 1 pemilihan.</p>
-                </div>
-                <div class="mb-6">
-                    <span class="text-4xl font-black text-slate-900">Gratis</span>
-                    <span class="text-xs text-slate-500">/ 14 hari trial</span>
-                </div>
-                <x-admin.button href="{{ route('subscribe', ['package' => 'starter']) }}" color="secondary" size="md" class="w-full mb-6">
-                    Mulai Trial Gratis
-                </x-admin.button>
-                <ul class="space-y-3 text-xs text-slate-600 font-medium p-0 list-none">
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-600"></i> 1 Event Pemilihan Aktif</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-600"></i> Maksimal 3 Paslon</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-600"></i> Layar Kiosk TPS Sentuh</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-blue-600"></i> Rekapitulasi Standar</li>
-                </ul>
+        <div class="max-w-3xl mx-auto relative z-10">
+            <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold bg-white/15 text-blue-100 backdrop-blur-xs mb-4 border border-white/20">
+                <i class="fa-solid fa-bolt text-amber-300"></i>
+                <span>Akses Cepat &amp; Praktis</span>
+            </span>
+
+            <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight mb-4">
+                Siap Selenggarakan Pemilihan yang Cepat, Transparan, &amp; Modern?
+            </h2>
+
+            <p class="text-sm sm:text-base text-blue-100 max-w-2xl mx-auto mb-8 leading-relaxed font-normal">
+                Mulai buat event pemilihan digital pertama institusi Anda sekarang. Dilengkapi bilik suara sentuh, verifikasi fisik teruji, serta rekapitulasi real-time instan.
+            </p>
+
+            <!-- Feature Pills -->
+            <div class="flex flex-wrap justify-center items-center gap-3 sm:gap-4 mb-8 text-xs font-semibold text-blue-50">
+                <span class="flex items-center gap-2 bg-white/10 px-3.5 py-1.5 rounded-xl border border-white/10">
+                    <i class="fa-solid fa-circle-check text-emerald-300"></i> 100% Suara Anonim
+                </span>
+                <span class="flex items-center gap-2 bg-white/10 px-3.5 py-1.5 rounded-xl border border-white/10">
+                    <i class="fa-solid fa-circle-check text-emerald-300"></i> Setup TPS &lt; 5 Menit
+                </span>
+                <span class="flex items-center gap-2 bg-white/10 px-3.5 py-1.5 rounded-xl border border-white/10">
+                    <i class="fa-solid fa-circle-check text-emerald-300"></i> Rekapitulasi Real-Time
+                </span>
             </div>
-        </x-admin.card>
 
-        <!-- Pro Plan -->
-        <div class="rounded-3xl p-8 text-white shadow-2xl flex flex-col justify-between relative transform lg:-translate-y-4"
-            style="background: linear-gradient(180deg, #2563EB 0%, #1D4ED8 100%);">
-            <div>
-                <div class="mb-6">
-                    <span class="text-[10px] font-black uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full inline-block mb-2">Paling Populer</span>
-                    <h3 class="text-xl font-black text-white m-0">Paket Sekolah &amp; OSIS</h3>
-                    <p class="text-xs text-blue-100 mt-1">Solusi penuh pemilihan umum sekolah dan kampus 1 tahun penuh.</p>
-                </div>
-                <div class="mb-6">
-                    <span class="text-4xl font-black text-white">Rp 1.500.000</span>
-                    <span class="text-xs text-blue-200">/ tahun</span>
-                </div>
-                <x-admin.button href="{{ route('subscribe', ['package' => 'pro']) }}" color="secondary" size="lg" class="w-full bg-white text-blue-700 hover:bg-slate-50 font-black mb-6">
-                    Daftar Paket Pro
+            <!-- CTA Button -->
+            <div class="flex justify-center items-center">
+                <x-admin.button href="{{ route('auth.google') }}" color="secondary" size="lg" class="bg-white text-blue-700 hover:bg-slate-50 font-black px-8 py-3.5 shadow-xl hover:scale-105 transition-all duration-200" icon='<svg class="size-5 inline-block" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.99 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>'>
+                    <span>Coba Aplikasi Sekarang</span>
                 </x-admin.button>
-                <ul class="space-y-3 text-[13px] text-blue-50 font-medium p-0 list-none">
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-300"></i> Multi-Event Tanpa Batas</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-300"></i> Paslon &amp; Foto HD Tanpa Batas</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-300"></i> Multi-Bilik Kiosk TPS Serentak</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-300"></i> Live Polling Telemetri Real-Time</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-amber-300"></i> Cetak Berita Acara PDF Resmi</li>
-                </ul>
             </div>
         </div>
-
-        <!-- Custom / Enterprise Plan -->
-        <x-admin.card class="p-8 rounded-3xl border border-blue-100/70 shadow-card flex flex-col justify-between">
-            <div>
-                <div class="mb-6">
-                    <h3 class="text-lg font-bold text-slate-900 m-0">Paket Kampus &amp; Organisasi</h3>
-                    <p class="text-xs text-slate-500 mt-1">Untuk pemilu raya universitas multi-fakultas atau korporat.</p>
-                </div>
-                <div class="mb-6">
-                    <span class="text-4xl font-black text-slate-900">Rp 3.500.000</span>
-                    <span class="text-xs text-slate-500">/ tahun</span>
-                </div>
-                <x-admin.button href="{{ route('subscribe', ['package' => 'enterprise']) }}" color="secondary" size="md" class="w-full mb-6">
-                    Daftar Paket Enterprise
-                </x-admin.button>
-                <ul class="space-y-3 text-xs text-slate-600 font-medium p-0 list-none">
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-600"></i> Integrasi Server Khusus</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-600"></i> Pendampingan Teknis Hari-H</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-600"></i> Kustomisasi Domain &amp; Logo</li>
-                    <li class="flex items-center gap-2"><i class="fa-solid fa-check text-brand-600"></i> Audit Keamanan &amp; Database Terisolasi</li>
-                </ul>
-            </div>
-        </x-admin.card>
     </div>
 </section>

@@ -20,7 +20,7 @@
             <form navigate-form action="{{ route('admin.sidebar_menu.doUpdate', $data->id) }}" method="POST" class="space-y-6">
                 @csrf
 
-                <div class="space-y-5">
+                <div class="space-y-6">
                     {{-- Label --}}
                     <x-admin.input
                         type="text"
@@ -33,7 +33,7 @@
                     />
 
                     {{-- Group & Parent --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                         @php
                             $groupOptions = [];
                             foreach ($groups as $g) {
@@ -97,7 +97,7 @@
                     />
 
                     {{-- Sort Order & Status --}}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                         <x-admin.input
                             type="number"
                             id="sort_order"

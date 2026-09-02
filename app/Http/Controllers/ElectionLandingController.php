@@ -41,6 +41,7 @@ class ElectionLandingController extends Controller
 
         return view('landing.election', [
             'election' => $election,
+            'institution' => $institution ?? null,
             'candidates' => $candidates,
         ]);
     }

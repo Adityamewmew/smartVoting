@@ -133,7 +133,7 @@ class ElectionController extends Controller
         $candidatesList = $candidatesListResponse['data']['list'] ?? [];
 
         // Fetch recent voting sessions (T-07)
-        $processSessions = $this->livePollingUsecase->getRecentSessions(20, $id);
+        $processSessions = $this->livePollingUsecase->getRecentSessions(10, $id);
         $recentSessions = $processSessions['data']['sessions'] ?? [];
 
         return view('_admin.elections.detail', [

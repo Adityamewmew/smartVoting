@@ -1,6 +1,6 @@
 @extends('kiosk.layout')
 
-@section('title', 'Bilik Suara — ' . $election->name)
+@section('title', 'Bilik Suara: ' . $election->name)
 
 @section('content')
 <div class="flex-grow flex flex-col p-4 sm:p-8 relative min-h-screen">
@@ -50,7 +50,7 @@
             </p>
 
             {{-- Auto Countdown Timer --}}
-            <div class="w-full flex items-center justify-center bg-gray-50 border border-gray-200/70 py-3.5 px-4 rounded-2xl mb-5" aria-live="polite">
+            <div class="w-full flex items-center justify-center bg-gray-50 border border-gray-200/70 py-4 px-4 rounded-2xl mb-6" aria-live="polite">
                 <div class="flex items-center gap-3 text-xs sm:text-sm text-gray-600 font-medium">
                     <svg class="animate-spin size-4 text-blue-600 shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -68,7 +68,7 @@
 
     {{-- Confirmation Modal --}}
     <aside id="confirm-modal" class="modal-overlay fixed inset-0 z-40 hidden items-center justify-center p-4 opacity-0 transition-opacity duration-300" role="dialog" aria-modal="true" aria-labelledby="confirm-modal-title">
-        <article class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-7 sm:p-8 transform scale-95 transition-transform duration-300 flex flex-col items-center border border-gray-100 text-center" id="confirm-modal-content">
+        <article class="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-8 transform scale-95 transition-transform duration-300 flex flex-col items-center border border-gray-100 text-center" id="confirm-modal-content">
 
             <div class="size-16 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-4 shadow-xs border border-blue-100">
                 <svg xmlns="http://www.w3.org/2000/svg" class="size-8 text-blue-600" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 12 2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
@@ -80,19 +80,19 @@
                 Apakah Anda yakin ingin memberikan suara untuk:
             </p>
 
-            <div class="bg-blue-50/80 border border-blue-100 rounded-2xl p-4 mb-5 w-full text-center">
+            <div class="bg-blue-50/80 border border-blue-100 rounded-2xl p-4 mb-6 w-full text-center">
                 <div id="confirm-candidate-pad" class="text-xs font-bold uppercase tracking-wider text-blue-600 mb-1"></div>
                 <div id="confirm-candidate-name" class="text-gray-900 font-extrabold text-base sm:text-lg leading-snug"></div>
             </div>
 
-            <div class="bg-amber-50 border border-amber-200/80 w-full p-3.5 rounded-xl mb-6 text-center" role="alert">
+            <div class="bg-amber-50 border border-amber-200/80 w-full p-4 rounded-xl mb-6 text-center" role="alert">
                 <p class="text-xs text-amber-800 font-semibold flex items-center justify-center gap-2 m-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="size-4 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                     Pilihan yang sudah dikonfirmasi bersifat final dan tidak dapat diubah.
                 </p>
             </div>
 
-            <footer class="flex gap-3 w-full">
+            <footer class="flex gap-4 w-full">
                 <button type="button" onclick="closeConfirm()" class="btn-secondary flex-1 py-3 text-sm font-bold">
                     Batal
                 </button>

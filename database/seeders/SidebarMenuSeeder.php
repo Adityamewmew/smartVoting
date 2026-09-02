@@ -51,7 +51,7 @@ class SidebarMenuSeeder extends Seeder
         $this->assignAccess($dashboardId, $allRoles, $now);
 
         $institutionsId = DB::table(DatabaseConst::SIDEBAR_MENU())->insertGetId([
-            'label' => 'Institusi / Sekolah',
+            'label' => 'Data User',
             'route_name' => 'admin.institutions.index',
             'icon' => '_admin._layout.icons.sidebar.data_master',
             'group' => 'utama',

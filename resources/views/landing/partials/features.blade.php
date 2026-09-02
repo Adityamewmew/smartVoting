@@ -18,7 +18,7 @@
                     Antarmuka layar sentuh ramah pemilih dengan countdown timer otomatis, pop-up konfirmasi pilihan anti-salah klik, dan reset sesi kilat untuk pemilih selanjutnya.
                 </p>
             </div>
-            <div class="flex items-center justify-between bg-slate-50/90 rounded-2xl px-5 py-3.5 border border-slate-100 text-xs font-semibold text-slate-800">
+            <div class="flex items-center justify-between bg-slate-50/90 rounded-2xl px-6 py-4 border border-slate-100 text-xs font-semibold text-slate-800">
                 <span>Moda Bilik</span>
                 <span class="flex items-center gap-1.5 text-blue-700 bg-blue-50/90 border border-blue-200/80 px-3 py-1 rounded-lg text-xs font-bold">
                     <span class="w-2 h-2 rounded-full bg-blue-600"></span> Tablet / PC Kiosk
@@ -37,7 +37,7 @@
                     Sistem membuka dan mengunci bilik secara otomatis sesuai jam sesi yang ditentukan. Panitia memantau trafik bilik suara tanpa mengorbankan privasi pemilih.
                 </p>
             </div>
-            <div class="flex items-center justify-between bg-slate-50/90 rounded-2xl px-5 py-3.5 border border-slate-100 text-xs font-semibold text-slate-800">
+            <div class="flex items-center justify-between bg-slate-50/90 rounded-2xl px-6 py-4 border border-slate-100 text-xs font-semibold text-slate-800">
                 <span>Status Pemungutan</span>
                 <span class="flex items-center gap-1.5 text-emerald-700 bg-emerald-50/90 border border-emerald-200/80 px-3 py-1 rounded-lg text-xs font-bold">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Live Sinkronisasi
@@ -70,10 +70,10 @@
                 </div>
                 <h3 class="text-lg font-bold text-slate-900 mb-2">Cetak Berita Acara PDF Resmi</h3>
                 <p class="text-xs sm:text-[13px] text-slate-600 leading-relaxed mb-8 font-normal">
-                    Cetak hasil rekapitulasi, persentase suara, dan kolom tanda tangan saksi dalam 1 klik format dokumen siap lapor ke kepala sekolah / pimpinan institusi.
+                    Cetak hasil rekapitulasi, persentase suara, dan kolom tanda tangan saksi dalam 1 klik format dokumen siap lapor ke pimpinan organisasi / institusi.
                 </p>
             </div>
-            <div class="flex items-center justify-between bg-slate-50/90 rounded-2xl px-5 py-3.5 border border-slate-100 text-xs font-semibold text-slate-800">
+            <div class="flex items-center justify-between bg-slate-50/90 rounded-2xl px-6 py-4 border border-slate-100 text-xs font-semibold text-slate-800">
                 <span>Format Laporan</span>
                 <span class="flex items-center gap-1.5 text-amber-700 bg-amber-50/90 border border-amber-200/80 px-3 py-1 rounded-lg text-xs font-bold">
                     <i class="fa-solid fa-file-pdf text-amber-600"></i> A4 Standar PDF

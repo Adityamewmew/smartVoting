@@ -16,7 +16,7 @@
         'sm' => 'py-1.5 px-3 text-xs rounded-lg',
         'md' => 'py-2 px-4 text-sm rounded-xl',
         'lg' => 'py-2.5 px-5 text-sm sm:text-base rounded-xl',
-        'xl' => 'py-3.5 px-6 text-base rounded-xl',
+        'xl' => 'py-4 px-6 text-base rounded-xl',
         default => 'py-2 px-4 text-sm rounded-xl',
     };
 
@@ -34,7 +34,7 @@
     };
 
     $baseClasses =
-        'inline-flex items-center justify-center gap-x-2 transition-all duration-150 focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none cursor-pointer';
+        'inline-flex items-center justify-center gap-x-2 transition-all duration-150 focus:ring-2 focus:ring-blue-500/30 focus:ring-offset-2 focus:outline-hidden disabled:opacity-50 disabled:pointer-events-none cursor-pointer';
     $classes = implode(' ', array_filter([$class, $baseClasses, $sizeClasses, $colorClasses]));
 
     $attributes = $attributes->merge([

@@ -1,6 +1,6 @@
 @extends('_admin._layout.app')
 
-@section('title', 'Tambah Institusi / Sekolah Baru')
+@section('title', 'Tambah User')
 
 @section('content')
     <div class="max-w-3xl mx-auto space-y-6">
@@ -10,8 +10,8 @@
                 <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
             </x-admin.button>
             <div>
-                <h1 class="text-xl font-bold text-gray-900 tracking-tight">Tambah Institusi / Sekolah Baru</h1>
-                <p class="text-xs text-gray-500 mt-0.5">Daftarkan institusi baru dan buat akun administrator pertama secara otomatis.</p>
+                <h1 class="text-xl font-bold text-gray-900 tracking-tight">Tambah User</h1>
+                <p class="text-xs text-gray-500 mt-0.5">Daftarkan user baru dan buat akun administrator secara otomatis.</p>
             </div>
         </div>
 
@@ -21,28 +21,28 @@
                 @csrf
 
                 {{-- Bagian 1: Data Institusi --}}
-                <div class="space-y-5">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 items-start">
+                <div class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 items-start">
                         <x-admin.input 
-                            label="Nama Institusi / Sekolah" 
+                            label="Nama User / Organisasi" 
                             name="name" 
                             :value="old('name')" 
-                            placeholder="Contoh: SMK Negeri 1 Jakarta" 
+                            placeholder="Contoh: Asosiasi / Organisasi Anda" 
                             required="true" 
                         />
 
                         @php
                             $types = [
-                                'school' => 'Sekolah (SMA/SMK/SMP)',
-                                'campus' => 'Perguruan Tinggi',
-                                'organization' => 'Organisasi / Komunitas',
+                                'organization' => 'Organisasi / Komunitas / Asosiasi',
+                                'school' => 'Pendidikan / Sekolah / Kampus',
+                                'company' => 'Perusahaan / Lembaga',
                             ];
                         @endphp
                         <x-admin.select 
-                            label="Tipe Institusi" 
+                            label="Tipe Organisasi" 
                             name="type" 
                             :options="$types" 
-                            :value="old('type', 'school')" 
+                            :value="old('type', 'organization')" 
                             required="true" 
                         />
                     </div>
@@ -52,16 +52,16 @@
                 <div class="border-t border-gray-100 my-6"></div>
 
                 {{-- Bagian 2: Kredensial Administrator --}}
-                <div class="space-y-5">
+                <div class="space-y-6">
                     <x-admin.input 
-                        label="Nama Administrator / PIC" 
+                        label="Nama PIC / Admin" 
                         name="admin_name" 
                         :value="old('admin_name')" 
-                        placeholder="Contoh: Bpk. Haryono (Admin SMKN 1)" 
+                        placeholder="Contoh: Bpk. Haryono (PIC)" 
                         required="true" 
                     />
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                         <x-admin.input 
                             type="email" 
                             label="Email Login Admin" 
@@ -88,7 +88,7 @@
                     </x-admin.button>
                     <x-admin.button type="submit" color="primary" class="font-bold">
                         <svg class="size-4 shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                        <span>Simpan & Daftarkan Institusi</span>
+                        <span>Simpan & Daftarkan User</span>
                     </x-admin.button>
                 </div>
             </form>

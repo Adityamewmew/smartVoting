@@ -11,7 +11,7 @@
 @theme {
     /* Compound Typography */
     --font-poppins: 'Poppins', Arial, sans-serif;
-    --font-sans: 'Poppins', Arial, sans-serif;
+    --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
     /* Compound Colors */
     --color-ink: #000000;
@@ -338,4 +338,194 @@ textarea {
     align-items: center !important;
     justify-content: center !important;
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 2px 4px rgba(37,99,235,0.3) !important;
+}
+
+/* ============================================================
+   Croppie modal (tui-crop-modal)
+   ============================================================ */
+.tui-crop-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.tui-crop-modal.hidden {
+    display: none;
+}
+
+.tui-crop-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.tui-crop-modal__panel {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 28rem;
+    background: #ffffff;
+    border-radius: 1.25rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    border: 1px solid #f1f5f9;
+}
+
+.tui-crop-modal__header {
+    padding: 1.15rem 1.25rem 0.85rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.tui-crop-modal__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.tui-crop-modal__subtitle {
+    margin: 0.2rem 0 0;
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.tui-crop-modal__body {
+    padding: 1.25rem 1rem;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.tui-crop-modal__container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.tui-crop-modal .croppie-container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+}
+
+.tui-crop-modal .cr-boundary {
+    margin: 0 auto !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.tui-crop-modal .cr-viewport {
+    border: 2px solid #2563eb !important;
+    box-shadow: 0 0 0 2000px rgba(15, 23, 42, 0.65) !important;
+    border-radius: 0.5rem !important;
+}
+
+.tui-crop-modal .cr-slider-wrap {
+    width: 100% !important;
+    max-width: 240px !important;
+    margin: 1.15rem auto 0.25rem auto !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.tui-crop-modal .cr-slider {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 100% !important;
+    max-width: 220px !important;
+    height: 6px !important;
+    border-radius: 9999px !important;
+    background: #cbd5e1 !important;
+    outline: none !important;
+    accent-color: #2563eb !important;
+    cursor: pointer !important;
+}
+
+.tui-crop-modal .cr-slider::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 18px !important;
+    height: 18px !important;
+    border-radius: 50% !important;
+    background: #2563eb !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3) !important;
+    cursor: pointer !important;
+}
+
+.tui-crop-modal .cr-slider::-moz-range-thumb {
+    width: 18px !important;
+    height: 18px !important;
+    border-radius: 50% !important;
+    background: #2563eb !important;
+    border: 2px solid #ffffff !important;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3) !important;
+    cursor: pointer !important;
+}
+
+.tui-crop-modal__footer {
+    display: flex;
+    gap: 0.75rem;
+    padding: 0.85rem 1.25rem 1.15rem 1.25rem;
+    background: #ffffff;
+    border-top: 1px solid #f1f5f9;
+}
+
+.tui-crop-modal__btn {
+    flex: 1;
+    border-radius: 0.75rem;
+    padding: 0.65rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background 0.15s ease, transform 0.1s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tui-crop-modal__btn:active {
+    transform: scale(0.98);
+}
+
+.tui-crop-modal__btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.tui-crop-modal__btn--ghost {
+    color: #475569;
+    background: #f1f5f9;
+    border-color: #e2e8f0;
+}
+
+.tui-crop-modal__btn--ghost:hover {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+.tui-crop-modal__btn--primary {
+    color: #ffffff;
+    background: #2563eb;
+    border-color: #2563eb;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
+}
+
+.tui-crop-modal__btn--primary:hover {
+    background: #1d4ed8;
 }

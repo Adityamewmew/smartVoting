@@ -13,7 +13,6 @@
             <a class="hover:text-blue-600 transition-colors" href="#solutions">Solusi TPS</a>
             <a class="hover:text-blue-600 transition-colors" href="#features">Fitur Unggulan</a>
             <a class="hover:text-blue-600 transition-colors" href="#testimonials">Testimoni</a>
-            <a class="hover:text-blue-600 transition-colors" href="#pricing">Paket Harga</a>
         </div>
 
         <!-- Action Buttons -->
@@ -36,7 +35,6 @@
         <a class="block font-semibold text-slate-700 hover:text-blue-600 py-2 px-3 rounded-xl hover:bg-blue-50/50 transition-colors" href="#solutions">Solusi TPS</a>
         <a class="block font-semibold text-slate-700 hover:text-blue-600 py-2 px-3 rounded-xl hover:bg-blue-50/50 transition-colors" href="#features">Fitur Unggulan</a>
         <a class="block font-semibold text-slate-700 hover:text-blue-600 py-2 px-3 rounded-xl hover:bg-blue-50/50 transition-colors" href="#testimonials">Testimoni</a>
-        <a class="block font-semibold text-slate-700 hover:text-blue-600 py-2 px-3 rounded-xl hover:bg-blue-50/50 transition-colors" href="#pricing">Paket Harga</a>
         <div class="pt-3 border-t border-slate-100 flex flex-col sm:flex-row gap-2">
             <x-admin.button href="{{ route('auth.google') }}" color="primary" size="sm" class="w-full justify-center">
                 <span>Masuk ke Aplikasi</span>

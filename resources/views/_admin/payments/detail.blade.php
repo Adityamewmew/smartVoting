@@ -66,7 +66,7 @@
 
             {{-- Breakdown --}}
             <div class="p-6 sm:p-8 space-y-6">
-                <div class="border border-gray-100 rounded-xl p-5 bg-gray-50/40">
+                <div class="border border-gray-100 rounded-xl p-4 sm:p-6 bg-gray-50/40">
                     <div class="flex justify-between items-center py-2 border-b border-gray-200/60">
                         <span class="text-sm text-gray-600">Paket Layanan</span>
                         <span class="text-sm font-bold text-gray-900">{{ $data->package_name }}</span>
@@ -103,7 +103,7 @@
                 @if(!empty($data->notes))
                     <div>
                         <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5">Catatan Tambahan</h4>
-                        <p class="text-sm text-gray-700 bg-gray-50 p-3.5 rounded-xl border border-gray-200/70">{{ $data->notes }}</p>
+                        <p class="text-sm text-gray-700 bg-gray-50 p-4 rounded-xl border border-gray-200/70">{{ $data->notes }}</p>
                     </div>
                 @endif
             </div>

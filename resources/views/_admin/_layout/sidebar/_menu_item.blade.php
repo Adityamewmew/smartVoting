@@ -61,8 +61,8 @@
         }
     }
 
-    $activeClass = 'bg-gradient-to-r from-blue-50 to-blue-100/60 text-blue-700 font-bold border border-blue-200/80 shadow-2xs shadow-blue-500/10';
-    $inactiveClass = 'text-gray-600 hover:bg-gray-100/70 hover:text-gray-900 border border-transparent font-medium';
+    $activeClass = 'bg-blue-50 text-blue-900 font-bold border border-blue-200/90 shadow-2xs';
+    $inactiveClass = 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 border border-transparent font-medium';
 @endphp
 
 @if (!$hasChildren)
@@ -142,7 +142,7 @@
                     @endphp
                     <li>
                         <a navigate
-                            class="group flex items-center gap-x-2.5 py-1.5 px-3 text-xs rounded-lg {{ $childActive ? 'bg-blue-50 text-blue-700 font-semibold border border-blue-100/60' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} transition-all duration-150"
+                            class="group flex items-center gap-x-2.5 py-1.5 px-3 text-xs rounded-lg {{ $childActive ? 'bg-blue-50 text-blue-900 font-semibold border border-blue-200/80' : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900' }} transition-all duration-150"
                             href="{{ $childUrl }}">
                             <span
                                 class="size-1.5 rounded-full {{ $childActive ? 'bg-blue-600' : 'bg-gray-300 group-hover:bg-gray-400' }} transition-colors"></span>

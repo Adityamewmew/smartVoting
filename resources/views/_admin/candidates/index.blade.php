@@ -68,7 +68,6 @@
                         <x-admin.table.th>Foto Paslon</x-admin.table.th>
                         <x-admin.table.th>Nama Pasangan Calon</x-admin.table.th>
                         <x-admin.table.th>Event Pemilihan</x-admin.table.th>
-                        <x-admin.table.th>Visi & Misi</x-admin.table.th>
                         <x-admin.table.th align="end">Aksi</x-admin.table.th>
                     </tr>
                 </x-admin.table.thead>
@@ -96,17 +95,18 @@
                             <x-admin.table.td>
                                 <x-admin.badge color="gray" :text="$d->election_name" />
                             </x-admin.table.td>
-                            <x-admin.table.td>
-                                <div class="max-w-xs text-xs text-gray-600 space-y-1">
-                                    @if($d->vision)
-                                        <p class="truncate"><span class="font-semibold text-gray-800">Visi:</span> {{ $d->vision }}</p>
-                                    @endif
-                                    @if($d->mission)
-                                        <p class="truncate"><span class="font-semibold text-gray-800">Misi:</span> {{ $d->mission }}</p>
-                                    @endif
-                                </div>
-                            </x-admin.table.td>
                             <x-admin.table.td innerClass="px-6 py-3 flex items-center justify-end gap-x-1.5">
+                                <x-admin.button
+                                    type="button"
+                                    size="icon-sm"
+                                    color="outline-secondary"
+                                    title="Lihat Visi & Misi"
+                                    data-hs-overlay="#vision-mission-modal"
+                                    onclick="setVisionMissionData('{{ str_pad($d->order_number, 2, '0', STR_PAD_LEFT) }}', '{{ addslashes($d->chairman_name . ($d->vice_chairman_name ? ' & ' . $d->vice_chairman_name : '')) }}', {{ json_encode($d->vision ?? '') }}, {{ json_encode($d->mission ?? '') }})"
+                                    class="hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 cursor-pointer"
+                                >
+                                    <svg class="size-3.5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                </x-admin.button>
                                 <x-admin.button
                                     size="icon-sm"
                                     color="outline-secondary"
@@ -128,7 +128,7 @@
                         </x-admin.table.tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-8 text-center">
+                            <td colspan="5" class="px-6 py-8 text-center">
                                 <x-admin.empty-state message="Belum ada kandidat yang terdaftar pada pemilihan ini." />
                             </td>
                         </tr>
@@ -144,6 +144,9 @@
                 </div>
             @endif
         </x-admin.table.wrapper>
+
+        {{-- Vision & Mission Modal Component --}}
+        <x-admin.vision-mission-modal />
 
         {{-- Delete Confirmation Modal --}}
         <x-admin.modal id="delete-modal" title="Hapus Kandidat Paslon" size="sm:max-w-md">
@@ -166,10 +169,62 @@
         </x-admin.modal>
     </div>
 
-    <script>
-        window.setDeleteData = function (id, name) {
-            document.getElementById('delete-item-name').textContent = name;
-            document.getElementById('delete-form').action = '{{ route('admin.candidates.index') }}/delete/' + id;
-        };
-    </script>
+    @push('scripts')
+        <script>
+            window.setVisionMissionData = function(pad, name, vision, mission) {
+                const padEl = document.getElementById('vm-modal-pad');
+                if (padEl) padEl.textContent = pad;
+
+                const nameEl = document.getElementById('vm-modal-name');
+                if (nameEl) nameEl.textContent = name;
+
+                const visionEl = document.getElementById('vm-modal-vision');
+                if (visionEl) {
+                    if (vision && vision.trim() !== '') {
+                        visionEl.textContent = vision.trim().replace(/^["']|["']$/g, '');
+                        visionEl.classList.remove('text-gray-400', 'italic');
+                        visionEl.classList.add('text-gray-800');
+                    } else {
+                        visionEl.textContent = 'Belum ada visi yang dicantumkan.';
+                        visionEl.classList.add('text-gray-400', 'italic');
+                        visionEl.classList.remove('text-gray-800');
+                    }
+                }
+
+                const missionListEl = document.getElementById('vm-modal-mission-list');
+                if (missionListEl) {
+                    missionListEl.innerHTML = '';
+                    if (!mission || mission.trim() === '') {
+                        missionListEl.innerHTML = '<li class="text-xs sm:text-sm text-gray-400 italic">Belum ada misi yang dicantumkan.</li>';
+                    } else {
+                        const rawLines = mission.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+                        let itemIndex = 1;
+                        rawLines.forEach(line => {
+                            const cleanLine = line.replace(/^(\*|\-|\d+[\.\)])\s*/, '').trim();
+                            if (cleanLine.length > 0) {
+                                const li = document.createElement('li');
+                                li.className = 'flex items-start gap-3 text-xs sm:text-sm text-gray-800 leading-relaxed';
+                                li.innerHTML = `
+                                    <span class="size-5 rounded-full bg-blue-100/80 text-blue-700 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                                        ${itemIndex}
+                                    </span>
+                                    <span class="grow">${cleanLine}</span>
+                                `;
+                                missionListEl.appendChild(li);
+                                itemIndex++;
+                            }
+                        });
+                        if (missionListEl.children.length === 0) {
+                            missionListEl.innerHTML = '<li class="text-xs sm:text-sm text-gray-400 italic">Belum ada misi yang dicantumkan.</li>';
+                        }
+                    }
+                }
+            };
+
+            window.setDeleteData = function (id, name) {
+                document.getElementById('delete-item-name').textContent = name;
+                document.getElementById('delete-form').action = '{{ route('admin.candidates.index') }}/delete/' + id;
+            };
+        </script>
+    @endpush
 @endsection

@@ -20,81 +20,105 @@
             <form action="{{ route('admin.candidates.doUpdate', $data->id) }}" method="POST" enctype="multipart/form-data" navigate-form class="space-y-6">
                 @csrf
                 
-                <div class="space-y-5">
-                    @php
-                        $electionOptions = [];
-                        foreach($elections as $election) {
-                            $electionOptions[$election->id] = $election->name;
-                        }
-                    @endphp
-                    <x-admin.select 
-                        label="Event Pemilihan" 
-                        name="election_id" 
-                        :options="$electionOptions" 
-                        placeholder="-- Pilih Event Pemilihan --" 
-                        :value="old('election_id', $data->election_id)" 
-                        required="true"
-                        :error="$errors->first('election_id')"
-                    />
+                @php
+                    $electionOptions = [];
+                    foreach($elections as $election) {
+                        $electionOptions[$election->id] = $election->name;
+                    }
+                @endphp
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <x-admin.input 
-                            type="number"
-                            label="Nomor Urut Paslon" 
-                            name="order_number" 
-                            :value="old('order_number') ?? $data->order_number" 
-                            placeholder="Contoh: 1" 
-                            required="true" 
-                        />
+                <div class="space-y-6">
+                    {{-- 1. Event & Nomor Urut --}}
+                    <div class="p-4 sm:p-6 bg-slate-50/70 rounded-2xl border border-slate-200/80 space-y-4">
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">1. Event Pemilihan & Nomor Urut</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-start">
+                            <div class="sm:col-span-2">
+                                <x-admin.select 
+                                    label="Event Pemilihan" 
+                                    name="election_id" 
+                                    :options="$electionOptions" 
+                                    placeholder="-- Pilih Event Pemilihan --" 
+                                    :value="old('election_id', $data->election_id)" 
+                                    required="true"
+                                    :error="$errors->first('election_id')"
+                                />
+                            </div>
+                            <div>
+                                <x-admin.input 
+                                    type="number"
+                                    label="Nomor Urut Paslon" 
+                                    name="order_number" 
+                                    :value="old('order_number') ?? $data->order_number" 
+                                    placeholder="Contoh: 1" 
+                                    required="true" 
+                                />
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <x-admin.input 
-                            label="Nama Calon Ketua" 
-                            name="chairman_name" 
-                            :value="old('chairman_name') ?? $data->chairman_name" 
-                            placeholder="Masukkan nama calon ketua..." 
-                            required="true" 
-                        />
+                    {{-- 2. Data Pasangan Calon (Grid 2 Kolom) --}}
+                    <div>
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">2. Profil Calon Ketua & Wakil</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                            {{-- Kolom Calon Ketua --}}
+                            <div class="p-4 sm:p-6 rounded-2xl border border-blue-100 bg-blue-50/30 space-y-4">
+                                <div class="flex items-center gap-2 pb-2 border-b border-blue-100/80">
+                                    <span class="size-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs font-bold shadow-2xs">K</span>
+                                    <span class="font-bold text-sm text-slate-900">Calon Ketua (Wajib)</span>
+                                </div>
+                                <x-admin.input 
+                                    label="Nama Lengkap Ketua" 
+                                    name="chairman_name" 
+                                    :value="old('chairman_name') ?? $data->chairman_name" 
+                                    placeholder="Masukkan nama calon ketua..." 
+                                    required="true" 
+                                />
+                                <x-admin.image-cropper 
+                                    name="photo" 
+                                    label="Foto Calon Ketua" 
+                                    :value="$data->photo_path ?? null"
+                                    help="Portrait 3:4, maks 2MB (kosongkan jika tidak diubah)" 
+                                />
+                            </div>
 
-                        <x-admin.input 
-                            label="Nama Calon Wakil Ketua" 
-                            name="vice_chairman_name" 
-                            :value="old('vice_chairman_name') ?? $data->vice_chairman_name" 
-                            placeholder="Masukkan nama calon wakil ketua..." 
-                            required="true" 
-                        />
+                            {{-- Kolom Calon Wakil --}}
+                            <div class="p-4 sm:p-6 rounded-2xl border border-slate-200 bg-slate-50/40 space-y-4">
+                                <div class="flex items-center gap-2 pb-2 border-b border-slate-200/80">
+                                    <span class="size-6 rounded-lg bg-slate-700 text-white flex items-center justify-center text-xs font-bold shadow-2xs">W</span>
+                                    <span class="font-bold text-sm text-slate-900">Calon Wakil Ketua (Opsional)</span>
+                                </div>
+                                <x-admin.input 
+                                    label="Nama Lengkap Wakil" 
+                                    name="vice_chairman_name" 
+                                    :value="old('vice_chairman_name') ?? $data->vice_chairman_name" 
+                                    placeholder="Masukkan nama calon wakil ketua..." 
+                                />
+                                <x-admin.image-cropper 
+                                    name="vice_chairman_photo" 
+                                    label="Foto Calon Wakil" 
+                                    :value="$data->vice_chairman_photo_path ?? null"
+                                    help="Portrait 3:4, maks 2MB (kosongkan jika tidak diubah)" 
+                                />
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                        <x-admin.image-cropper 
-                            name="photo" 
-                            label="Foto Calon Ketua" 
-                            :value="$data->photo_path ?? null"
-                            help="Portrait 3:4, maks 2MB (kosongkan jika tidak diubah)" 
+                    {{-- 3. Visi & Misi --}}
+                    <div class="p-4 sm:p-6 rounded-2xl border border-slate-200/80 bg-white space-y-6">
+                        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">3. Visi & Misi Paslon</h3>
+                        <x-admin.markdown-editor 
+                            label="Visi Paslon" 
+                            name="vision" 
+                            :value="old('vision', $data->vision)" 
+                            placeholder="Tuliskan visi pasangan calon..." 
                         />
-
-                        <x-admin.image-cropper 
-                            name="vice_chairman_photo" 
-                            label="Foto Calon Wakil Ketua" 
-                            :value="$data->vice_chairman_photo_path ?? null"
-                            help="Portrait 3:4, maks 2MB (kosongkan jika tidak diubah)" 
+                        <x-admin.markdown-editor 
+                            label="Misi Paslon" 
+                            name="mission" 
+                            :value="old('mission', $data->mission)" 
+                            placeholder="Tuliskan butir-butir misi (gunakan * atau 1. untuk poin)..." 
                         />
                     </div>
-
-                    <x-admin.markdown-editor 
-                        label="Visi Paslon" 
-                        name="vision" 
-                        :value="old('vision', $data->vision)" 
-                        placeholder="Tuliskan visi pasangan calon (format Markdown didukung)..." 
-                    />
-
-                    <x-admin.markdown-editor 
-                        label="Misi Paslon" 
-                        name="mission" 
-                        :value="old('mission', $data->mission)" 
-                        placeholder="Tuliskan butir-butir misi (format Markdown didukung, gunakan * atau 1. untuk poin)..." 
-                    />
                 </div>
 
                 {{-- Action Buttons --}}
